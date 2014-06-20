@@ -55,7 +55,7 @@ public class Runner {
                 current = (current + 1) % workers.length;
                 workers[current].resume();
             }
-        }, 0, 500 / workers.length);
+        }, 0, 1000 / workers.length);
 
         System.out.println("End");
     }
