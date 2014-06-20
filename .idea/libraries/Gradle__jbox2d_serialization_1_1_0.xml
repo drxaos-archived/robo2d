@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: jbox2d-serialization-1.1.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jbox2d/jbox2d-serialization/1.1.0/461cb9ef3183d0332e1bf85d164c59c134076599/jbox2d-serialization-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jbox2d/jbox2d-serialization/1.1.0/f21fcc92c318f5e73f393541792651d4b789b4bd/jbox2d-serialization-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
