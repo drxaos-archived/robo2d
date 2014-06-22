@@ -105,7 +105,7 @@ public class World {
 	public ArrayList<Bullet> bullets;
 
 	public boolean makeFromOuterPolygon = false;
-	public double obstacleBufferAmount = 25;
+	public double obstacleBufferAmount = 5;
 	public int numPointsPerQuadrant = 3;
 
 	public Main main;
@@ -178,48 +178,48 @@ public class World {
 		allOccluders = new TileBagIntersections(tempOccludersList, 50);
 		allOccluders.addAll(tempOccludersList);
 
-//		ArrayList<PathBlockingObstacleImpl> tempStationaryObstacles = new ArrayList<PathBlockingObstacleImpl>();
-//		PolygonConverter pc = new PolygonConverter();
-//		for (int i = 0; i < allMultiPolygons.size(); i++){
-//			KPolygon poly = allMultiPolygons.get(i).getExteriorPolygon().copy();
-//			com.vividsolutions.jts.geom.Polygon jtsPolygon = pc.makeJTSPolygonFrom(poly);
-//			Geometry bufferedJTSPolygon = jtsPolygon.buffer(obstacleBufferAmount, numPointsPerQuadrant);
-//			KPolygon bufferedPoly = pc.makeKMultiPolygonListFrom(bufferedJTSPolygon).get(0).getExteriorPolygon();
-//			PathBlockingObstacleImpl obst = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(bufferedPoly);
-//			if (obst == null){
-//				continue;
-//			}
-//			tempStationaryObstacles.add(obst);
-//		}
-//		// Here, we combine all allObstacles that are touching. Note that this leads
-		// to sub-optimal performance when you've got just one massive obstacle
-		// because then the obstacle-sorting optimisations in the path finding code don't work.
-		// This affects the WorldMaze in particular...
-		ArrayList<com.vividsolutions.jts.geom.Polygon> allJTSPolygons = new ArrayList<com.vividsolutions.jts.geom.Polygon>();
+		ArrayList<PathBlockingObstacleImpl> tempStationaryObstacles = new ArrayList<PathBlockingObstacleImpl>();
 		PolygonConverter pc = new PolygonConverter();
 		for (int i = 0; i < allMultiPolygons.size(); i++){
 			KPolygon poly = allMultiPolygons.get(i).getExteriorPolygon().copy();
 			com.vividsolutions.jts.geom.Polygon jtsPolygon = pc.makeJTSPolygonFrom(poly);
-			allJTSPolygons.add(jtsPolygon);
-		}
-		com.vividsolutions.jts.geom.Polygon[] jtsPolygonArray = allJTSPolygons.toArray(new com.vividsolutions.jts.geom.Polygon[allJTSPolygons.size()]);
-		com.vividsolutions.jts.geom.MultiPolygon jtsMultiPolygon = new com.vividsolutions.jts.geom.MultiPolygon(jtsPolygonArray, new com.vividsolutions.jts.geom.GeometryFactory());
-		com.vividsolutions.jts.geom.Geometry bufferedGeometry = jtsMultiPolygon.buffer(obstacleBufferAmount, numPointsPerQuadrant);
-		ArrayList<KMultiPolygon> multiPolygons = pc.makeKMultiPolygonListFrom(bufferedGeometry);
-		ArrayList<KPolygon> bufferedPolygons = new ArrayList<KPolygon>();
-		for (int i = 0; i < multiPolygons.size(); i++){
-			KMultiPolygon mpoly = multiPolygons.get(i);
-			bufferedPolygons.add(mpoly.getExteriorPolygon());
-		}
-		ArrayList<PathBlockingObstacleImpl> tempStationaryObstacles = new ArrayList<PathBlockingObstacleImpl>();
-		for (int i = 0; i < bufferedPolygons.size(); i++){
-			KPolygon poly = bufferedPolygons.get(i);
-			PathBlockingObstacleImpl obst = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(poly);
+			Geometry bufferedJTSPolygon = jtsPolygon.buffer(obstacleBufferAmount, numPointsPerQuadrant);
+			KPolygon bufferedPoly = pc.makeKMultiPolygonListFrom(bufferedJTSPolygon).get(0).getExteriorPolygon();
+			PathBlockingObstacleImpl obst = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(bufferedPoly);
 			if (obst == null){
 				continue;
 			}
 			tempStationaryObstacles.add(obst);
 		}
+//		// Here, we combine all allObstacles that are touching. Note that this leads
+//		// to sub-optimal performance when you've got just one massive obstacle
+//		// because then the obstacle-sorting optimisations in the path finding code don't work.
+//		// This affects the WorldMaze in particular...
+//		ArrayList<com.vividsolutions.jts.geom.Polygon> allJTSPolygons = new ArrayList<com.vividsolutions.jts.geom.Polygon>();
+//		PolygonConverter pc = new PolygonConverter();
+//		for (int i = 0; i < allMultiPolygons.size(); i++){
+//			KPolygon poly = allMultiPolygons.get(i).getExteriorPolygon().copy();
+//			com.vividsolutions.jts.geom.Polygon jtsPolygon = pc.makeJTSPolygonFrom(poly);
+//			allJTSPolygons.add(jtsPolygon);
+//		}
+//		com.vividsolutions.jts.geom.Polygon[] jtsPolygonArray = allJTSPolygons.toArray(new com.vividsolutions.jts.geom.Polygon[allJTSPolygons.size()]);
+//		com.vividsolutions.jts.geom.MultiPolygon jtsMultiPolygon = new com.vividsolutions.jts.geom.MultiPolygon(jtsPolygonArray, new com.vividsolutions.jts.geom.GeometryFactory());
+//		com.vividsolutions.jts.geom.Geometry bufferedGeometry = jtsMultiPolygon.buffer(obstacleBufferAmount, numPointsPerQuadrant);
+//		ArrayList<KMultiPolygon> multiPolygons = pc.makeKMultiPolygonListFrom(bufferedGeometry);
+//		ArrayList<KPolygon> bufferedPolygons = new ArrayList<KPolygon>();
+//		for (int i = 0; i < multiPolygons.size(); i++){
+//			KMultiPolygon mpoly = multiPolygons.get(i);
+//			bufferedPolygons.add(mpoly.getExteriorPolygon());
+//		}
+//		ArrayList<PathBlockingObstacleImpl> tempStationaryObstacles = new ArrayList<PathBlockingObstacleImpl>();
+//		for (int i = 0; i < bufferedPolygons.size(); i++){
+//			KPolygon poly = bufferedPolygons.get(i);
+//			PathBlockingObstacleImpl obst = PathBlockingObstacleImpl.createObstacleFromInnerPolygon(poly);
+//			if (obst == null){
+//				continue;
+//			}
+//			tempStationaryObstacles.add(obst);
+//		}
 
 		maxConnectionDistance = 700f;
 		nodeConnector = new NodeConnector();

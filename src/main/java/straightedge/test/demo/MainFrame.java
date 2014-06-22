@@ -40,11 +40,11 @@ public class MainFrame extends Main{
 		Thread t = new Thread(){
 			public void run(){
 				Main main = MainFrame.this;
-				//main.world = new WorldFractalHexagonalGosperCurve(main);
+				main.world = new WorldHexagonalGosperCurve(main);
 				//main.world = new WorldKochIsland(main);
 				//main.world = new WorldKochSnowflake(main);
 				//main.world = new WorldVogelSpiral(main);
-				main.world = new WorldCustom(main);
+//				main.world = new WorldShapes(main);
 				main.world.init();	// takes ages
 				main.eventHandler.eventCache.clearAndFillCache();	// clear out any old events
 				WorldLoopAnimation newAnimationWorld = new WorldLoopAnimation(main.world, main.view);
