@@ -18,18 +18,21 @@ public class MoveTest extends RobotTest {
         game.worldBox = getWorld();
 
         ArrayList<Point2D> points = new ArrayList<Point2D>();
-        points.add(new Point2D.Double(0, 0));
+        points.add(new Point2D.Double(7d, -7d));
+        points.add(new Point2D.Double(15d, -15d));
+        points.add(new Point2D.Double(-10d, -15d));
+        points.add(new Point2D.Double(-10d, -10d));
         points.add(new Point2D.Double(0, 10));
         points.add(new Point2D.Double(5, 5));
-        points.add(new Point2D.Double(10, 10));
+        points.add(new Point2D.Double(17, 13));
         points.add(new Point2D.Double(10, 0));
 
         game.physicals.add(new WallImpl(points, Math.PI * 0.01));
 
 
         PlayerImpl player1 = new PlayerImpl("player1");
-        ChassisImpl chassis = new ChassisImpl(1d);
 
+        ChassisImpl chassis = new ChassisImpl(1d);
         game.physicals.add(new RobotImpl(player1, chassis, null, 500d, new KPoint(15,15), 1));
 
         game.start();
