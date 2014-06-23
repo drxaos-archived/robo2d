@@ -26,10 +26,10 @@ public abstract class RobotTest extends TestbedTest {
 
     @Override
     public String getTestName() {
-        return "RobotTest";
+        return this.getClass().getSimpleName();
     }
 
-    public void start(){
+    public void start() {
         TestbedModel model = new TestbedModel() {
             @Override
             public TestbedSettings getSettings() {

@@ -6,6 +6,10 @@ public class PlayerImpl implements Player {
     String name;
     Runnable program;
 
+    public PlayerImpl(String name) {
+        this.name = name;
+    }
+
     @Override
     public String getName() {
         return name;

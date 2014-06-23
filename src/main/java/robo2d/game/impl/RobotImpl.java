@@ -2,17 +2,31 @@ package robo2d.game.impl;
 
 import robo2d.game.api.*;
 import robo2d.game.api.map.Obj;
+import robo2d.game.box2d.Box;
+import robo2d.game.box2d.Physical;
+import robo2d.game.box2d.RobotBox;
+import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Map;
 
-public class RobotImpl implements Robot, Obj {
+public class RobotImpl implements Robot, Obj, Physical {
 
+    RobotBox box;
     PlayerImpl owner;
     ChassisImpl chassis;
     Map<String, String> init;
     Double energy;
+
+    public RobotImpl(PlayerImpl owner, ChassisImpl chassis, Map<String, String> init, Double energy, KPoint position, double angle) {
+        this.owner = owner;
+        this.chassis = chassis;
+        this.init = init;
+        this.energy = energy;
+
+        box = new RobotBox(position, angle);
+    }
 
     @Override
     public Player getOwner() {
@@ -57,5 +71,10 @@ public class RobotImpl implements Robot, Obj {
     @Override
     public Double getEnergy() {
         return energy;
+    }
+
+    @Override
+    public Box getBox() {
+        return box;
     }
 }
