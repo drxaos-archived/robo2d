@@ -24,12 +24,28 @@ abstract public class RobotProgram implements Runnable {
         }
     }
 
-    protected void cycle(int ms, Runnable func) {
-        long end = robot.getTime() + ms;
-        func.run();
-        while (robot.getTime() < end) {
-            robot.waitForStep();
+    protected void cycle(Runnable func, int maxMs) {
+        long end = robot.getTime() + maxMs;
+        try {
             func.run();
+            while (robot.getTime() < end) {
+                robot.waitForStep();
+                func.run();
+            }
+        } catch (Interrupt e) {
+        }
+    }
+
+    public static double differenceAngle(double theta1, double theta2) {
+        double dif = theta2 - theta1;
+        while (dif < -Math.PI) dif += 2 * Math.PI;
+        while (dif > Math.PI) dif -= 2 * Math.PI;
+        if (dif < 0) dif *= -1;
+        return dif;
+    }
+
+    public static class Interrupt extends RuntimeException {
+        public Interrupt() {
         }
     }
 }

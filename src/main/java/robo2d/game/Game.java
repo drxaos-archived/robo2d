@@ -86,6 +86,8 @@ public class Game {
             if (msg != null && !msg.isEmpty()) {
                 debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, 1.5f * (float) RobotBox.SIZE)), res);
                 debugDraw.drawString(res, msg, Color3f.RED);
+                debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, -1.5f * (float) RobotBox.SIZE)), res);
+                debugDraw.drawString(res, String.format("E:%.0f", robot.getEnergy()), Color3f.BLUE);
             }
         }
     }

@@ -12,12 +12,23 @@ public class EngineTestProgram extends RobotProgram {
     Chassis chassis;
     Radar radar;
 
+    Double waitAngle;
+
     @Override
     public void program() {
-        Runnable angleDebug = new Runnable() {
+        Runnable angleWaiter = new Runnable() {
             @Override
             public void run() {
-                robot.debug(out + " / " + radar.getAngle());
+                String dbg = out + " / " + String.format("%.3f", radar.getAngle());
+
+                if (waitAngle != null) {
+                    double dif = Math.abs(differenceAngle(radar.getAngle(), waitAngle));
+                    dbg += " / DIF:" + dif;
+                    if (dif < 0.1) {
+                        throw new Interrupt();
+                    }
+                }
+                robot.debug(dbg);
             }
         };
 
@@ -34,34 +45,42 @@ public class EngineTestProgram extends RobotProgram {
         out = ("-F--F-");
         chassis.setLeftAcceleration(100d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
+        waitAngle = null;
+        cycle(angleWaiter, 1000);
         out = ("------");
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        waitAngle = null;
+        cycle(angleWaiter, 1000);
         out = ("----F-");
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
+        waitAngle = 0d;
+        cycle(angleWaiter, 10000);
         out = ("------");
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        waitAngle = null;
+        cycle(angleWaiter, 1000);
         out = ("-F----");
         chassis.setLeftAcceleration(100d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        waitAngle = Math.PI / 2;
+        cycle(angleWaiter, 10000);
         out = ("------");
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        waitAngle = null;
+        cycle(angleWaiter, 1000);
         out = ("-B--F-");
         chassis.setLeftAcceleration(-100d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
+        waitAngle = -Math.PI / 2;
+        cycle(angleWaiter, 10000);
         out = ("------");
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        waitAngle = null;
+        cycle(angleWaiter, 1000);
     }
 }
