@@ -1,6 +1,6 @@
 package robo2d.game.api;
 
-public interface Chassis {
+public interface Chassis extends Equipment{
 
     void setLeftAcceleration(Double percent);
 

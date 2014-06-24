@@ -4,10 +4,11 @@ import robo2d.game.api.Player;
 
 public class PlayerImpl implements Player {
     String name;
-    Runnable program;
+    Class<? extends RobotProgram> program;
 
-    public PlayerImpl(String name) {
+    public PlayerImpl(String name, Class<? extends RobotProgram> program) {
         this.name = name;
+        this.program = program;
     }
 
     @Override

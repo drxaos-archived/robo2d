@@ -1,6 +1,6 @@
 package robo2d.game.api;
 
-public interface Turret {
+public interface Turret extends Equipment {
 
     Double RANGE = 10d;
 

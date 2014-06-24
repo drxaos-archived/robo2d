@@ -1,18 +1,14 @@
 package robo2d.game.api;
 
-import java.util.Map;
-
 public interface Robot {
 
-    Radar getRadar();
-
-    Radio getRadio();
-
-    Chassis getChassis();
-
-    Turret getTurret();
-
-    Map<String, String> getInitializer();
+    <T extends Equipment> T getEquipment(Class<T> type);
 
     Double getEnergy();
+
+    Long getTime();
+
+    void waitForStep();
+
+    void debug(String msg);
 }

@@ -7,13 +7,17 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import straightedge.geom.KPoint;
 
+import java.util.Map;
+
 public class RobotBox extends Box {
+
+    public static double SIZE = 1;
 
     public RobotBox(KPoint position, double angle) {
 
         {
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(1, 1);
+            shape.setAsBox((float) SIZE, (float) SIZE);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -26,9 +30,9 @@ public class RobotBox extends Box {
         {
             PolygonShape shape = new PolygonShape();
             shape.set(new Vec2[]{
-                    new Vec2(-0.8f, 0),
-                    new Vec2(0, 1.2f),
-                    new Vec2(0.8f, 0),
+                    new Vec2(-0.8f * (float) SIZE, 0),
+                    new Vec2(0, 1.2f * (float) SIZE),
+                    new Vec2(0.8f * (float) SIZE, 0),
             }, 3);
 
             FixtureDef fixtureDef = new FixtureDef();
@@ -46,5 +50,22 @@ public class RobotBox extends Box {
         bodyDef.allowSleep = false;
         bodyDef.linearDamping = 10f;
         bodyDef.angularDamping = 30f;
+    }
+
+    public void applyForces(Map<KPoint, Vec2> forces) {
+        if (body == null) {
+            return;
+        }
+        float a = body.getAngle();
+        for (Map.Entry<KPoint, Vec2> e : forces.entrySet()) {
+
+            Vec2 worldVector = body.getWorldVector(e.getValue());
+            Vec2 point = new Vec2((float) e.getKey().getX(), (float) e.getKey().getY());
+            point.normalize();
+            point.mul((float) SIZE);
+            Vec2 worldPoint = body.getWorldPoint(point);
+
+            body.applyForce(worldVector, worldPoint);
+        }
     }
 }

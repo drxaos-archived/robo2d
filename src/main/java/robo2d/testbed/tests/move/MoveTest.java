@@ -1,10 +1,7 @@
 package robo2d.testbed.tests.move;
 
 import robo2d.game.Game;
-import robo2d.game.impl.ChassisImpl;
-import robo2d.game.impl.PlayerImpl;
-import robo2d.game.impl.RobotImpl;
-import robo2d.game.impl.WallImpl;
+import robo2d.game.impl.*;
 import robo2d.testbed.RobotTest;
 import straightedge.geom.KPoint;
 
@@ -12,10 +9,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class MoveTest extends RobotTest {
+
     @Override
-    public void createWorld() {
-        Game game = new Game();
-        game.worldBox = getWorld();
+    public Game createGame() {
+        Game game = new Game(getWorld(), getDebugDraw());
 
         ArrayList<Point2D> points = new ArrayList<Point2D>();
         points.add(new Point2D.Double(7d, -7d));
@@ -27,15 +24,21 @@ public class MoveTest extends RobotTest {
         points.add(new Point2D.Double(17, 13));
         points.add(new Point2D.Double(10, 0));
 
-        game.physicals.add(new WallImpl(points, Math.PI * 0.01));
+        game.addWall(new WallImpl(points, Math.PI * 0.01));
 
+        PlayerImpl player1 = new PlayerImpl("player1", EngineTestProgram.class);
 
-        PlayerImpl player1 = new PlayerImpl("player1");
+        RobotImpl robot = new RobotImpl(player1, new KPoint(15, 15), Math.PI * 0.05);
+        ChassisImpl chassis = new ChassisImpl(300d);
+        RadarImpl radar = new RadarImpl(game);
+        ComputerImpl computer = new ComputerImpl();
+        robot.addEquipment(chassis);
+        robot.addEquipment(radar);
+        robot.addEquipment(computer);
+        robot.charge(100);
+        game.addRobot(robot);
 
-        ChassisImpl chassis = new ChassisImpl(1d);
-        game.physicals.add(new RobotImpl(player1, chassis, null, 500d, new KPoint(15,15), 1));
-
-        game.start();
+        return game;
     }
 
     public static void main(String[] args) {

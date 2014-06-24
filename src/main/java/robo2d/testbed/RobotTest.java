@@ -1,8 +1,10 @@
 package robo2d.testbed;
 
+import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
+import robo2d.game.Game;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -10,18 +12,26 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class RobotTest extends TestbedTest {
+    Game game;
+
     @Override
     public void initTest(boolean deserialized) {
         setTitle("RobotTest");
         getWorld().setGravity(new Vec2());
-        createWorld();
+        game = createGame();
+        game.start();
     }
 
-    abstract public void createWorld();
+    abstract public Game createGame();
+
 
     @Override
     public synchronized void step(TestbedSettings settings) {
+        game.managePrograms();
+        game.applyEffects();
+        game.sync();
         super.step(settings);
+        game.debug();
     }
 
     @Override

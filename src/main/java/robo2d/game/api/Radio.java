@@ -1,6 +1,6 @@
 package robo2d.game.api;
 
-public interface Radio {
+public interface Radio extends Equipment{
 
     void setChannel(Integer frequency);
 
