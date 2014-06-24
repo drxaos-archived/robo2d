@@ -50,6 +50,9 @@ public class ChassisImpl implements Chassis, EquipmentImpl, HasEffects {
 
     @Override
     public Map<KPoint, Vec2> getEffects() {
+        if (!robot.consumeEnergy((Math.abs(leftAccel) + Math.abs(rightAccel)) / maxAccel / 100)) {
+            leftAccel = rightAccel = 0;
+        }
         LEFT_ENGINE.set(0, (float) leftAccel);
         RIGHT_ENGINE.set(0, (float) rightAccel);
         return effectsMap;

@@ -52,6 +52,13 @@ public class RobotBox extends Box {
         bodyDef.angularDamping = 30f;
     }
 
+    public double getAngle() {
+        if (body == null) {
+            return 0d;
+        }
+        return (double) body.getAngle() - Math.PI / 2;
+    }
+
     public void applyForces(Map<KPoint, Vec2> forces) {
         if (body == null) {
             return;
