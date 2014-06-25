@@ -31,12 +31,25 @@ public class WayTestProgram extends RobotProgram {
         way.add(new KPoint(-12, 5));
         way.add(new KPoint(0, 10));
         way.add(new KPoint(15, 5));
-        way.add(new KPoint(15, -5));
+//        way.add(new KPoint(15, -5));
         way.add(new KPoint(0, -10));
 
         for (KPoint wayPoint : way) {
-            robot.debug(wayPoint);
-            moveSmooth(wayPoint, 10000);
+            while (!moveSmooth(wayPoint, 4000)) {
+                stop();
+                KPoint failPoint = radar.getPosition();
+                robot.debug(wayPoint);
+                robot.debug("Please drag me to that point!");
+                while (true) {
+                    // save energy
+                    KPoint newPoint = radar.getPosition();
+                    if (distance(newPoint, failPoint) > 0.2) {
+                        break;
+                    }
+                    robot.waitForStep();
+                }
+            }
+            robot.debug(null);
         }
     }
 }
