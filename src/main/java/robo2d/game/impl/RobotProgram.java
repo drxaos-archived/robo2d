@@ -145,6 +145,33 @@ abstract public class RobotProgram implements Runnable {
     }
 
 
+    protected boolean moveSmooth(KPoint to, int maxMs) {
+        long end = robot.getTime() + maxMs;
+        Chassis chassis = robot.getEquipment(Chassis.class);
+        Radar radar = robot.getEquipment(Radar.class);
+        if (chassis == null || radar == null) {
+            return false;
+        }
+        stop();
+        while (robot.getTime() < end) {
+            double width = 2;
+            KPoint current = radar.getPosition();
+            double myAngle = radar.getAngle();
+            double angleToTarget = angle(current, to);
+            double azimuth = differenceAngle(myAngle, angleToTarget);
+            double distance = distance(to, current);
+            double distanceLeft = distance(to, current.translateCopy(Math.cos(myAngle + Math.PI / 2) * width, Math.sin(myAngle + Math.PI / 2) * width));
+            double distanceRight = distance(to, current.translateCopy(Math.cos(myAngle - Math.PI / 2) * width, Math.sin(myAngle - Math.PI / 2) * width));
+            double distDiff = distanceLeft - distanceRight;
+//            chassis.setLeftAcceleration(Math.min(1 * force * distance, 100));
+//            chassis.setRightAcceleration(Math.min(1 * force * distance, 100));
+            robot.waitForStep();
+        }
+        stop();
+        return false;
+    }
+
+
     public static double differenceAngle(double theta1, double theta2) {
         double dif = theta2 - theta1;
         while (dif < -Math.PI) dif += 2 * Math.PI;
