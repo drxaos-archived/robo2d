@@ -3,24 +3,16 @@ package robo2d.testbed.tests.move;
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
 import robo2d.game.impl.RobotProgram;
+import straightedge.geom.KPoint;
 
 
 public class EngineTestProgram extends RobotProgram {
-
-    String out = "------";
 
     Chassis chassis;
     Radar radar;
 
     @Override
     public void program() {
-        Runnable angleDebug = new Runnable() {
-            @Override
-            public void run() {
-                robot.debug(out + " / " + radar.getAngle());
-            }
-        };
-
         robot.debug("init");
 
         chassis = robot.getEquipment(Chassis.class);
@@ -31,37 +23,43 @@ public class EngineTestProgram extends RobotProgram {
             return;
         }
 
-        out = ("-F--F-");
+        robot.debug("Move to 25,30");
+        robot.debug(new KPoint(25, 30));
+        move(new KPoint(25, 30), false, 20000);
+        robot.debug("Move precise to 5,20");
+        robot.debug(new KPoint(5, 20));
+        move(new KPoint(5, 20), true, 20000);
+        robot.debug(null);
+
+        robot.debug("Rotate to 0");
+        rotate(0, false, 10000);
+        sleep(1000);
+        robot.debug("Forward 10");
+        forward(10, false, 10000);
+        sleep(1000);
+
+        robot.debug("Test engines");
+
         chassis.setLeftAcceleration(100d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
-        out = ("------");
-        chassis.setLeftAcceleration(0d);
-        chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
-        out = ("----F-");
+        sleep(1000);
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
-        out = ("------");
-        chassis.setLeftAcceleration(0d);
-        chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
-        out = ("-F----");
+        sleep(1000);
         chassis.setLeftAcceleration(100d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
-        out = ("------");
-        chassis.setLeftAcceleration(0d);
-        chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
-        out = ("-B--F-");
+        sleep(1000);
+        chassis.setLeftAcceleration(50d);
+        chassis.setRightAcceleration(-100d);
+        sleep(1000);
+        chassis.setLeftAcceleration(-100d);
+        chassis.setRightAcceleration(-50d);
+        sleep(1000);
         chassis.setLeftAcceleration(-100d);
         chassis.setRightAcceleration(100d);
-        cycle(1000, angleDebug);
-        out = ("------");
+        sleep(1000);
         chassis.setLeftAcceleration(0d);
         chassis.setRightAcceleration(0d);
-        cycle(1000, angleDebug);
+        sleep(1000);
     }
 }

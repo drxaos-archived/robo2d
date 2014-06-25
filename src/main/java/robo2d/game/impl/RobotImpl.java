@@ -20,15 +20,18 @@ public class RobotImpl implements Robot, Obj, Physical {
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
     ComputerImpl computer;
 
+    Class<? extends RobotProgram> program;
     PlayerImpl owner;
     RobotBox box;
     double energy = 0d;
 
     final Object sync = new Object();
     String debugMsg;
+    KPoint debugPoint;
 
-    public RobotImpl(PlayerImpl owner, KPoint position, double angle) {
+    public RobotImpl(PlayerImpl owner, KPoint position, double angle, Class<? extends RobotProgram> program) {
         this.owner = owner;
+        this.program = program;
         box = new RobotBox(position, angle);
     }
 
@@ -78,6 +81,19 @@ public class RobotImpl implements Robot, Obj, Physical {
         return energy;
     }
 
+    public boolean consumeEnergy(double amount) {
+        if (energy > amount) {
+            energy -= amount;
+            if (energy < 0.01) {
+                energy = 0;
+            }
+            return true;
+        } else {
+            energy = 0;
+            return false;
+        }
+    }
+
     public void charge(double energy) {
         this.energy += energy;
     }
@@ -98,12 +114,23 @@ public class RobotImpl implements Robot, Obj, Physical {
     }
 
     @Override
-    public void debug(String msg) {
-        debugMsg = msg;
+    public void debug(Object dbg) {
+        if (dbg == null) {
+            debugPoint = null;
+            debugMsg = null;
+        } else if (dbg instanceof KPoint) {
+            debugPoint = (KPoint) dbg;
+        } else {
+            debugMsg = dbg.toString();
+        }
     }
 
     public String getDebug() {
         return debugMsg;
+    }
+
+    public KPoint getDebugPoint() {
+        return debugPoint;
     }
 
     @Override

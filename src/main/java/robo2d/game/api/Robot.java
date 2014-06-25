@@ -10,5 +10,5 @@ public interface Robot {
 
     void waitForStep();
 
-    void debug(String msg);
+    void debug(Object dbg);
 }

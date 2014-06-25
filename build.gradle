@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile localGroovy()
+//    compile localGroovy()
     compile 'org.jbox2d:jbox2d:2.2.1.1'
     compile 'org.jbox2d:jbox2d-testbed:2.2.1.1'
     compile 'com.vividsolutions:jts:1.13'
@@ -29,3 +29,7 @@ task copyToLib(type: Copy) {
 
 build.dependsOn(copyToLib)
 
+jar {
+    dependsOn configurations.runtime
+    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+}

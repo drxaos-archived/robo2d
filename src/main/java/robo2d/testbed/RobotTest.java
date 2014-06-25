@@ -1,6 +1,5 @@
 package robo2d.testbed;
 
-import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
@@ -16,7 +15,7 @@ public abstract class RobotTest extends TestbedTest {
 
     @Override
     public void initTest(boolean deserialized) {
-        setTitle("RobotTest");
+        setTitle(getTestName());
         getWorld().setGravity(new Vec2());
         game = createGame();
         game.start();

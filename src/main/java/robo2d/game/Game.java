@@ -12,6 +12,7 @@ import robo2d.game.impl.ComputerImpl;
 import robo2d.game.impl.PlayerImpl;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
+import straightedge.geom.KPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Game {
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
     protected World worldBox;
     protected DebugDraw debugDraw;
+    public static final Color3f GRAY = new Color3f(0.3f, 0.3f, 0.3f);
 
     public Game(World worldBox, DebugDraw debugDraw) {
         this.worldBox = worldBox;
@@ -58,7 +60,7 @@ public class Game {
         for (RobotImpl robot : robots) {
             ComputerImpl computer = robot.getComputer();
             if (computer != null) {
-                if (robot.getEnergy() <= 0) {
+                if (robot.getEnergy() < 0.01) {
                     computer.stopProgram();
                 } else {
                     computer.startProgram();
@@ -86,6 +88,13 @@ public class Game {
             if (msg != null && !msg.isEmpty()) {
                 debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, 1.5f * (float) RobotBox.SIZE)), res);
                 debugDraw.drawString(res, msg, Color3f.RED);
+                debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, -1.5f * (float) RobotBox.SIZE)), res);
+                debugDraw.drawString(res, String.format("E:%.2f", robot.getEnergy()) + ", " + (robot.getComputer().isRunning() ? "ON" : "OFF"), Color3f.BLUE);
+            }
+            KPoint point = robot.getDebugPoint();
+            if (point != null) {
+                debugDraw.drawPoint(new Vec2((float) point.getX(), (float) point.getY()), 3, Color3f.WHITE);
+                debugDraw.drawSegment(new Vec2((float) point.getX(), (float) point.getY()), robot.getBox().getPositionVec2(), GRAY);
             }
         }
     }
