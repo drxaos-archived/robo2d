@@ -20,7 +20,6 @@ public class RobotImpl implements Robot, Obj, Physical {
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
     ComputerImpl computer;
 
-    Class<? extends RobotProgram> program;
     PlayerImpl owner;
     RobotBox box;
     double energy = 0d;
@@ -29,9 +28,8 @@ public class RobotImpl implements Robot, Obj, Physical {
     String debugMsg;
     KPoint debugPoint;
 
-    public RobotImpl(PlayerImpl owner, KPoint position, double angle, Class<? extends RobotProgram> program) {
+    public RobotImpl(PlayerImpl owner, KPoint position, double angle) {
         this.owner = owner;
-        this.program = program;
         box = new RobotBox(position, angle);
     }
 

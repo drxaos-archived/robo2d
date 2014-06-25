@@ -28,10 +28,10 @@ public class MoveTest extends RobotTest {
 
         PlayerImpl player1 = new PlayerImpl("player1");
 
-        RobotImpl robot = new RobotImpl(player1, new KPoint(15, 15), Math.PI * 4 * Math.random(), EngineTestProgram.class);
+        RobotImpl robot = new RobotImpl(player1, new KPoint(15, 15), Math.PI * 4 * Math.random());
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game);
-        ComputerImpl computer = new ComputerImpl();
+        ComputerImpl computer = new ComputerImpl(EngineTestProgram.class);
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);

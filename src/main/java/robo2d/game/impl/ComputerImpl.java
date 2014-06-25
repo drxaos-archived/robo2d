@@ -4,8 +4,13 @@ import robo2d.game.api.Computer;
 
 public class ComputerImpl implements Computer, EquipmentImpl {
 
+    Class<? extends RobotProgram> code;
     RobotImpl robot;
     Thread program;
+
+    public ComputerImpl(Class<? extends RobotProgram> code) {
+        this.code = code;
+    }
 
     @Override
     public void setup(RobotImpl robot) {
@@ -15,7 +20,7 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     public void startProgram() {
         try {
             if (program == null) {
-                RobotProgram robotProgram = robot.program.getConstructor().newInstance();
+                RobotProgram robotProgram = code.getConstructor().newInstance();
                 robotProgram.robot = robot;
                 program = new Thread(robotProgram);
                 program.setDaemon(true);
