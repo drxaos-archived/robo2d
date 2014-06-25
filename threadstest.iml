@@ -23,6 +23,17 @@
     <orderEntry type="library" exported="" name="Gradle: protobuf-java-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jbox2d-serialization-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: jts-1.13" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: slick2d-core-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: lwjgl-platform-2.9.1-natives-linux" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: lwjgl-platform-2.9.1-natives-osx" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: lwjgl-platform-2.9.1-natives-windows" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jutils-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jinput-2.0.5" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: lwjgl-2.9.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jinput-platform-2.0.5-natives-linux" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jinput-platform-2.0.5-natives-osx" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jinput-platform-2.0.5-natives-windows" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jorbis-0.0.17" level="project" />
   </component>
 </module>
 

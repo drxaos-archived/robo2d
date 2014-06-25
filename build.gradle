@@ -13,4 +13,19 @@ dependencies {
     compile 'org.jbox2d:jbox2d:2.2.1.1'
     compile 'org.jbox2d:jbox2d-testbed:2.2.1.1'
     compile 'com.vividsolutions:jts:1.13'
+    compile 'org.slick2d:slick2d-core:1.0.1'
+    compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
 }
+
+task copyToLib(type: Copy) {
+    from { // use of closure defers evaluation until execution time
+        configurations.compile.resolve().findAll {
+            return it.absolutePath.contains("-natives-") &&
+                    (it.absolutePath.contains("/org.lwjgl.lwjgl/lwjgl-platform/") || it.absolutePath.contains("/net.java.jinput/jinput-platform/"))
+        }.collect { zipTree(it) }
+    }
+    into "$buildDir/natives/"
+}
+
+build.dependsOn(copyToLib)
+
