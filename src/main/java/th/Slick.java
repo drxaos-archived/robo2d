@@ -11,12 +11,18 @@ public class Slick extends BasicGame {
         super(gamename);
     }
 
+    int mx, my;
+    boolean md;
+
     @Override
     public void init(GameContainer gc) throws SlickException {
     }
 
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
+        mx = gc.getInput().getMouseX();
+        my = gc.getInput().getMouseY();
+        md = gc.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
         if (gc.getInput().isKeyPressed(org.lwjgl.input.Keyboard.KEY_RCONTROL)) {
             System.out.println("R-CTRL");
         }
@@ -24,7 +30,8 @@ public class Slick extends BasicGame {
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
-        g.drawString("Howdy!", 10, 10);
+        g.setColor(md ? Color.red : Color.white);
+        g.drawString("Howdy!", mx, my);
     }
 
     public static void main(String[] args) {
