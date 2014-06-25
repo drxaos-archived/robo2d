@@ -295,7 +295,7 @@ public class EarClipper {
         List<IndexedDouble> distanceList = new ArrayList<IndexedDouble>();
 
         /*
-         * Note: it's important to scan the shell vertices in reverse so
+         * Note: it's important to fullScan the shell vertices in reverse so
          * that if a hole ends up being joined to what was originally
          * another hole, the previous hole's coordinates appear in the shell
          * before the new hole's coordinates (otherwise the triangulation

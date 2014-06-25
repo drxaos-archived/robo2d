@@ -27,6 +27,7 @@ public class WayTestProgram extends RobotProgram {
         way.add(new KPoint(0, -10));
         way.add(new KPoint(12, -5));
         way.add(new KPoint(12, 0));
+        way.add(new KPoint(0, 0));
         way.add(new KPoint(-12, 0));
         way.add(new KPoint(-12, 5));
         way.add(new KPoint(0, 10));
@@ -50,6 +51,20 @@ public class WayTestProgram extends RobotProgram {
                 }
             }
             robot.debug(null);
+
+            Radar.ScanData scan = radar.scan(Math.PI / 2);
+            System.out.println("Top scan: " + scan.pixel.name() + ", dist: " + scan.distance);
+
+            if (distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
+                stop();
+                Radar.FullScanData fullScanData = radar.fullScan(0.65);
+                for (int i = 0; i < fullScanData.image.length; i++) {
+                    for (int j = 0; j < fullScanData.image[i].length; j++) {
+                        System.out.print(fullScanData.image[j][i].name().charAt(0));
+                    }
+                    System.out.print("\n");
+                }
+            }
         }
     }
 }
