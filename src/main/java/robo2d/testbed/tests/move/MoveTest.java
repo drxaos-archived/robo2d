@@ -35,7 +35,7 @@ public class MoveTest extends RobotTest {
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);
-        robot.charge(40);
+        robot.charge(400);
         game.addRobot(robot);
 
         return game;

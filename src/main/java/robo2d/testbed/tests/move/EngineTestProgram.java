@@ -23,6 +23,10 @@ public class EngineTestProgram extends RobotProgram {
             return;
         }
 
+        robot.debug("Move smooth to 15,40");
+        robot.debug(new KPoint(15, 40));
+        moveSmooth(new KPoint(15, 40), 20000);
+        stop();
         robot.debug("Move to 25,30");
         robot.debug(new KPoint(25, 30));
         move(new KPoint(25, 30), false, 20000);

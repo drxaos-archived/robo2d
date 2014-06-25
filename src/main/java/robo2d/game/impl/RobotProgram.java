@@ -152,22 +152,30 @@ abstract public class RobotProgram implements Runnable {
         if (chassis == null || radar == null) {
             return false;
         }
-        stop();
         while (robot.getTime() < end) {
+            int force = 80;
+            int rotateForce = 120;
             double width = 2;
             KPoint current = radar.getPosition();
             double myAngle = radar.getAngle();
             double angleToTarget = angle(current, to);
             double azimuth = differenceAngle(myAngle, angleToTarget);
+            double direction = (Math.abs(azimuth) > Math.PI / 2) ? -1 : 1;
             double distance = distance(to, current);
-            double distanceLeft = distance(to, current.translateCopy(Math.cos(myAngle + Math.PI / 2) * width, Math.sin(myAngle + Math.PI / 2) * width));
-            double distanceRight = distance(to, current.translateCopy(Math.cos(myAngle - Math.PI / 2) * width, Math.sin(myAngle - Math.PI / 2) * width));
-            double distDiff = distanceLeft - distanceRight;
-//            chassis.setLeftAcceleration(Math.min(1 * force * distance, 100));
-//            chassis.setRightAcceleration(Math.min(1 * force * distance, 100));
+            if (distance < 1 && Math.abs(azimuth) > 0.2 && Math.abs(azimuth) < Math.PI - 0.2) {
+                chassis.setLeftAcceleration(-direction * rotateForce * azimuth);
+                chassis.setRightAcceleration(direction * rotateForce * azimuth);
+            } else if (distance < 0.2) {
+                return true;
+            } else {
+                double distanceLeft = distance(to, current.translateCopy(Math.cos(myAngle + Math.PI / 2) * width, Math.sin(myAngle + Math.PI / 2) * width));
+                double distanceRight = distance(to, current.translateCopy(Math.cos(myAngle - Math.PI / 2) * width, Math.sin(myAngle - Math.PI / 2) * width));
+                double distDiff = distanceLeft - distanceRight;
+                chassis.setLeftAcceleration(direction * (Math.min(1 * force * distance, 100) - rotateForce * distDiff));
+                chassis.setRightAcceleration(direction * (Math.min(1 * force * distance, 100) + rotateForce * distDiff));
+            }
             robot.waitForStep();
         }
-        stop();
         return false;
     }
 
