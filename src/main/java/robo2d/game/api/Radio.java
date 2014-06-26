@@ -2,9 +2,9 @@ package robo2d.game.api;
 
 public interface Radio extends Equipment {
 
-    void setChannel(Integer frequency);
+    void setChannel(Double frequency);
 
-    void broadcast(Integer data); // xor if multiple broadcasters
+    void broadcast(Double data);
 
-    Integer listen(); // stop broadcast and listen for data
+    Double listen();
 }

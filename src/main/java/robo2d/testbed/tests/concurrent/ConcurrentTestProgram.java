@@ -28,8 +28,8 @@ public class ConcurrentTestProgram extends RobotProgram {
 
         robot.debug("move");
         robot.debug(new KPoint(x, y));
-        moveSmooth(new KPoint(x, y), 10000);
-        stop();
+        driver.moveSmooth(new KPoint(x, y), 10000);
+        driver.stop();
         robot.debug(null);
 
         robot.debug("sleep");

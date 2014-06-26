@@ -2,14 +2,16 @@ package robo2d.game.impl;
 
 import robo2d.game.api.Computer;
 
+import java.util.Map;
+
 public class ComputerImpl implements Computer, EquipmentImpl {
 
-    Class<? extends RobotProgram> code;
     RobotImpl robot;
     Thread program;
+    Map<String, Object> memory;
 
     public ComputerImpl(Class<? extends RobotProgram> code) {
-        this.code = code;
+        memory.put("boot", code);
     }
 
     @Override
@@ -20,8 +22,12 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     public void startProgram() {
         try {
             if (program == null) {
-                RobotProgram robotProgram = code.getConstructor().newInstance();
-                robotProgram.robot = robot;
+                Class code = (Class) memory.get("boot");
+                if (code == null || !RobotProgram.class.isAssignableFrom(code)) {
+                    return;
+                }
+                RobotProgram robotProgram = (RobotProgram) code.getConstructor().newInstance();
+                robotProgram.init(robot);
                 program = new Thread(robotProgram);
                 program.setDaemon(true);
                 program.setPriority(Thread.MIN_PRIORITY);

@@ -11,19 +11,21 @@ import org.jbox2d.dynamics.World;
 import robo2d.game.api.Radar;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
-import robo2d.game.impl.ComputerImpl;
-import robo2d.game.impl.PlayerImpl;
-import robo2d.game.impl.RobotImpl;
-import robo2d.game.impl.WallImpl;
+import robo2d.game.impl.*;
 import straightedge.geom.KPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Game {
     protected List<PlayerImpl> players = new ArrayList<PlayerImpl>();
     protected List<Physical> physicals = new ArrayList<Physical>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
+
+    final Map<SatelliteScanner, SatelliteScanner.Request> satelliteRequests = new HashMap<SatelliteScanner, SatelliteScanner.Request>();
+
     protected World worldBox;
     protected DebugDraw debugDraw;
     public static final Color3f GRAY = new Color3f(0.3f, 0.3f, 0.3f);
@@ -57,6 +59,32 @@ public class Game {
                 computer.startProgram();
             }
         }
+    }
+
+    public void satelliteRequest(SatelliteScanner scanner, Vec2 request, double accuracy, int resolution) {
+        synchronized (satelliteRequests) {
+            satelliteRequests.put(scanner, new SatelliteScanner.Request(request, accuracy, resolution));
+        }
+    }
+
+    public void satelliteProcess() {
+        synchronized (satelliteRequests) {
+            for (Map.Entry<SatelliteScanner, SatelliteScanner.Request> e : satelliteRequests.entrySet()) {
+                e.getKey().setSatResponse(satelliteScan(e.getValue().accuracy, e.getValue().point, e.getKey().getRobot(), e.getValue().resolution));
+            }
+            satelliteRequests.clear();
+        }
+    }
+
+    public void beforeStep() {
+        satelliteProcess();
+        managePrograms();
+        applyEffects();
+        sync();
+    }
+
+    public void afterStep() {
+        debug();
     }
 
     public void managePrograms() {
@@ -103,6 +131,24 @@ public class Game {
         return Radar.Type.EMPTY;
     }
 
+    public Radar.SatelliteScanData satelliteScan(double accuracy, Vec2 center, RobotImpl robot, int satelliteResolution) {
+        double centerX = Math.round(center.x / accuracy) * accuracy;
+        double centerY = Math.round(center.y / accuracy) * accuracy;
+        Radar.Type[][] map = new Radar.Type[satelliteResolution * 2 + 1][satelliteResolution * 2 + 1];
+        for (int x = -satelliteResolution; x <= satelliteResolution; x++) {
+            for (int y = -satelliteResolution; y <= satelliteResolution; y++) {
+                if (Math.sqrt(x * x + y * y) > satelliteResolution) {
+                    map[x + satelliteResolution][y + satelliteResolution] = Radar.Type.UNKNOWN;
+                } else {
+                    double resolveX = centerX + ((Math.random() - 0.5) * 0.4 + x) * accuracy;
+                    double resolveY = centerY + ((Math.random() - 0.5) * 0.4 + y) * accuracy;
+                    map[x + satelliteResolution][y + satelliteResolution] = resolvePoint(resolveX, resolveY, robot);
+                }
+            }
+        }
+        return new Radar.SatelliteScanData(map, accuracy, satelliteResolution, satelliteResolution);
+    }
+
     private static class RayCastClosestCallback implements RayCastCallback {
         Body fromBody;
         Vec2 m_point;
@@ -133,7 +179,7 @@ public class Game {
         }
     }
 
-    public Radar.ScanData resolveDirection(double angle, double scanDistance, RobotImpl forRobot) {
+    public Radar.LocatorScanData resolveDirection(double angle, double scanDistance, RobotImpl forRobot) {
         RayCastClosestCallback callback = new RayCastClosestCallback(forRobot.getBox().body);
         worldBox.raycast(callback,
                 forRobot.getBox().getPositionVec2(),
@@ -151,9 +197,9 @@ public class Game {
             }
         }
         if (physical == null || point == null) {
-            return new Radar.ScanData(Radar.Type.EMPTY, 0, angle);
+            return new Radar.LocatorScanData(Radar.Type.EMPTY, scanDistance, angle);
         }
-        return new Radar.ScanData(
+        return new Radar.LocatorScanData(
                 recognizeType(physical, forRobot),
                 KPoint.distance(
                         new KPoint(point.x, point.y),

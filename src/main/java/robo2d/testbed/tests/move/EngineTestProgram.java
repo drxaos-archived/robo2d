@@ -25,21 +25,21 @@ public class EngineTestProgram extends RobotProgram {
 
         robot.debug("Move smooth to 15,40");
         robot.debug(new KPoint(15, 40));
-        moveSmooth(new KPoint(15, 40), 20000);
-        stop();
+        driver.moveSmooth(new KPoint(15, 40), 20000);
+        driver.stop();
         robot.debug("Move to 25,30");
         robot.debug(new KPoint(25, 30));
-        move(new KPoint(25, 30), false, 20000);
+        driver.move(new KPoint(25, 30), false, 20000);
         robot.debug("Move precise to 5,20");
         robot.debug(new KPoint(5, 20));
-        move(new KPoint(5, 20), true, 20000);
+        driver.move(new KPoint(5, 20), true, 20000);
         robot.debug(null);
 
         robot.debug("Rotate to 0");
-        rotate(0, false, 10000);
+        driver.rotate(0, false, 10000);
         sleep(1000);
         robot.debug("Forward 10");
-        forward(10, false, 10000);
+        driver.forward(10, false, 10000);
         sleep(1000);
 
         robot.debug("Test engines");

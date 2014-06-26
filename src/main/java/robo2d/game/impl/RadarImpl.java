@@ -5,17 +5,19 @@ import robo2d.game.Game;
 import robo2d.game.api.Radar;
 import straightedge.geom.KPoint;
 
-public class RadarImpl implements Radar, EquipmentImpl {
+public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
 
     Game game;
     RobotImpl robot;
-    int resolution;
     double scanDistance;
+    int satelliteResolution;
 
-    public RadarImpl(Game game, int resolution, double scanDistance) {
+    SatelliteScanData satelliteScanData;
+
+    public RadarImpl(Game game, int satelliteResolution, double scanDistance) {
         this.game = game;
-        this.resolution = resolution;
         this.scanDistance = scanDistance;
+        this.satelliteResolution = satelliteResolution;
     }
 
     @Override
@@ -24,27 +26,29 @@ public class RadarImpl implements Radar, EquipmentImpl {
     }
 
     @Override
-    public FullScanData fullScan(double accuracy) {
-        Vec2 pos = robot.getBox().getPositionVec2();
-        double centerX = Math.round(pos.x / accuracy) * accuracy;
-        double centerY = Math.round(pos.y / accuracy) * accuracy;
-        Type[][] map = new Type[resolution * 2 + 1][resolution * 2 + 1];
-        for (int x = -resolution; x <= resolution; x++) {
-            for (int y = -resolution; y <= resolution; y++) {
-                if (Math.sqrt(x * x + y * y) > resolution) {
-                    map[x + resolution][y + resolution] = Type.UNKNOWN;
-                } else {
-                    double resolveX = centerX + ((Math.random() - 0.5) * 0.4 + x) * accuracy;
-                    double resolveY = centerY + ((Math.random() - 0.5) * 0.4 + y) * accuracy;
-                    map[x + resolution][y + resolution] = game.resolvePoint(resolveX, resolveY, robot);
-                }
-            }
+    public void satelliteRequest(KPoint center, double accuracy) {
+        if (!robot.consumeEnergy(0.5)) {
+            return;
         }
-        return new FullScanData(map, accuracy, resolution, resolution);
+        game.satelliteRequest(this, new Vec2((float) center.getX(), (float) center.getY()), accuracy, satelliteResolution);
+        satelliteScanData = null;
     }
 
     @Override
-    public ScanData scan(double angle) {
+    public SatelliteScanData getSatelliteResponse() {
+        return satelliteScanData;
+    }
+
+    @Override
+    public void clearSatelliteResponse() {
+        satelliteScanData = null;
+    }
+
+    @Override
+    public LocatorScanData locate(double angle) {
+        if (!robot.consumeEnergy(0.2)) {
+            return null;
+        }
         return game.resolveDirection(angle, scanDistance, robot);
     }
 
@@ -56,5 +60,15 @@ public class RadarImpl implements Radar, EquipmentImpl {
     @Override
     public KPoint getPosition() {
         return robot.box.getPosition();
+    }
+
+    @Override
+    public RobotImpl getRobot() {
+        return robot;
+    }
+
+    @Override
+    public void setSatResponse(SatelliteScanData response) {
+        satelliteScanData = response;
     }
 }

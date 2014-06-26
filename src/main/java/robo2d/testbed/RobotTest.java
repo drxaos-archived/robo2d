@@ -26,11 +26,10 @@ public abstract class RobotTest extends TestbedTest {
 
     @Override
     public synchronized void step(TestbedSettings settings) {
-        game.managePrograms();
-        game.applyEffects();
-        game.sync();
+        game.beforeStep();
         super.step(settings);
-        game.debug();
+        game.afterStep();
+
     }
 
     @Override

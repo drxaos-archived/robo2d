@@ -36,15 +36,15 @@ public class WayTestProgram extends RobotProgram {
         way.add(new KPoint(0, -10));
 
         for (KPoint wayPoint : way) {
-            while (!moveSmooth(wayPoint, 4000)) {
-                stop();
+            while (!driver.moveSmooth(wayPoint, 4000)) {
+                driver.stop();
                 KPoint failPoint = radar.getPosition();
                 robot.debug(wayPoint);
                 robot.debug("Please drag me to that point!");
                 while (true) {
                     // save energy
                     KPoint newPoint = radar.getPosition();
-                    if (distance(newPoint, failPoint) > 0.2) {
+                    if (Utils.distance(newPoint, failPoint) > 0.2) {
                         break;
                     }
                     robot.waitForStep();
@@ -52,15 +52,19 @@ public class WayTestProgram extends RobotProgram {
             }
             robot.debug(null);
 
-            Radar.ScanData scan = radar.scan(Math.PI / 2);
-            System.out.println("Top scan: " + scan.pixel.name() + ", dist: " + scan.distance);
+            Radar.LocatorScanData scan = radar.locate(Math.PI / 2);
+            System.out.println("Top locate: " + scan.pixel.name() + ", dist: " + scan.distance);
 
-            if (distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
-                stop();
-                Radar.FullScanData fullScanData = radar.fullScan(0.65);
-                for (int i = 0; i < fullScanData.image.length; i++) {
-                    for (int j = 0; j < fullScanData.image[i].length; j++) {
-                        System.out.print(fullScanData.image[j][i].name().charAt(0));
+            if (Utils.distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
+                driver.stop();
+                radar.satelliteRequest(radar.getPosition(), 0.5);
+                while (radar.getSatelliteResponse() == null) {
+                    waitForChanges();
+                }
+                Radar.SatelliteScanData response = radar.getSatelliteResponse();
+                for (int i = 0; i < response.image.length; i++) {
+                    for (int j = 0; j < response.image[i].length; j++) {
+                        System.out.print(response.image[j][i].name().charAt(0));
                     }
                     System.out.print("\n");
                 }

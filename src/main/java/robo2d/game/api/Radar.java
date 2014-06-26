@@ -10,28 +10,28 @@ public interface Radar extends Equipment {
         WALL,
         ENEMY_BOT,
         MATE_BOT,
-        ME
+        Type, ME
     }
 
-    public static class ScanData {
+    public static class LocatorScanData {
         public Type pixel;
         public double distance;
         public double angle;
 
-        public ScanData(Type pixel, double distance, double angle) {
+        public LocatorScanData(Type pixel, double distance, double angle) {
             this.pixel = pixel;
             this.distance = distance;
             this.angle = angle;
         }
     }
 
-    public static class FullScanData {
+    public static class SatelliteScanData {
 
         public Type[][] image;
         public double accuracy;
         public int centerX, centerY;
 
-        public FullScanData(Type[][] image, double accuracy, int centerX, int centerY) {
+        public SatelliteScanData(Type[][] image, double accuracy, int centerX, int centerY) {
             this.image = image;
             this.accuracy = accuracy;
             this.centerX = centerX;
@@ -39,9 +39,13 @@ public interface Radar extends Equipment {
         }
     }
 
-    FullScanData fullScan(double accuracy);
+    void satelliteRequest(KPoint center, double accuracy);
 
-    ScanData scan(double angle);
+    SatelliteScanData getSatelliteResponse();
+
+    void clearSatelliteResponse();
+
+    LocatorScanData locate(double angle);
 
     Double getAngle();
 
