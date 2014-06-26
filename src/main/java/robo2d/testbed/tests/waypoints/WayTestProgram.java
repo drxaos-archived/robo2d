@@ -58,15 +58,18 @@ public class WayTestProgram extends RobotProgram {
             if (Utils.distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
                 driver.stop();
                 radar.satelliteRequest(radar.getPosition(), 0.5);
-                while (radar.getSatelliteResponse() == null) {
+                long waitUntil = robot.getTime() + 10000;
+                while (radar.getSatelliteResponse() == null && robot.getTime() < waitUntil) {
                     waitForChanges();
                 }
                 Radar.SatelliteScanData response = radar.getSatelliteResponse();
-                for (int i = 0; i < response.image.length; i++) {
-                    for (int j = 0; j < response.image[i].length; j++) {
-                        System.out.print(response.image[j][i].name().charAt(0));
+                if (response != null) {
+                    for (int i = 0; i < response.image.length; i++) {
+                        for (int j = 0; j < response.image[i].length; j++) {
+                            System.out.print(response.image[j][i].name().charAt(0));
+                        }
+                        System.out.print("\n");
                     }
-                    System.out.print("\n");
                 }
             }
         }

@@ -36,15 +36,17 @@ public class WayTest extends RobotTest {
 
         PlayerImpl player1 = new PlayerImpl("player1");
 
-        RobotImpl robot = new RobotImpl(player1, new KPoint(0, -10), Math.PI * 4 * Math.random());
+        RobotImpl robot = new RobotImpl(game, player1, new KPoint(0, -10), Math.PI * 4 * Math.random());
         ChassisImpl chassis = new ChassisImpl(300d);
-        RadarImpl radar = new RadarImpl(game, 30, 100);
+        RadarImpl radar = new RadarImpl(game, 100d);
         ComputerImpl computer = new ComputerImpl(WayTestProgram.class);
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);
         robot.charge(4000);
         game.addRobot(robot);
+        game.addGps();
+        game.addSatellite(20, 2000);
 
         return game;
     }

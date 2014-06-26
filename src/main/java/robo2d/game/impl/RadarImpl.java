@@ -9,15 +9,13 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
 
     Game game;
     RobotImpl robot;
-    double scanDistance;
-    int satelliteResolution;
+    Double scanDistance = null;
 
     SatelliteScanData satelliteScanData;
 
-    public RadarImpl(Game game, int satelliteResolution, double scanDistance) {
+    public RadarImpl(Game game, Double scanDistance) {
         this.game = game;
         this.scanDistance = scanDistance;
-        this.satelliteResolution = satelliteResolution;
     }
 
     @Override
@@ -26,12 +24,16 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     }
 
     @Override
-    public void satelliteRequest(KPoint center, double accuracy) {
-        if (!robot.consumeEnergy(0.5)) {
-            return;
+    public boolean satelliteRequest(KPoint center, double accuracy) {
+        if (game.getSatelliteResolution() == null) {
+            return false;
         }
-        game.satelliteRequest(this, new Vec2((float) center.getX(), (float) center.getY()), accuracy, satelliteResolution);
+        if (!robot.consumeEnergy(0.5)) {
+            return false;
+        }
+        game.satelliteRequest(this, new Vec2((float) center.getX(), (float) center.getY()), accuracy, game.getSatelliteResolution());
         satelliteScanData = null;
+        return true;
     }
 
     @Override
@@ -46,19 +48,30 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
 
     @Override
     public LocatorScanData locate(double angle) {
+        if (scanDistance == null) {
+            return null;
+        }
         if (!robot.consumeEnergy(0.2)) {
             return null;
         }
-        return game.resolveDirection(angle, scanDistance, robot);
+        synchronized (game.stepSync()) {
+            return game.resolveDirection(angle, scanDistance, robot);
+        }
     }
 
     @Override
     public Double getAngle() {
+        if (!game.hasGps()) {
+            return null;
+        }
         return robot.box.getAngle();
     }
 
     @Override
     public KPoint getPosition() {
+        if (!game.hasGps()) {
+            return null;
+        }
         return robot.box.getPosition();
     }
 

@@ -39,7 +39,7 @@ public interface Radar extends Equipment {
         }
     }
 
-    void satelliteRequest(KPoint center, double accuracy);
+    boolean satelliteRequest(KPoint center, double accuracy);
 
     SatelliteScanData getSatelliteResponse();
 

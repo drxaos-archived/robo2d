@@ -1,5 +1,6 @@
 package robo2d.game.impl;
 
+import robo2d.game.Game;
 import robo2d.game.api.Equipment;
 import robo2d.game.api.Player;
 import robo2d.game.api.Robot;
@@ -20,6 +21,7 @@ public class RobotImpl implements Robot, Obj, Physical {
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
     ComputerImpl computer;
 
+    Game game;
     PlayerImpl owner;
     RobotBox box;
     double energy = 0d;
@@ -28,8 +30,9 @@ public class RobotImpl implements Robot, Obj, Physical {
     String debugMsg;
     KPoint debugPoint;
 
-    public RobotImpl(PlayerImpl owner, KPoint position, double angle) {
+    public RobotImpl(Game game, PlayerImpl owner, KPoint position, double angle) {
         this.owner = owner;
+        this.game = game;
         box = new RobotBox(position, angle);
     }
 
@@ -98,7 +101,7 @@ public class RobotImpl implements Robot, Obj, Physical {
 
     @Override
     public Long getTime() {
-        return System.currentTimeMillis();
+        return game.getTime();
     }
 
     @Override

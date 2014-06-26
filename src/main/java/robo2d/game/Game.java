@@ -26,9 +26,15 @@ public class Game {
 
     final Map<SatelliteScanner, SatelliteScanner.Request> satelliteRequests = new HashMap<SatelliteScanner, SatelliteScanner.Request>();
 
+    Object stepSync = new Object();
+
     protected World worldBox;
     protected DebugDraw debugDraw;
     public static final Color3f GRAY = new Color3f(0.3f, 0.3f, 0.3f);
+
+    Integer satelliteResolution = null;
+    Integer satelliteLag = null;
+    boolean gps = false;
 
     public Game(World worldBox, DebugDraw debugDraw) {
         this.worldBox = worldBox;
@@ -38,6 +44,27 @@ public class Game {
     public void addRobot(RobotImpl robot) {
         physicals.add(robot);
         robots.add(robot);
+    }
+
+    public void addSatellite(int resolution, int lag) {
+        this.satelliteResolution = resolution;
+        this.satelliteLag = lag;
+    }
+
+    public Integer getSatelliteResolution() {
+        return satelliteResolution;
+    }
+
+    public void addGps() {
+        this.gps = true;
+    }
+
+    public boolean hasGps() {
+        return gps;
+    }
+
+    public Object stepSync() {
+        return stepSync;
     }
 
     public void addWall(WallImpl wall) {
@@ -63,17 +90,26 @@ public class Game {
 
     public void satelliteRequest(SatelliteScanner scanner, Vec2 request, double accuracy, int resolution) {
         synchronized (satelliteRequests) {
-            satelliteRequests.put(scanner, new SatelliteScanner.Request(request, accuracy, resolution));
+            satelliteRequests.put(scanner, new SatelliteScanner.Request(request, accuracy, resolution, getTime() + satelliteLag));
         }
     }
 
     public void satelliteProcess() {
         synchronized (satelliteRequests) {
-            for (Map.Entry<SatelliteScanner, SatelliteScanner.Request> e : satelliteRequests.entrySet()) {
-                e.getKey().setSatResponse(satelliteScan(e.getValue().accuracy, e.getValue().point, e.getKey().getRobot(), e.getValue().resolution));
-            }
+            Map<SatelliteScanner, SatelliteScanner.Request> tmp = new HashMap<SatelliteScanner, SatelliteScanner.Request>(satelliteRequests);
             satelliteRequests.clear();
+            for (Map.Entry<SatelliteScanner, SatelliteScanner.Request> e : tmp.entrySet()) {
+                if (e.getValue().waitUntil > getTime()) {
+                    satelliteRequests.put(e.getKey(), e.getValue());
+                } else {
+                    e.getKey().setSatResponse(satelliteScan(e.getValue().accuracy, e.getValue().point, e.getKey().getRobot(), e.getValue().resolution));
+                }
+            }
         }
+    }
+
+    public Long getTime() {
+        return System.currentTimeMillis();
     }
 
     public void beforeStep() {

@@ -2,13 +2,14 @@ package robo2d.game.impl;
 
 import robo2d.game.api.Computer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ComputerImpl implements Computer, EquipmentImpl {
 
     RobotImpl robot;
     Thread program;
-    Map<String, Object> memory;
+    Map<String, Object> memory = new HashMap<String, Object>();
 
     public ComputerImpl(Class<? extends RobotProgram> code) {
         memory.put("boot", code);
