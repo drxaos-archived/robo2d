@@ -52,13 +52,23 @@ public class WayTestProgram extends RobotProgram {
             }
             robot.debug(null);
 
-            Radar.LocatorScanData scan = radar.locate(Math.PI / 2);
-            System.out.println("Top locate: " + scan.pixel.name() + ", dist: " + scan.distance);
+            long waitUntil = robot.getTime() + 100;
+            double angle = Math.PI / 2;
+            int scans = 0;
+            int walls = 0;
+            while (robot.getTime() < waitUntil) {
+                Radar.LocatorScanData scan = radar.locate(angle += 0.001);
+                scans++;
+                if (scan.pixel == Radar.Type.WALL) {
+                    walls++;
+                }
+            }
+            System.out.println("Time: 100ms, Scans: " + scans + ", walls: " + walls);
 
             if (Utils.distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
                 driver.stop();
                 radar.satelliteRequest(radar.getPosition(), 0.5);
-                long waitUntil = robot.getTime() + 10000;
+                waitUntil = robot.getTime() + 10000;
                 while (radar.getSatelliteResponse() == null && robot.getTime() < waitUntil) {
                     waitForChanges();
                 }

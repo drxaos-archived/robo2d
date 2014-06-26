@@ -51,7 +51,7 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
         if (scanDistance == null) {
             return null;
         }
-        if (!robot.consumeEnergy(0.2)) {
+        if (!robot.consumeEnergy(0.001)) {
             return null;
         }
         synchronized (game.stepSync()) {
