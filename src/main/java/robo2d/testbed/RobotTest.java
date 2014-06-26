@@ -70,4 +70,15 @@ public abstract class RobotTest extends TestbedTest {
         testbed.setVisible(true);
         testbed.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+    @Override
+    public void _reset() {
+        game.stop();
+        super._reset();
+    }
+
+    @Override
+    public void exit() {
+        game.stop();
+    }
 }

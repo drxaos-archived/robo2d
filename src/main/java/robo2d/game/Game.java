@@ -88,6 +88,15 @@ public class Game {
         }
     }
 
+    public void stop(){
+        for (RobotImpl robot : robots) {
+            ComputerImpl computer = robot.getComputer();
+            if (computer != null) {
+                computer.stopProgram();
+            }
+        }
+    }
+
     public void satelliteRequest(SatelliteScanner scanner, Vec2 request, double accuracy, int resolution) {
         synchronized (satelliteRequests) {
             satelliteRequests.put(scanner, new SatelliteScanner.Request(request, accuracy, resolution, getTime() + satelliteLag));

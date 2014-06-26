@@ -15,13 +15,14 @@ dependencies {
     compile 'com.vividsolutions:jts:1.13'
     compile 'org.slick2d:slick2d-core:1.0.1'
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+    compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
 }
 
 task copyToLib(type: Copy) {
     from { // use of closure defers evaluation until execution time
         configurations.compile.resolve().findAll {
             return it.absolutePath.contains("-natives-") &&
-                    (it.absolutePath.contains("/org.lwjgl.lwjgl/lwjgl-platform/") || it.absolutePath.contains("/net.java.jinput/jinput-platform/"))
+                    (it.absolutePath.contains("lwjgl-platform") || it.absolutePath.contains("jinput-platform"))
         }.collect { zipTree(it) }
     }
     into "$buildDir/natives/"
