@@ -8,13 +8,23 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import slick2d.NativeLoader;
 
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Draw3D {
+
+    static{
+        NativeLoader.load("build/natives");
+    }
+
+    java.util.List<Drawable> drawables = new ArrayList<Drawable>();
+    float[] lightPos = new float[]{0, 0, 0, 1};
 
     public void init() {
         //init display
@@ -48,6 +58,15 @@ public class Draw3D {
         GL11.glCullFace(GL11.GL_BACK);
     }
 
+    public List<Drawable> getDrawables() {
+        return drawables;
+    }
+
+    public void addDrawable(Drawable drawable) {
+        drawable.init();
+        this.drawables.add(drawable);
+    }
+
     public void setLight(float[] lightAmbient, float[] lightDiffuse, float[] lightPosition, int materialShinyness) {
         GL11.glEnable(GL11.GL_LIGHTING);
 
@@ -55,7 +74,7 @@ public class Draw3D {
         temp.order(ByteOrder.nativeOrder());
 
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
-        GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, (int) materialShinyness);
+        GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, materialShinyness);
 
 
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());         // Position The Light
@@ -67,6 +86,7 @@ public class Draw3D {
         GL11.glLightModeli(GL12.GL_LIGHT_MODEL_COLOR_CONTROL, GL12.GL_SEPARATE_SPECULAR_COLOR);
         GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
 
+        lightPos = lightPosition;
     }
 
     public void seFog(float[] fogColour, float density, float start, float end) {
@@ -93,5 +113,42 @@ public class Draw3D {
             e.printStackTrace();
         }
         return font;
+    }
+
+    public void render() {
+        while (!Display.isCloseRequested()) {
+
+            // set up the projection matrix
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            GL11.glLoadIdentity();
+            GLU.gluPerspective(60.0f, 800f / 600f, 1f, 1500.0f);
+
+            //position the camera
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glLoadIdentity();
+
+            GLU.gluLookAt(0, 0f, 500f, 300, 300.0f, 0.0f, 0f, 0f, 1f);
+
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.5f);
+            GL11.glDepthMask(true);
+
+            ByteBuffer temp = ByteBuffer.allocateDirect(16);
+            temp.order(ByteOrder.nativeOrder());
+            GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPos).flip());
+
+            for (Drawable drawable : drawables) {
+                drawable.draw();
+            }
+
+            //sync the display to provide 60fps
+            Display.sync(60);
+            //update the display
+            Display.update();
+        }
+    }
+
+    public void destroy() {
+        Display.destroy();
     }
 }

@@ -112,7 +112,7 @@ public class Main {
 		}
 
 		//initialize ground
-		Ground.initGround();
+//		Ground.initGround();
 
 		lastTime = getTime();
 		//render
@@ -146,7 +146,7 @@ public class Main {
 				temp.order(ByteOrder.nativeOrder());
 				GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION,(FloatBuffer)temp.asFloatBuffer().put(lightPosition).flip());  
 
-				Ground.drawGround();
+//				Ground.drawGround();
 
 				pollInput();
 
