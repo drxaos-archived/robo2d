@@ -1,0 +1,19 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.0.1270)
+
+newmtl Mat
+kd 0.5 0.5 0.5
+ka 0 0 0
+ks 1 1 1
+d 1
+illum 1
+map_kd Mat_Colo.tif
+
+newmtl Polygon_auv
+kd 0.5 0.5 0.5
+ka 0 0 0
+ks 1 1 1
+d 1
+illum 1
+map_kd robot.tga
+
