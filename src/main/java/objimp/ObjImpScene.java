@@ -74,7 +74,7 @@ public class ObjImpScene {
 
                 if (gm.texName != null && gm.texName.length() > 0) {
                     try {
-                        org.newdawn.slick.opengl.Texture _tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("models/" + gm.texName));
+                        org.newdawn.slick.opengl.Texture _tex = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(name.replaceFirst("[^/]+$", "") + gm.texName));
                         mesh._material._texId = _tex.getTextureID();
                         //System.out.println( "mesh._material._texId: " + mesh._material._texId  );
                     } catch (IOException e) {
@@ -216,13 +216,13 @@ public class ObjImpScene {
             }
 
             if (m._material != null) {
+                GL11.glEnable(GL11.GL_COLOR_MATERIAL);
                 ByteBuffer temp = ByteBuffer.allocateDirect(16);
                 temp.order(ByteOrder.nativeOrder());
                 GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._ambient[0], m._material._ambient[1], m._material._ambient[2], 1.0f}).flip());
                 GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._diffuse[0], m._material._diffuse[1], m._material._diffuse[2], 1.0f}).flip());
                 GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._specular[0], m._material._specular[1], m._material._specular[2], 1.0f}).flip());
                 GL11.glMaterialf(GL11.GL_FRONT_AND_BACK, GL11.GL_SHININESS, m._material._shininess);
-                //GL11.glEnable( GL.GL_COLOR_MATERIAL );
             }
 
             // render triangles.. this is too basic. should be optimized

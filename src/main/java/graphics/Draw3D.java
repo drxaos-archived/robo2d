@@ -4,7 +4,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -19,18 +18,22 @@ import java.util.List;
 
 public class Draw3D {
 
-    static{
+    static {
         NativeLoader.load("build/natives");
     }
 
     java.util.List<Drawable> drawables = new ArrayList<Drawable>();
-    float[] lightPos = new float[]{0, 0, 0, 1};
+    float[] lightAmbient;
+    float[] lightDiffuse;
+    float[] lightPosition;
+    int materialShinyness;
 
     public void init() {
         //init display
         try {
             Display.setDisplayMode(new DisplayMode(Support.SCREEN_WIDTH, Support.SCREEN_HEIGHT));
             Display.create();
+            Display.setDisplayConfiguration(1, 0f, 1);
             Display.setVSyncEnabled(true);
         } catch (LWJGLException e) {
             e.printStackTrace();
@@ -68,7 +71,16 @@ public class Draw3D {
     }
 
     public void setLight(float[] lightAmbient, float[] lightDiffuse, float[] lightPosition, int materialShinyness) {
+        this.lightAmbient = lightAmbient;
+        this.lightDiffuse = lightDiffuse;
+        this.lightPosition = lightPosition;
+        this.materialShinyness = materialShinyness;
+    }
+
+    public void light() {
         GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_LIGHT0);
+        GL11.glEnable(GL11.GL_LIGHT1);
 
         ByteBuffer temp = ByteBuffer.allocateDirect(16);
         temp.order(ByteOrder.nativeOrder());
@@ -81,15 +93,12 @@ public class Draw3D {
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
         GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(lightAmbient).flip());
 
-        GL11.glEnable(GL11.GL_LIGHT1);
 
-        GL11.glLightModeli(GL12.GL_LIGHT_MODEL_COLOR_CONTROL, GL12.GL_SEPARATE_SPECULAR_COLOR);
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(lightAmbient).flip());
         GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-
-        lightPos = lightPosition;
     }
 
-    public void seFog(float[] fogColour, float density, float start, float end) {
+    public void setFog(float[] fogColour, float density, float start, float end) {
         GL11.glEnable(GL11.GL_FOG);
         GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
         ByteBuffer temp = ByteBuffer.allocateDirect(16);
@@ -133,9 +142,7 @@ public class Draw3D {
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.5f);
             GL11.glDepthMask(true);
 
-            ByteBuffer temp = ByteBuffer.allocateDirect(16);
-            temp.order(ByteOrder.nativeOrder());
-            GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPos).flip());
+            light();
 
             for (Drawable drawable : drawables) {
                 drawable.draw();
