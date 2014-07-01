@@ -46,6 +46,10 @@ public class Game {
         robots.add(robot);
     }
 
+    public List<RobotImpl> getRobots() {
+        return robots;
+    }
+
     public void addSatellite(int resolution, int lag) {
         this.satelliteResolution = resolution;
         this.satelliteLag = lag;

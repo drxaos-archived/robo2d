@@ -4,6 +4,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
 import robo2d.game.Game;
+import robo2d.testbed.jme.LiveFrame;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public abstract class RobotTest extends TestbedTest {
         getWorld().setGravity(new Vec2());
         game = createGame();
         game.start();
+        LiveFrame.create(game).getCanvas();
     }
 
     abstract public Game createGame();

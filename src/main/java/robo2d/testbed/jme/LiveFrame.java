@@ -1,4 +1,4 @@
-package mygame;
+package robo2d.testbed.jme;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
@@ -6,8 +6,6 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
@@ -23,22 +21,26 @@ import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
+import robo2d.game.Game;
+import robo2d.game.impl.RobotImpl;
 import slick2d.NativeLoader;
+import straightedge.geom.KPoint;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * test
- *
- * @author normenhansen
- */
-public class Main extends SimpleApplication {
+public class LiveFrame extends SimpleApplication {
 
-    public static void main(String[] args) {
+    static {
         NativeLoader.load("build/natives");
         Natives.setExtractionDir("build/natives");
-        final Main app = new Main();
+    }
+
+    public static LiveFrame create(Game game) {
+        final LiveFrame app = new LiveFrame(game);
         AppSettings appSettings = new AppSettings(true);
         appSettings.setFullscreen(false);
         appSettings.setVSync(true);
@@ -47,16 +49,37 @@ public class Main extends SimpleApplication {
         appSettings.setBitsPerPixel(24);
         app.setSettings(appSettings);
         app.setShowSettings(false);
-        new Thread() {
+        app.setPauseOnLostFocus(false);
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 app.start();
             }
-        }.start();
-        System.out.println("starting");
+        };
+        thread.setDaemon(true);
+        thread.start();
+//        app.startCanvas();
+//        JmeCanvasContext ctx = (JmeCanvasContext) app.getContext();
+//        Dimension dim = new Dimension(640, 480);
+//        ctx.getCanvas().setPreferredSize(dim);
+//        app.canvas = ctx.getCanvas();
+        return app;
     }
 
-    Spatial robot, sphere;
+
+    Canvas canvas;
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    Game game;
+
+    Map<RobotImpl, LiveObject> robotMap = new HashMap<RobotImpl, LiveObject>();
+
+    public LiveFrame(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void simpleInitApp() {
@@ -64,7 +87,8 @@ public class Main extends SimpleApplication {
 
         rootNode.detachAllChildren();
         flyCam.setMoveSpeed(10);
-        getCamera().setLocation(new Vector3f(-5, 5, -5));
+        flyCam.setDragToRotate(true);
+        getCamera().setLocation(new Vector3f(-15, 25, -15));
         getCamera().lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
 
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
@@ -77,11 +101,11 @@ public class Main extends SimpleApplication {
         TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
         terrain.addControl(control);
 
-        robot = createRobot();
-        rootNode.attachChild(robot);
-        sphere = createSphere();
-        rootNode.attachChild(sphere);
-
+        for (RobotImpl robot : game.getRobots()) {
+            Spatial robotLive = createRobot();
+            robotMap.put(robot, new LiveObject(robotLive));
+            rootNode.attachChild(robotLive);
+        }
 
         /* Drop shadows */
         final int SHADOWMAP_SIZE = 2048;
@@ -95,12 +119,10 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        float a = ((System.currentTimeMillis() / 100) % 360) * FastMath.PI / 180;
-        Quaternion roll = new Quaternion();
-        roll.fromAngleAxis(a, new Vector3f(0, 1, 0));
-        robot.setLocalRotation(roll);
-        sphere.setLocalTranslation(2, 0, 2);
-        sphere.setLocalRotation(roll);
+        for (Map.Entry<RobotImpl, LiveObject> e : robotMap.entrySet()) {
+            KPoint point = e.getKey().getBox().getPosition();
+            e.getValue().setPos((float) e.getKey().getBox().getAngle(), (float) point.getX(), (float) point.getY());
+        }
     }
 
     @Override
@@ -175,11 +197,11 @@ public class Main extends SimpleApplication {
                 top = v.y;
             }
         }
-        scaleW = 0.5f / Math.max(left, Math.abs(right));
-        scaleL = 0.5f / Math.max(front, Math.abs(back));
+        scaleW = 1.2f / Math.max(left, Math.abs(right));
+        scaleL = 1.2f / Math.max(front, Math.abs(back));
         scaleH = Math.max(scaleL, scaleW);
         robot.setLocalScale(scaleW, scaleH, scaleL);
-        robot.setLocalTranslation(0, Math.abs(bottom) * scaleH, 0);
+        robot.setLocalTranslation((right + left) * scaleW, Math.abs(bottom) * scaleH, (front + back) * scaleL);
 //        Quaternion roll = new Quaternion();
 //        roll.fromAngleAxis(FastMath.PI / 2, new Vector3f(1, 0, 0));
 //        robot.setLocalRotation(roll);
