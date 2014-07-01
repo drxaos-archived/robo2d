@@ -5,6 +5,9 @@ version = '0.3'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/groups/public/"
+    }
 }
 
 dependencies {
@@ -16,6 +19,11 @@ dependencies {
     compile 'org.slick2d:slick2d-core:1.0.1'
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
     compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
+    compile 'com.jme3:jME3-core:3.0.0.20140325-SNAPSHOT'
+    compile 'com.jme3:jME3-desktop:3.0.0.20140325-SNAPSHOT'
+    compile 'com.jme3:jME3-terrain:3.0.0.20140325-SNAPSHOT'
+    compile 'com.jme3:jME3-effects:3.0.0.20140325-SNAPSHOT'
+    compile 'com.jme3:jME3-lwjgl:3.0.0.20140325-SNAPSHOT'
 }
 
 task copyToLib(type: Copy) {

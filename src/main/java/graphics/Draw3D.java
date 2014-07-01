@@ -23,10 +23,11 @@ public class Draw3D {
     }
 
     java.util.List<Drawable> drawables = new ArrayList<Drawable>();
-    float[] lightAmbient;
-    float[] lightDiffuse;
-    float[] lightPosition;
-    int materialShinyness;
+
+    float[] lightAmbient = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+    float[] lightDiffuse = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+    float[] lightPosition = new float[]{1000.0f, 0.0f, 1000.0f, 1.0f};
+    int materialShinyness = 80;
 
     public void init() {
         //init display
@@ -136,7 +137,7 @@ public class Draw3D {
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glLoadIdentity();
 
-            GLU.gluLookAt(0, 0f, 500f, 300, 300.0f, 0.0f, 0f, 0f, 1f);
+            GLU.gluLookAt(0, 0, 10, 1.5f, 1.5f, 0.0f, 0f, 0f, 1f);
 
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.5f);

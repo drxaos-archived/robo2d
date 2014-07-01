@@ -19,12 +19,12 @@ public class ObjImpScene {
     int _callListID;
     boolean _callListCompiled;
 
-    ArrayList<float[]> _vertexList;
-    ArrayList<float[]> _normalList;
-    ArrayList<float[]> _texcoordList;
-    ArrayList<ObjImpMesh> _meshList;
+    protected ArrayList<float[]> _vertexList;
+    protected ArrayList<float[]> _normalList;
+    protected ArrayList<float[]> _texcoordList;
+    protected ArrayList<ObjImpMesh> _meshList;
 
-    private WavefrontObject _obj;
+    protected WavefrontObject _obj;
 
     public ObjImpScene() {
         _callListID = 0;
@@ -219,9 +219,15 @@ public class ObjImpScene {
                 GL11.glEnable(GL11.GL_COLOR_MATERIAL);
                 ByteBuffer temp = ByteBuffer.allocateDirect(16);
                 temp.order(ByteOrder.nativeOrder());
-                GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._ambient[0], m._material._ambient[1], m._material._ambient[2], 1.0f}).flip());
-                GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._diffuse[0], m._material._diffuse[1], m._material._diffuse[2], 1.0f}).flip());
-                GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._specular[0], m._material._specular[1], m._material._specular[2], 1.0f}).flip());
+                if (m._material._ambient != null) {
+                    GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._ambient[0], m._material._ambient[1], m._material._ambient[2], 1.0f}).flip());
+                }
+                if (m._material._diffuse != null) {
+                    GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._diffuse[0], m._material._diffuse[1], m._material._diffuse[2], 1.0f}).flip());
+                }
+                if (m._material._specular != null) {
+                    GL11.glMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, (FloatBuffer) temp.asFloatBuffer().put(new float[]{m._material._specular[0], m._material._specular[1], m._material._specular[2], 1.0f}).flip());
+                }
                 GL11.glMaterialf(GL11.GL_FRONT_AND_BACK, GL11.GL_SHININESS, m._material._shininess);
             }
 
@@ -272,5 +278,4 @@ public class ObjImpScene {
 
         return null;
     }
-
 }

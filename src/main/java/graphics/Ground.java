@@ -13,6 +13,7 @@ public class Ground implements Drawable {
     public int objectDisplayList;
 
     final int W = 60, H = 60;
+    final float tileWidth = 1f, tileHeight = 1f;
     float[][] heights;
 
     public void init() {
@@ -27,7 +28,7 @@ public class Ground implements Drawable {
         heights = new float[W + 1][H + 1];
         for (int i = 0; i < W + 1; i++) {
             for (int j = 0; j < H + 1; j++) {
-                heights[i][j] = (float) Math.random() * 3;
+                heights[i][j] = 0;//(float) Math.random() * 0.05f;
             }
         }
 
@@ -41,19 +42,19 @@ public class Ground implements Drawable {
 
                 GL11.glNormal3f(0, 0, 1f);
                 GL11.glTexCoord2f(0.0f, 0.0f);
-                GL11.glVertex3f(i * 10f, j * 10f, heights[i][j]);
+                GL11.glVertex3f(i * tileWidth, j * tileHeight, heights[i][j]);
 
                 GL11.glNormal3f(0, 0, 1f);
                 GL11.glTexCoord2f(0.5f, 0.0f);
-                GL11.glVertex3f((i + 1) * 10f, j * 10f, heights[i + 1][j]);
+                GL11.glVertex3f((i + 1) * tileWidth - 0.1f, j * tileHeight, heights[i + 1][j]);
 
                 GL11.glNormal3f(0, 0, 1f);
                 GL11.glTexCoord2f(0.5f, 0.5f);
-                GL11.glVertex3f((i + 1) * 10f, (j + 1) * 10f, heights[i + 1][j + 1]);
+                GL11.glVertex3f((i + 1) * tileWidth - 0.1f, (j + 1) * tileHeight - 0.1f, heights[i + 1][j + 1]);
 
                 GL11.glNormal3f(0, 0, 1f);
                 GL11.glTexCoord2f(0.0f, 0.5f);
-                GL11.glVertex3f(i * 10f, (j + 1) * 10f, heights[i][j + 1]);
+                GL11.glVertex3f(i * tileWidth, (j + 1) * tileHeight - 0.1f, heights[i][j + 1]);
 
 
                 GL11.glEnd();
