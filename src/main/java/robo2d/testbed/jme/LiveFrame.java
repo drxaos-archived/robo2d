@@ -6,6 +6,8 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
@@ -17,8 +19,10 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
+import com.jme3.terrain.geomipmap.TerrainGrid;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import robo2d.game.Game;
@@ -75,7 +79,7 @@ public class LiveFrame extends SimpleApplication {
 
     Game game;
 
-    Map<RobotImpl, LiveObject> robotMap = new HashMap<RobotImpl, LiveObject>();
+    Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
 
     public LiveFrame(Game game) {
         this.game = game;
@@ -98,12 +102,12 @@ public class LiveFrame extends SimpleApplication {
 
         TerrainQuad terrain = createGround();
         rootNode.attachChild(terrain);
-        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-        terrain.addControl(control);
+//        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+//        terrain.addControl(control);
 
         for (RobotImpl robot : game.getRobots()) {
-            Spatial robotLive = createRobot();
-            robotMap.put(robot, new LiveObject(robotLive));
+            Node robotLive = createRobot();
+            robotMap.put(robot, robotLive);
             rootNode.attachChild(robotLive);
         }
 
@@ -119,9 +123,12 @@ public class LiveFrame extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        for (Map.Entry<RobotImpl, LiveObject> e : robotMap.entrySet()) {
+        for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
             KPoint point = e.getKey().getBox().getPosition();
-            e.getValue().setPos((float) e.getKey().getBox().getAngle(), (float) point.getX(), (float) point.getY());
+            e.getValue().setLocalTranslation((float) point.getY(), 0, (float) point.getX());
+            Quaternion roll = new Quaternion();
+            roll.fromAngleAxis((float) e.getKey().getBox().getAngle() + FastMath.PI, new Vector3f(0, 1, 0));
+            e.getValue().setLocalRotation(roll);
         }
     }
 
@@ -162,11 +169,11 @@ public class LiveFrame extends SimpleApplication {
         return new Vector3f[0];
     }
 
-    private Spatial createRobot() {
+    private Node createRobot() {
         Spatial robot = assetManager.loadModel("models/robot/robot.j3o");
 
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setFloat("Shininess", 100);
+        mat.setFloat("Shininess", 10000);
         Texture tex = assetManager.loadTexture("models/robot/robot.png");
         mat.setTexture("DiffuseMap", tex);
 //        mat.setTexture("NormalMap", tex);
@@ -206,17 +213,17 @@ public class LiveFrame extends SimpleApplication {
 //        roll.fromAngleAxis(FastMath.PI / 2, new Vector3f(1, 0, 0));
 //        robot.setLocalRotation(roll);
         robot.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        return robot;
+        Node node = new Node("robot");
+        node.attachChild(robot);
+        return node;
     }
 
     private Spatial createSphere() {
         Spatial sphere = assetManager.loadModel("models/sphere/sphere.obj");
 
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setFloat("Shininess", 100);
         Texture tex = assetManager.loadTexture("models/sphere/sphere.png");
         mat.setTexture("DiffuseMap", tex);
-//        mat.setTexture("NormalMap", tex);
         mat.setTexture("SpecularMap", tex);
         mat.setTexture("ParallaxMap", tex);
         sphere.setMaterial(mat);
@@ -254,32 +261,47 @@ public class LiveFrame extends SimpleApplication {
     }
 
     private TerrainQuad createGround() {
-        Material mat_terrain = new Material(assetManager,
+        Material mat = new Material(assetManager,
                 "Common/MatDefs/Terrain/Terrain.j3md");
+        mat.setBoolean("useTriPlanarMapping", false);
+        mat.setTexture("Alpha", assetManager.loadTexture("models/ground/alphamap.png"));
 
-        Texture grass = assetManager.loadTexture("models/ground/grass.png");
+        Texture grass = assetManager.loadTexture("models/ground/grass.jpg");
         grass.setWrap(Texture.WrapMode.Repeat);
-        mat_terrain.setTexture("Tex1", grass);
-        mat_terrain.setFloat("Tex1Scale", 100f);
+        mat.setTexture("Tex1", grass);
+        mat.setFloat("Tex1Scale", 64);
 
-        int patchSize = 65;
-        TerrainQuad terrain = new TerrainQuad("ground", patchSize, 1025, null);
+        Texture dirt = assetManager.loadTexture("models/ground/dirt.jpg");
+        dirt.setWrap(Texture.WrapMode.Repeat);
+        mat.setTexture("Tex2", dirt);
+        mat.setFloat("Tex2Scale", 16);
 
-        terrain.setMaterial(mat_terrain);
+        // ROCK texture
+        Texture rock = assetManager.loadTexture("models/ground/road.jpg");
+        rock.setWrap(Texture.WrapMode.Repeat);
+        mat.setTexture("Tex3", rock);
+        mat.setFloat("Tex3Scale", 128);
+
+        TerrainQuad terrain = new TerrainQuad("ground", 65, 513, null);
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
+        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+        control.setLodCalculator( new DistanceLodCalculator(65, 2.7f) ); // patch size, and a multiplier
+        terrain.addControl(control);
+        terrain.setMaterial(mat);
+
         return terrain;
     }
 
     private DirectionalLight createSun() {
         DirectionalLight sun = new DirectionalLight();
-        sun.setColor(ColorRGBA.White.mult(3f));
+        sun.setColor(ColorRGBA.White.mult(1.5f));
         sun.setDirection(new Vector3f(0.3f, -1f, 0.7f).normalizeLocal());
         return sun;
     }
 
     private AmbientLight createAmbient() {
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(0.5f));
+        al.setColor(ColorRGBA.White.mult(0.2f));
         return al;
     }
 }
