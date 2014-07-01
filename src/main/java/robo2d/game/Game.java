@@ -50,6 +50,10 @@ public class Game {
         return robots;
     }
 
+    public List<Physical> getPhysicals() {
+        return physicals;
+    }
+
     public void addSatellite(int resolution, int lag) {
         this.satelliteResolution = resolution;
         this.satelliteLag = lag;

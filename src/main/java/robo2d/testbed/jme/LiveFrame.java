@@ -19,14 +19,17 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
-import com.jme3.terrain.geomipmap.TerrainGrid;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import robo2d.game.Game;
+import robo2d.game.box2d.Physical;
 import robo2d.game.impl.RobotImpl;
+import robo2d.game.impl.WallImpl;
 import slick2d.NativeLoader;
 import straightedge.geom.KPoint;
 
@@ -80,6 +83,7 @@ public class LiveFrame extends SimpleApplication {
     Game game;
 
     Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
+    java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
         this.game = game;
@@ -105,10 +109,14 @@ public class LiveFrame extends SimpleApplication {
 //        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
 //        terrain.addControl(control);
 
-        for (RobotImpl robot : game.getRobots()) {
-            Node robotLive = createRobot();
-            robotMap.put(robot, robotLive);
-            rootNode.attachChild(robotLive);
+        for (Physical physical : game.getPhysicals()) {
+            if (physical instanceof RobotImpl) {
+                Node robotLive = createRobot();
+                robotMap.put((RobotImpl) physical, robotLive);
+                rootNode.attachChild(robotLive);
+            } else if (physical instanceof WallImpl) {
+                walls.add((WallImpl) physical);
+            }
         }
 
         /* Drop shadows */
@@ -281,10 +289,15 @@ public class LiveFrame extends SimpleApplication {
         mat.setTexture("Tex3", rock);
         mat.setFloat("Tex3Scale", 450);
 
-        TerrainQuad terrain = new TerrainQuad("ground", 65, 513, null);
+        Texture heightMapImage = assetManager.loadTexture("models/ground/mountains512.png");
+        AbstractHeightMap heightmap = null;
+        heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 1f);
+        heightmap.load();
+
+        TerrainQuad terrain = new TerrainQuad("ground", 65, 513, heightmap.getHeightMap());
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
         TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-        control.setLodCalculator( new DistanceLodCalculator(65, 2.7f) ); // patch size, and a multiplier
+        control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier
         terrain.addControl(control);
         terrain.setMaterial(mat);
 
