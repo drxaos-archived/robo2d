@@ -276,11 +276,10 @@ public class LiveFrame extends SimpleApplication {
         mat.setTexture("Tex2", dirt);
         mat.setFloat("Tex2Scale", 16);
 
-        // ROCK texture
-        Texture rock = assetManager.loadTexture("models/ground/road.jpg");
+        Texture rock = assetManager.loadTexture("models/ground/ground.jpg");
         rock.setWrap(Texture.WrapMode.Repeat);
         mat.setTexture("Tex3", rock);
-        mat.setFloat("Tex3Scale", 128);
+        mat.setFloat("Tex3Scale", 450);
 
         TerrainQuad terrain = new TerrainQuad("ground", 65, 513, null);
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
