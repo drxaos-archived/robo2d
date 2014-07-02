@@ -24,7 +24,7 @@ public class RobotModel {
         this.assetManager = assetManager;
     }
 
-    Spatial robotModel, robotModel2, agrModel;
+    Spatial robotModel1, robotModel2, agrModel1, agrModel2;
     float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
     float scaleW, scaleL, scaleH;
 
@@ -37,9 +37,9 @@ public class RobotModel {
     }
 
     protected Node createRobot() {
-        if (robotModel == null) {
-            robotModel = assetManager.loadModel("models/robot/robot.j3o");
-            Vector3f[] vertices = getVertices(robotModel);
+        if (robotModel1 == null) {
+            robotModel1 = assetManager.loadModel("models/robot/robot.j3o");
+            Vector3f[] vertices = getVertices(robotModel1);
             for (Vector3f v : vertices) {
                 if (v.z < back) {
                     back = v.z;
@@ -63,9 +63,9 @@ public class RobotModel {
             scaleW = 1.2f / Math.max(left, Math.abs(right));
             scaleL = 1.2f / Math.max(front, Math.abs(back));
             scaleH = Math.max(scaleL, scaleW);
-            robotModel.setLocalScale(scaleW, scaleH, scaleL);
-            robotModel.setLocalTranslation((right + left) * scaleW, -bottom * scaleH, (front + back) * scaleL);
-            robotModel.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+            robotModel1.setLocalScale(scaleW, scaleH, scaleL);
+            robotModel1.setLocalTranslation((right + left) * scaleW, -bottom * scaleH, (front + back) * scaleL);
+            robotModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
             Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
             mat.setFloat("Shininess", 10000);
@@ -73,9 +73,9 @@ public class RobotModel {
             mat.setTexture("DiffuseMap", tex);
             mat.setTexture("SpecularMap", tex);
             mat.setTexture("ParallaxMap", tex);
-            robotModel.setMaterial(mat);
+            robotModel1.setMaterial(mat);
 
-            robotModel2 = robotModel.clone();
+            robotModel2 = robotModel1.clone();
             Material mat2 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
             mat2.setFloat("Shininess", 10000);
             Texture tex2 = assetManager.loadTexture("models/robot/robot2.png");
@@ -84,20 +84,20 @@ public class RobotModel {
             mat2.setTexture("ParallaxMap", tex2);
             robotModel2.setMaterial(mat2);
 
-            robotModel.setName("r1");
+            robotModel1.setName("r1");
             robotModel2.setName("r2");
         }
         Node node = new Node("robot");
-        node.attachChild(robotModel.clone());
+        node.attachChild(robotModel1.clone());
         node.attachChild(robotModel2.clone());
 
         return node;
     }
 
     protected Node createRobotAgr() {
-        if (agrModel == null) {
-            agrModel = assetManager.loadModel("models/agr/AGR.obj");
-            Vector3f[] vertices = getVertices(agrModel);
+        if (agrModel1 == null) {
+            agrModel1 = assetManager.loadModel("models/agr/AGR.obj");
+            Vector3f[] vertices = getVertices(agrModel1);
             for (Vector3f v : vertices) {
                 if (v.x < front) {
                     front = v.x;
@@ -122,28 +122,37 @@ public class RobotModel {
             scaleW = 1.2f / (Math.abs(left) + Math.abs(right)) * 2;
             scaleL = 1.2f / (Math.abs(front) + Math.abs(back)) * 2;
             scaleH = Math.max(scaleL, scaleW);
-            agrModel.setLocalScale(scaleL, scaleH, scaleW);
-            agrModel.setLocalTranslation((right + left) * scaleW - 0.1f, -bottom * scaleH, 0.1f + (front + back) * scaleL);
-            agrModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.PI / 2, Vector3f.UNIT_Y));
-            agrModel.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+            agrModel1.setLocalScale(scaleL, scaleH, scaleW);
+            agrModel1.setLocalTranslation((right + left) * scaleW - 0.1f, -bottom * scaleH, 0.1f + (front + back) * scaleL);
+            agrModel1.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.PI / 2, Vector3f.UNIT_Y));
+            agrModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
-            agrModel.setName("agr1");
+            agrModel2 = agrModel1.clone();
+            Material mat3 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            mat3.setFloat("Shininess", 10000);
+            Texture tex3 = assetManager.loadTexture("models/agr/tire2.tga");
+            mat3.setTexture("DiffuseMap", tex3);
+            mat3.setTexture("SpecularMap", tex3);
+            mat3.setTexture("ParallaxMap", tex3);
+            ((Node) agrModel2).getChild("AGR-geom-3").setMaterial(mat3);
+
+            agrModel1.setName("r1");
+            agrModel2.setName("r2");
         }
         Node node = new Node("agr");
-        node.attachChild(agrModel.clone());
+        node.attachChild(agrModel1.clone());
+        node.attachChild(agrModel2.clone());
 
         return node;
     }
 
     public void animateChassis(Node robot) {
-        if (robot.getChild("r1") != null && robot.getChild("r2") != null) {
-            if ((System.currentTimeMillis() / 100) % 2 == 0) {
-                robot.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
-                robot.getChild("r2").setCullHint(Spatial.CullHint.Always);
-            } else {
-                robot.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
-                robot.getChild("r1").setCullHint(Spatial.CullHint.Always);
-            }
+        if ((System.currentTimeMillis() / 100) % 2 == 0) {
+            robot.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
+            robot.getChild("r2").setCullHint(Spatial.CullHint.Always);
+        } else {
+            robot.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
+            robot.getChild("r1").setCullHint(Spatial.CullHint.Always);
         }
     }
 

@@ -134,13 +134,18 @@ public class LiveFrame extends SimpleApplication {
             }
         }
 
+        Vector3f camPos = cam.getLocation();
+        KPoint newPos = game.getPlayer().getBox().getPosition();
+        camPos.setZ((float) newPos.x);
+        camPos.setX((float) newPos.y);
+        cam.setLocation(camPos);
         float aspect = (float) cam.getWidth() / (float) cam.getHeight();
         cam.setFrustumPerspective(70f, aspect, 0.01f, cam.getFrustumFar());
 
         // GUI
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
-        nifty.fromXml("models/gui/label.xml", "GScreen0");
+//        nifty.fromXml("models/gui/label.xml", "GScreen0");
 //        nifty.setDebugOptionPanelColors(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
@@ -180,6 +185,8 @@ public class LiveFrame extends SimpleApplication {
     }
 
     private Vector3f getTerrainPoint(float x, float z) {
+        x += 0.001;
+        z += 0.001;
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray();
         Vector3f pos = new Vector3f(x, 1000, z);
@@ -305,7 +312,7 @@ public class LiveFrame extends SimpleApplication {
         AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
         heightmap.load();
 
-        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, null);
+        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, heightmap.getHeightMap());
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
         TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
         control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier
