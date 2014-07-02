@@ -8,6 +8,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.*;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
@@ -21,6 +22,14 @@ import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.LayerBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
 import robo2d.game.box2d.Physical;
 import robo2d.game.impl.RobotImpl;
@@ -78,6 +87,7 @@ public class LiveFrame extends SimpleApplication {
 
     TerrainQuad terrain;
     RobotModel robotModel;
+    Nifty nifty;
 
     Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
@@ -125,6 +135,40 @@ public class LiveFrame extends SimpleApplication {
         dlsr.setShadowIntensity(0.7f);
         dlsr.setLight(sun);
         viewPort.addProcessor(dlsr);
+
+        // GUI
+
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();
+        nifty.fromXml("models/gui/label.xml", "GScreen0");
+//        nifty.setDebugOptionPanelColors(true);
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
+
+        nifty.addScreen("LabelScreen", new ScreenBuilder("Label Nifty Screen") {{
+            controller(new DefaultScreenController()); // Screen properties
+            layer(new LayerBuilder("Layer1") {{
+                childLayoutVertical(); // layer properties, add more...
+                panel(new PanelBuilder("Panel1") {{
+                    childLayoutCenter(); // panel properties, add more...
+                    control(new LabelBuilder("label", "") {{
+                        alignCenter();
+                        valignCenter();
+                        height("5%");
+                        width("100%");
+                    }});
+                }});
+            }});
+        }}.build(nifty));
+        nifty.gotoScreen("LabelScreen"); // start the screen
+
+        guiViewPort.addProcessor(niftyDisplay);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        System.exit(0);
     }
 
     private Vector3f getTerrainPoint(float x, float z) {
@@ -138,6 +182,25 @@ public class LiveFrame extends SimpleApplication {
         terrain.collideWith(ray, results);
         CollisionResult result = results.getClosestCollision();
         return result.getContactPoint();
+    }
+
+    private RobotImpl getTargetRobot(Vector3f position, Vector3f direction) {
+        rootNode.updateGeometricState();
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray();
+        ray.setOrigin(position);
+        ray.setDirection(direction);
+        rootNode.collideWith(ray, results);
+        CollisionResult result = results.getClosestCollision();
+        if (result == null || result.getDistance() > 5) {
+            return null;
+        }
+        for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
+            if (e.getValue().hasChild(result.getGeometry())) {
+                return e.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -180,6 +243,12 @@ public class LiveFrame extends SimpleApplication {
         cam.setZ((float) newPos.x);
         cam.setX((float) newPos.y);
         getCamera().setLocation(cam);
+
+        RobotImpl targetRobot = getTargetRobot(cam, getCamera().getDirection());
+        Element label = nifty.getCurrentScreen().findElementByName("label");
+        if (label != null) {
+            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
+        }
     }
 
     @Override

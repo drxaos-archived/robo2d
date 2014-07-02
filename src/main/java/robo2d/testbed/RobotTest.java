@@ -69,7 +69,7 @@ public abstract class RobotTest extends TestbedTest {
         TestbedPanel panel = new TestPanelJ2D(model);    // create our testbed panel
         JFrame testbed = new TestbedFrame(model, panel, TestbedController.UpdateBehavior.UPDATE_CALLED); // put both into our testbed frame
 
-        testbed.setVisible(true);
+        testbed.setVisible(false);
         testbed.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 

@@ -5,9 +5,8 @@ version = '0.3'
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/groups/public/"
-    }
+    maven {url "https://oss.sonatype.org/content/groups/public/"}
+    maven {url "http://nifty-gui.sourceforge.net/nifty-maven-repo/"}
 }
 
 dependencies {
@@ -19,11 +18,17 @@ dependencies {
     compile 'org.slick2d:slick2d-core:1.0.1'
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
     compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
+    compile 'lessvoid:nifty:1.3.3'
+    compile 'lessvoid:nifty-default-controls:1.3.3'
+    compile 'lessvoid:nifty-style-black:1.3.3'
+    compile 'lessvoid:nifty-default-styles:0.0.1'
+    // https://oss.sonatype.org/content/groups/public/com/jme3/
     compile 'com.jme3:jME3-core:3.0.0.20140325-SNAPSHOT'
     compile 'com.jme3:jME3-desktop:3.0.0.20140325-SNAPSHOT'
     compile 'com.jme3:jME3-terrain:3.0.0.20140325-SNAPSHOT'
     compile 'com.jme3:jME3-effects:3.0.0.20140325-SNAPSHOT'
     compile 'com.jme3:jME3-lwjgl:3.0.0.20140325-SNAPSHOT'
+    compile 'com.jme3:jME3-niftygui:3.0.0.20140325-SNAPSHOT'
 }
 
 task copyToLib(type: Copy) {

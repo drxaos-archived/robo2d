@@ -24,13 +24,15 @@ public class RobotImpl implements Robot, Obj, Physical {
     Game game;
     PlayerImpl owner;
     RobotBox box;
+    String uid;
     double energy = 0d;
 
     final Object sync = new Object();
     String debugMsg;
     KPoint debugPoint;
 
-    public RobotImpl(Game game, PlayerImpl owner, KPoint position, double angle) {
+    public RobotImpl(String uid, Game game, PlayerImpl owner, KPoint position, double angle) {
+        this.uid = uid;
         this.owner = owner;
         this.game = game;
         box = new RobotBox(position, angle);
@@ -80,6 +82,11 @@ public class RobotImpl implements Robot, Obj, Physical {
     @Override
     public Double getEnergy() {
         return energy;
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
     }
 
     public boolean consumeEnergy(double amount) {

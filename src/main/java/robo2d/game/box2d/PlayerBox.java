@@ -38,6 +38,6 @@ public class PlayerBox extends Box {
         if (body == null) {
             return;
         }
-        body.applyForce(new Vec2(x, y).sub(body.getPosition()).mul(20), body.getPosition());
+        body.applyForce(new Vec2(x, y).sub(body.getPosition()).mul(40), body.getPosition());
     }
 }

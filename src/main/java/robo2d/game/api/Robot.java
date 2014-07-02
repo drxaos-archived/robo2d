@@ -6,6 +6,8 @@ public interface Robot {
 
     Double getEnergy();
 
+    String getUid();
+
     Long getTime();
 
     void waitForStep();
