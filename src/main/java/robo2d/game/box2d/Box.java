@@ -30,6 +30,13 @@ public class Box {
         return new KPoint(vec2.x, vec2.y);
     }
 
+    public void setPosition(float x, float y) {
+        if (body == null) {
+            return;
+        }
+        body.applyForce(new Vec2(x, y).sub(body.getPosition()), body.getPosition());
+    }
+
     public Vec2 getPositionVec2() {
         if (body == null) {
             return new Vec2();

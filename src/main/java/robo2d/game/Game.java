@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Game {
-    protected List<PlayerImpl> players = new ArrayList<PlayerImpl>();
     protected List<Physical> physicals = new ArrayList<Physical>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
+    protected PlayerImpl player;
 
     final Map<SatelliteScanner, SatelliteScanner.Request> satelliteRequests = new HashMap<SatelliteScanner, SatelliteScanner.Request>();
 
@@ -44,6 +44,15 @@ public class Game {
     public void addRobot(RobotImpl robot) {
         physicals.add(robot);
         robots.add(robot);
+    }
+
+    public void addPlayer(PlayerImpl player) {
+        physicals.add(player);
+        this.player = player;
+    }
+
+    public PlayerImpl getPlayer() {
+        return player;
     }
 
     public List<RobotImpl> getRobots() {
@@ -96,7 +105,7 @@ public class Game {
         }
     }
 
-    public void stop(){
+    public void stop() {
         for (RobotImpl robot : robots) {
             ComputerImpl computer = robot.getComputer();
             if (computer != null) {

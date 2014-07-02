@@ -2,19 +2,15 @@ package robo2d.testbed.jme;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
@@ -25,7 +21,6 @@ import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import com.jme3.util.BufferUtils;
 import robo2d.game.Game;
 import robo2d.game.box2d.Physical;
 import robo2d.game.impl.RobotImpl;
@@ -34,7 +29,6 @@ import slick2d.NativeLoader;
 import straightedge.geom.KPoint;
 
 import java.awt.*;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +76,9 @@ public class LiveFrame extends SimpleApplication {
 
     Game game;
 
+    TerrainQuad terrain;
+    RobotModel robotModel;
+
     Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
@@ -104,20 +101,21 @@ public class LiveFrame extends SimpleApplication {
         DirectionalLight sun = createSun();
         rootNode.addLight(sun);
 
-        TerrainQuad terrain = createGround();
+        terrain = createGround();
         rootNode.attachChild(terrain);
-//        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-//        terrain.addControl(control);
 
+        robotModel = new RobotModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
             if (physical instanceof RobotImpl) {
-                Node robotLive = createRobot();
+                Node robotLive = robotModel.createRobot();
                 robotMap.put((RobotImpl) physical, robotLive);
                 rootNode.attachChild(robotLive);
             } else if (physical instanceof WallImpl) {
                 walls.add((WallImpl) physical);
             }
         }
+
+        getCamera().setLocation(getTerrainPoint(-15, -15).add(0, 25, 0));
 
         /* Drop shadows */
         final int SHADOWMAP_SIZE = 2048;
@@ -129,143 +127,64 @@ public class LiveFrame extends SimpleApplication {
         viewPort.addProcessor(dlsr);
     }
 
+    private Vector3f getTerrainPoint(float x, float z) {
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray();
+        Vector3f pos = new Vector3f(x, 1000, z);
+        Vector3f dir = new Vector3f(x, 999, z);
+        dir.subtractLocal(pos).normalizeLocal();
+        ray.setOrigin(pos);
+        ray.setDirection(dir);
+        terrain.collideWith(ray, results);
+        CollisionResult result = results.getClosestCollision();
+        return result.getContactPoint();
+    }
+
     @Override
     public void simpleUpdate(float tpf) {
         for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
             KPoint point = e.getKey().getBox().getPosition();
-            e.getValue().setLocalTranslation((float) point.getY(), 0, (float) point.getX());
-            Quaternion roll = new Quaternion();
-            roll.fromAngleAxis((float) e.getKey().getBox().getAngle() + FastMath.PI, new Vector3f(0, 1, 0));
-            e.getValue().setLocalRotation(roll);
+            float x = (float) point.getY();
+            float z = (float) point.getX();
+            float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;
+            Node node = e.getValue();
+
+            Quaternion yaw = new Quaternion();
+            yaw.fromAngleAxis(angle, new Vector3f(0, 1, 0));
+
+            float radius = (robotModel.getFinalLength() + robotModel.getFinalWidth()) / 4;
+
+            Vector3f x1, x2, z1, z2;
+            x1 = getTerrainPoint(x - radius, z);
+            x2 = getTerrainPoint(x + radius, z);
+            z1 = getTerrainPoint(x, z - radius);
+            z2 = getTerrainPoint(x, z + radius);
+
+            Vector3f zAxis = z2.subtract(z1);
+            Vector3f xAxis = x2.subtract(x1);
+            Vector3f yAxis = new Vector3f(0, 1, 0);
+            Quaternion quat = new Quaternion().fromAxes(
+                    xAxis,
+                    yAxis,
+                    zAxis
+            );
+            node.setLocalRotation(quat.mult(yaw));
+            node.setLocalTranslation(x, Math.min(x1.y + x2.y, z1.y + z2.y) / 2, z);
         }
+
+        Vector3f cam = getCamera().getLocation();
+        game.getPlayer().getBox().setPosition(cam.z, cam.x);
+        game.stepSync();
+        KPoint newPos = game.getPlayer().getBox().getPosition();
+        cam.setY(getTerrainPoint((float) newPos.y, (float) newPos.x).y + 1.3f);
+        cam.setZ((float) newPos.x);
+        cam.setX((float) newPos.y);
+        getCamera().setLocation(cam);
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
-    }
-
-    public Vector3f[] getVertices(Spatial s) {
-
-        if (s instanceof Geometry) {
-            Geometry geometry = (Geometry) s;
-            FloatBuffer vertexBuffer = geometry.getMesh().getFloatBuffer(VertexBuffer.Type.Position);
-            return BufferUtils.getVector3Array(vertexBuffer);
-        } else if (s instanceof Node) {
-            Node n = (Node) s;
-
-            ArrayList<Vector3f[]> array = new ArrayList<Vector3f[]>();
-
-            for (Spatial ss : n.getChildren()) {
-                array.add(getVertices(ss));
-            }
-
-            int count = 0;
-            for (Vector3f[] vec : array) {
-                count += vec.length;
-            }
-
-            Vector3f[] returnn = new Vector3f[count];
-            count = -1;
-            for (Vector3f[] vec : array) {
-                for (int i = 0; i < vec.length; i++) {
-                    returnn[++count] = vec[i];
-                }
-            }
-            return returnn;
-        }
-        return new Vector3f[0];
-    }
-
-    private Node createRobot() {
-        Spatial robot = assetManager.loadModel("models/robot/robot.j3o");
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setFloat("Shininess", 10000);
-        Texture tex = assetManager.loadTexture("models/robot/robot.png");
-        mat.setTexture("DiffuseMap", tex);
-//        mat.setTexture("NormalMap", tex);
-        mat.setTexture("SpecularMap", tex);
-        mat.setTexture("ParallaxMap", tex);
-        robot.setMaterial(mat);
-
-        float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
-        float scaleW, scaleL, scaleH;
-        Vector3f[] vertices = getVertices(robot);
-        for (Vector3f v : vertices) {
-            if (v.z < back) {
-                back = v.z;
-            }
-            if (v.z > front) {
-                front = v.z;
-            }
-            if (v.x < right) {
-                right = v.x;
-            }
-            if (v.x > left) {
-                left = v.x;
-            }
-            if (v.y < bottom) {
-                bottom = v.y;
-            }
-            if (v.y > top) {
-                top = v.y;
-            }
-        }
-        scaleW = 1.2f / Math.max(left, Math.abs(right));
-        scaleL = 1.2f / Math.max(front, Math.abs(back));
-        scaleH = Math.max(scaleL, scaleW);
-        robot.setLocalScale(scaleW, scaleH, scaleL);
-        robot.setLocalTranslation((right + left) * scaleW, Math.abs(bottom) * scaleH, (front + back) * scaleL);
-//        Quaternion roll = new Quaternion();
-//        roll.fromAngleAxis(FastMath.PI / 2, new Vector3f(1, 0, 0));
-//        robot.setLocalRotation(roll);
-        robot.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        Node node = new Node("robot");
-        node.attachChild(robot);
-        return node;
-    }
-
-    private Spatial createSphere() {
-        Spatial sphere = assetManager.loadModel("models/sphere/sphere.obj");
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        Texture tex = assetManager.loadTexture("models/sphere/sphere.png");
-        mat.setTexture("DiffuseMap", tex);
-        mat.setTexture("SpecularMap", tex);
-        mat.setTexture("ParallaxMap", tex);
-        sphere.setMaterial(mat);
-
-        float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
-        float scaleW, scaleL, scaleH;
-        Vector3f[] vertices = getVertices(sphere);
-        for (Vector3f v : vertices) {
-            if (v.z < back) {
-                back = v.z;
-            }
-            if (v.z > front) {
-                front = v.z;
-            }
-            if (v.x < right) {
-                right = v.x;
-            }
-            if (v.x > left) {
-                left = v.x;
-            }
-            if (v.y < bottom) {
-                bottom = v.y;
-            }
-            if (v.y > top) {
-                top = v.y;
-            }
-        }
-        scaleW = 0.5f / Math.max(left, Math.abs(right));
-        scaleL = 0.5f / Math.max(front, Math.abs(back));
-        scaleH = Math.max(scaleL, scaleW);
-        sphere.setLocalScale(scaleW, scaleH, scaleL);
-        sphere.setLocalTranslation(0, Math.abs(bottom) * scaleH, 0);
-        sphere.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        return sphere;
     }
 
     private TerrainQuad createGround() {
@@ -289,12 +208,11 @@ public class LiveFrame extends SimpleApplication {
         mat.setTexture("Tex3", rock);
         mat.setFloat("Tex3Scale", 450);
 
-        Texture heightMapImage = assetManager.loadTexture("models/ground/mountains512.png");
-        AbstractHeightMap heightmap = null;
-        heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 1f);
+        Texture heightMapImage = assetManager.loadTexture("models/ground/ground2048.png");
+        AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
         heightmap.load();
 
-        TerrainQuad terrain = new TerrainQuad("ground", 65, 513, heightmap.getHeightMap());
+        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, heightmap.getHeightMap());
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
         TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
         control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier
