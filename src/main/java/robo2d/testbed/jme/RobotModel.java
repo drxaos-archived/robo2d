@@ -21,7 +21,7 @@ public class RobotModel {
         this.assetManager = assetManager;
     }
 
-    Spatial robotModel;
+    Spatial robotModel,robotModel2;
     float finalWidth = 1.2f;
     float finalLength = 1.2f;
     float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
@@ -36,16 +36,8 @@ public class RobotModel {
     }
 
     public Node createRobot() {
-        if(robotModel == null) {
+        if (robotModel == null) {
             robotModel = assetManager.loadModel("models/robot/robot.j3o");
-            Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-            mat.setFloat("Shininess", 10000);
-            Texture tex = assetManager.loadTexture("models/robot/robot.png");
-            mat.setTexture("DiffuseMap", tex);
-            mat.setTexture("SpecularMap", tex);
-            mat.setTexture("ParallaxMap", tex);
-            robotModel.setMaterial(mat);
-
             Vector3f[] vertices = getVertices(robotModel);
             for (Vector3f v : vertices) {
                 if (v.z < back) {
@@ -73,10 +65,31 @@ public class RobotModel {
             robotModel.setLocalScale(scaleW, scaleH, scaleL);
             robotModel.setLocalTranslation((right + left) * scaleW, -bottom * scaleH, (front + back) * scaleL);
             robotModel.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+
+            Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            mat.setFloat("Shininess", 10000);
+            Texture tex = assetManager.loadTexture("models/robot/robot.png");
+            mat.setTexture("DiffuseMap", tex);
+            mat.setTexture("SpecularMap", tex);
+            mat.setTexture("ParallaxMap", tex);
+            robotModel.setMaterial(mat);
+
+            robotModel2 = robotModel.clone();
+            Material mat2 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            mat2.setFloat("Shininess", 10000);
+            Texture tex2 = assetManager.loadTexture("models/robot/robot2.png");
+            mat2.setTexture("DiffuseMap", tex2);
+            mat2.setTexture("SpecularMap", tex2);
+            mat2.setTexture("ParallaxMap", tex2);
+            robotModel2.setMaterial(mat2);
+
+            robotModel.setName("r1");
+            robotModel2.setName("r2");
         }
-        Spatial robot = robotModel.clone();
         Node node = new Node("robot");
-        node.attachChild(robot);
+        node.attachChild(robotModel.clone());
+        node.attachChild(robotModel2.clone());
+
         return node;
     }
 

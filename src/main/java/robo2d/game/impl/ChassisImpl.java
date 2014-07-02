@@ -47,6 +47,11 @@ public class ChassisImpl implements Chassis, EquipmentImpl, HasEffects {
         return null;
     }
 
+    @Override
+    public Boolean isWorking() {
+        return Math.max(Math.abs(rightAccel), Math.abs(leftAccel)) > 0.01;
+    }
+
 
     @Override
     public Map<KPoint, Vec2> getEffects() {

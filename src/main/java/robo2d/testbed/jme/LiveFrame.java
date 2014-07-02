@@ -12,6 +12,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
@@ -22,6 +23,7 @@ import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
+import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
@@ -31,6 +33,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
+import robo2d.game.api.Chassis;
 import robo2d.game.box2d.Physical;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
@@ -105,6 +108,9 @@ public class LiveFrame extends SimpleApplication {
         flyCam.setDragToRotate(true);
         getCamera().setLocation(new Vector3f(-15, 25, -15));
         getCamera().lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
+
+        rootNode.attachChild(SkyFactory.createSky(
+                assetManager, "models/sky/BrightSky.dds", false));
 
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.addLight(createAmbient());
@@ -192,7 +198,7 @@ public class LiveFrame extends SimpleApplication {
         ray.setDirection(direction);
         rootNode.collideWith(ray, results);
         CollisionResult result = results.getClosestCollision();
-        if (result == null || result.getDistance() > 5) {
+        if (result == null || result.getDistance() > 3) {
             return null;
         }
         for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
@@ -233,6 +239,15 @@ public class LiveFrame extends SimpleApplication {
             );
             node.setLocalRotation(quat.mult(yaw));
             node.setLocalTranslation(x, Math.min(x1.y + x2.y, z1.y + z2.y) / 2, z);
+
+            if(e.getKey().getEquipment(Chassis.class).isWorking())
+            if ((System.currentTimeMillis() / 100) % 2 == 0) {
+                node.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
+                node.getChild("r2").setCullHint(Spatial.CullHint.Always);
+            } else {
+                node.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
+                node.getChild("r1").setCullHint(Spatial.CullHint.Always);
+            }
         }
 
         Vector3f cam = getCamera().getLocation();

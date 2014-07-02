@@ -9,4 +9,6 @@ public interface Chassis extends Equipment {
     Double getLeftSpeed();
 
     Double getRightSpeed();
+
+    Boolean isWorking();
 }
