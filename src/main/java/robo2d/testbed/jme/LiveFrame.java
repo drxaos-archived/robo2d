@@ -109,8 +109,10 @@ public class LiveFrame extends SimpleApplication {
         getCamera().setLocation(new Vector3f(-15, 25, -15));
         getCamera().lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
 
-        rootNode.attachChild(SkyFactory.createSky(
-                assetManager, "models/sky/BrightSky.dds", false));
+        Spatial sky = SkyFactory.createSky(
+                assetManager, "models/sky/BrightSky.dds", false);
+        sky.setShadowMode(RenderQueue.ShadowMode.Off);
+        rootNode.attachChild(sky);
 
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.addLight(createAmbient());
@@ -132,15 +134,6 @@ public class LiveFrame extends SimpleApplication {
         }
 
         getCamera().setLocation(getTerrainPoint(-15, -15).add(0, 25, 0));
-
-        /* Drop shadows */
-        final int SHADOWMAP_SIZE = 2048;
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
-        dlsr.setEdgeFilteringMode(EdgeFilteringMode.PCFPOISSON);
-        dlsr.setEdgesThickness(2);
-        dlsr.setShadowIntensity(0.7f);
-        dlsr.setLight(sun);
-        viewPort.addProcessor(dlsr);
 
         // GUI
 
@@ -167,8 +160,16 @@ public class LiveFrame extends SimpleApplication {
             }});
         }}.build(nifty));
         nifty.gotoScreen("LabelScreen"); // start the screen
-
         guiViewPort.addProcessor(niftyDisplay);
+
+        /* Drop shadows */
+        final int SHADOWMAP_SIZE = 2048;
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setEdgeFilteringMode(EdgeFilteringMode.PCFPOISSON);
+        dlsr.setEdgesThickness(2);
+        dlsr.setShadowIntensity(0.5f);
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr);
     }
 
     @Override
@@ -240,13 +241,14 @@ public class LiveFrame extends SimpleApplication {
             node.setLocalRotation(quat.mult(yaw));
             node.setLocalTranslation(x, Math.min(x1.y + x2.y, z1.y + z2.y) / 2, z);
 
-            if(e.getKey().getEquipment(Chassis.class).isWorking())
-            if ((System.currentTimeMillis() / 100) % 2 == 0) {
-                node.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
-                node.getChild("r2").setCullHint(Spatial.CullHint.Always);
-            } else {
-                node.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
-                node.getChild("r1").setCullHint(Spatial.CullHint.Always);
+            if (e.getKey().getEquipment(Chassis.class).isWorking()) {
+                if ((System.currentTimeMillis() / 100) % 2 == 0) {
+                    node.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
+                    node.getChild("r2").setCullHint(Spatial.CullHint.Always);
+                } else {
+                    node.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
+                    node.getChild("r1").setCullHint(Spatial.CullHint.Always);
+                }
             }
         }
 
@@ -308,14 +310,14 @@ public class LiveFrame extends SimpleApplication {
 
     private DirectionalLight createSun() {
         DirectionalLight sun = new DirectionalLight();
-        sun.setColor(ColorRGBA.White.mult(1.5f));
-        sun.setDirection(new Vector3f(0.3f, -1f, 0.7f).normalizeLocal());
+        sun.setColor(ColorRGBA.White.mult(1f));
+        sun.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
         return sun;
     }
 
     private AmbientLight createAmbient() {
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(0.2f));
+        al.setColor(ColorRGBA.White.mult(1f));
         return al;
     }
 }
