@@ -12,7 +12,7 @@ public class PlayerImpl implements Player, Physical {
 
     public PlayerImpl(String name) {
         this.name = name;
-        box = new PlayerBox(new KPoint(-15, -15));
+        box = new PlayerBox(new KPoint(0, 0));
     }
 
     @Override

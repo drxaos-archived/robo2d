@@ -35,6 +35,7 @@ import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
 import robo2d.game.api.Chassis;
 import robo2d.game.box2d.Physical;
+import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
 import slick2d.NativeLoader;
@@ -125,7 +126,7 @@ public class LiveFrame extends SimpleApplication {
         robotModel = new RobotModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
             if (physical instanceof RobotImpl) {
-                Node robotLive = robotModel.createRobot();
+                Node robotLive = robotModel.createRobot((RobotImpl) physical);
                 robotMap.put((RobotImpl) physical, robotLive);
                 rootNode.attachChild(robotLive);
             } else if (physical instanceof WallImpl) {
@@ -133,10 +134,10 @@ public class LiveFrame extends SimpleApplication {
             }
         }
 
-        getCamera().setLocation(getTerrainPoint(-15, -15).add(0, 25, 0));
+        float aspect = (float) cam.getWidth() / (float) cam.getHeight();
+        cam.setFrustumPerspective(70f, aspect, 0.01f, cam.getFrustumFar());
 
         // GUI
-
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         nifty.fromXml("models/gui/label.xml", "GScreen0");
@@ -212,46 +213,11 @@ public class LiveFrame extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
-            KPoint point = e.getKey().getBox().getPosition();
-            float x = (float) point.getY();
-            float z = (float) point.getX();
-            float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;
-            Node node = e.getValue();
+        updateRobots();
+        updatePlayer();
+    }
 
-            Quaternion yaw = new Quaternion();
-            yaw.fromAngleAxis(angle, new Vector3f(0, 1, 0));
-
-            float radius = (robotModel.getFinalLength() + robotModel.getFinalWidth()) / 4;
-
-            Vector3f x1, x2, z1, z2;
-            x1 = getTerrainPoint(x - radius, z);
-            x2 = getTerrainPoint(x + radius, z);
-            z1 = getTerrainPoint(x, z - radius);
-            z2 = getTerrainPoint(x, z + radius);
-
-            Vector3f zAxis = z2.subtract(z1);
-            Vector3f xAxis = x2.subtract(x1);
-            Vector3f yAxis = new Vector3f(0, 1, 0);
-            Quaternion quat = new Quaternion().fromAxes(
-                    xAxis,
-                    yAxis,
-                    zAxis
-            );
-            node.setLocalRotation(quat.mult(yaw));
-            node.setLocalTranslation(x, Math.min(x1.y + x2.y, z1.y + z2.y) / 2, z);
-
-            if (e.getKey().getEquipment(Chassis.class).isWorking()) {
-                if ((System.currentTimeMillis() / 100) % 2 == 0) {
-                    node.getChild("r1").setCullHint(Spatial.CullHint.Dynamic);
-                    node.getChild("r2").setCullHint(Spatial.CullHint.Always);
-                } else {
-                    node.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
-                    node.getChild("r1").setCullHint(Spatial.CullHint.Always);
-                }
-            }
-        }
-
+    private void updatePlayer() {
         Vector3f cam = getCamera().getLocation();
         game.getPlayer().getBox().setPosition(cam.z, cam.x);
         game.stepSync();
@@ -266,6 +232,47 @@ public class LiveFrame extends SimpleApplication {
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
         }
+    }
+
+    private void updateRobots() {
+        for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
+            KPoint point = e.getKey().getBox().getPosition();
+            float x = (float) point.getY();
+            float z = (float) point.getX();
+            float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;
+            Node node = e.getValue();
+            moveRobot(e.getKey().getUid(), x, z, angle, node);
+            Chassis chassis = e.getKey().getEquipment(Chassis.class);
+            if (chassis != null && chassis.isWorking()) {
+                robotModel.animateChassis(node);
+            }
+        }
+    }
+
+    private void moveRobot(String uid, float x, float z, float angle, Node robot) {
+        float size = RobotBox.getSize(uid);
+
+        Quaternion yaw = new Quaternion();
+        yaw.fromAngleAxis(angle, new Vector3f(0, 1, 0));
+
+        float radius = size / 2;
+
+        Vector3f x1, x2, z1, z2;
+        x1 = getTerrainPoint(x - radius, z);
+        x2 = getTerrainPoint(x + radius, z);
+        z1 = getTerrainPoint(x, z - radius);
+        z2 = getTerrainPoint(x, z + radius);
+
+        Vector3f zAxis = z2.subtract(z1);
+        Vector3f xAxis = x2.subtract(x1);
+        Vector3f yAxis = new Vector3f(0, 1, 0);
+        Quaternion quat = new Quaternion().fromAxes(
+                xAxis,
+                yAxis,
+                zAxis
+        );
+        robot.setLocalRotation(quat.mult(yaw));
+        robot.setLocalTranslation(x, Math.min(x1.y + x2.y, z1.y + z2.y) / 2, z);
     }
 
     @Override
@@ -298,7 +305,7 @@ public class LiveFrame extends SimpleApplication {
         AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
         heightmap.load();
 
-        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, heightmap.getHeightMap());
+        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, null);
         terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
         TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
         control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier

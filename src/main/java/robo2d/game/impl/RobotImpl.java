@@ -35,7 +35,7 @@ public class RobotImpl implements Robot, Obj, Physical {
         this.uid = uid;
         this.owner = owner;
         this.game = game;
-        box = new RobotBox(position, angle);
+        box = new RobotBox(uid, position, angle);
     }
 
     public ComputerImpl getComputer() {
@@ -148,7 +148,7 @@ public class RobotImpl implements Robot, Obj, Physical {
 
     public void applyEffects() {
         for (HasEffects eq : hasEffects) {
-            box.applyForces(eq.getEffects());
+            box.applyForces(uid, eq.getEffects());
         }
     }
 

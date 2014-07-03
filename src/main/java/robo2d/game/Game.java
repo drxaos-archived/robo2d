@@ -286,7 +286,7 @@ public class Game {
                 debugDraw.drawString(res, msg, Color3f.RED);
             }
             debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, -1.5f * (float) RobotBox.SIZE)), res);
-            debugDraw.drawString(res, String.format("E:%.2f", robot.getEnergy()) + ", " + (robot.getComputer().isRunning() ? "ON" : "OFF"), Color3f.BLUE);
+            debugDraw.drawString(res, String.format("E:%.2f", robot.getEnergy()) + ", " + (robot.getComputer() != null && robot.getComputer().isRunning() ? "ON" : "OFF"), Color3f.BLUE);
             KPoint point = robot.getDebugPoint();
             if (point != null) {
                 debugDraw.drawPoint(new Vec2((float) point.getX(), (float) point.getY()), 3, Color3f.WHITE);

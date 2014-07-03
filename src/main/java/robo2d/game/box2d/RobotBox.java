@@ -11,13 +11,23 @@ import java.util.Map;
 
 public class RobotBox extends Box {
 
-    public static double SIZE = 1;
+    public static float SIZE = 1;
+    public static float AGR_SIZE = 1.4f;
 
-    public RobotBox(KPoint position, double angle) {
+    public static float getSize(String uid) {
+        if (uid.startsWith("AGR")) {
+            return AGR_SIZE;
+        } else {
+            return SIZE;
+        }
+    }
+
+    public RobotBox(String uid, KPoint position, double angle) {
+        float size = getSize(uid);
 
         {
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox((float) SIZE, (float) SIZE);
+            shape.setAsBox(size, size);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -30,9 +40,9 @@ public class RobotBox extends Box {
         {
             PolygonShape shape = new PolygonShape();
             shape.set(new Vec2[]{
-                    new Vec2(-0.8f * (float) SIZE, 0),
-                    new Vec2(0, 1.2f * (float) SIZE),
-                    new Vec2(0.8f * (float) SIZE, 0),
+                    new Vec2(-0.8f * size, 0),
+                    new Vec2(0, 1.2f * size),
+                    new Vec2(0.8f * size, 0),
             }, 3);
 
             FixtureDef fixtureDef = new FixtureDef();
@@ -59,17 +69,18 @@ public class RobotBox extends Box {
         return (double) body.getAngle() - Math.PI / 2;
     }
 
-    public void applyForces(Map<KPoint, Vec2> forces) {
+    public void applyForces(String uid, Map<KPoint, Vec2> forces) {
         if (body == null) {
             return;
         }
+        float size = getSize(uid);
         float a = body.getAngle();
         for (Map.Entry<KPoint, Vec2> e : forces.entrySet()) {
 
             Vec2 worldVector = body.getWorldVector(e.getValue());
             Vec2 point = new Vec2((float) e.getKey().getX(), (float) e.getKey().getY());
             point.normalize();
-            point.mul((float) SIZE);
+            point.mul(size);
             Vec2 worldPoint = body.getWorldPoint(point);
 
             body.applyForce(worldVector, worldPoint);

@@ -15,7 +15,7 @@ public class ConcurrentTest extends RobotTest {
         game.addPlayer(player1);
 
         for (int i = 0; i < 10; i++) {
-            RobotImpl robot = new RobotImpl("MR-CONC-" + i, game, player1, new KPoint(100 * Math.random(), 100 * Math.random()), Math.PI * 4 * Math.random());
+            RobotImpl robot = new RobotImpl((i % 2 == 0 ? "MR" : "AGR") + "-CONC-" + i, game, player1, new KPoint(100 * Math.random(), 100 * Math.random()), Math.PI * 4 * Math.random());
             ChassisImpl chassis = new ChassisImpl(300d);
             RadarImpl radar = new RadarImpl(game, 100d);
             ComputerImpl computer = new ComputerImpl(ConcurrentTestProgram.class);
