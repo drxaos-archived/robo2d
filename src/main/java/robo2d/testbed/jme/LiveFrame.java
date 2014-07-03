@@ -24,6 +24,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
+import com.zero_separation.plugins.imagepainter.ImagePainter;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
@@ -309,6 +310,8 @@ public class LiveFrame extends SimpleApplication {
         mat.setFloat("Tex3Scale", 450);
 
         Texture heightMapImage = assetManager.loadTexture("models/ground/ground2048.png");
+        ImagePainter painter = new ImagePainter(heightMapImage.getImage());
+        painter.paintRect(1000, 1000, 20, 40, new ColorRGBA(0.6f, 0.6f, 0.6f, 1.0f), ImagePainter.BlendMode.SET);
         AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
         heightmap.load();
 
