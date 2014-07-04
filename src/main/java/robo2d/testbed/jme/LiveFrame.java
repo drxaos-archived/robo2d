@@ -23,6 +23,7 @@ import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
+import com.jme3.texture.image.DefaultImageRaster;
 import com.jme3.util.SkyFactory;
 import com.zero_separation.plugins.imagepainter.ImagePainter;
 import de.lessvoid.nifty.Nifty;
@@ -43,6 +44,9 @@ import slick2d.NativeLoader;
 import straightedge.geom.KPoint;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -311,7 +315,24 @@ public class LiveFrame extends SimpleApplication {
 
         Texture heightMapImage = assetManager.loadTexture("models/ground/ground2048.png");
         ImagePainter painter = new ImagePainter(heightMapImage.getImage());
-        painter.paintRect(1000, 1000, 20, 40, new ColorRGBA(0.6f, 0.6f, 0.6f, 1.0f), ImagePainter.BlendMode.SET);
+
+        float[] blur = {.1111f, .1111f, .1111f,
+                .1111f, .1111f, .1111f,
+                .1111f, .1111f, .1111f};
+        BufferedImage img = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_BGR);
+        Graphics2D g = img.createGraphics();
+        g.setColor(Color.BLACK);
+        g.setBackground(Color.BLACK);
+        g.fillRect(0, 0, 2048, 2048);
+        g.setColor(Color.WHITE);
+        g.setBackground(Color.WHITE);
+        g.fillRect(1000, 1000, 20, 40);
+        BufferedImage imgOut = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_BGR);
+        Kernel kernel = new Kernel(3, 3, blur);
+        ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+        cop.filter(img, imgOut);
+//        painter.paintImage(0, 0, new DefaultImageRaster(), ImagePainter.BlendMode.LIGHTEN_ONLY, 0.5f);
+//        painter.paintRect(1000, 1000, 20, 40, new ColorRGBA(0.6f, 0.6f, 0.6f, 1.0f), ImagePainter.BlendMode.SET);
         AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
         heightmap.load();
 
