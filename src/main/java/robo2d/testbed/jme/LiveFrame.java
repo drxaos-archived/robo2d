@@ -6,7 +6,6 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.*;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
@@ -17,15 +16,8 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Texture;
-import com.jme3.texture.plugins.AWTLoader;
 import com.jme3.util.SkyFactory;
-import com.zero_separation.plugins.imagepainter.ImagePainter;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
@@ -44,9 +36,7 @@ import slick2d.NativeLoader;
 import straightedge.geom.KPoint;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,6 +86,8 @@ public class LiveFrame extends SimpleApplication {
 
     TerrainQuad terrain;
     RobotModel robotModel;
+    GroundModel groundModel;
+    RockModel rockModel;
     Nifty nifty;
 
     Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
@@ -125,7 +117,17 @@ public class LiveFrame extends SimpleApplication {
         DirectionalLight sun = createSun();
         rootNode.addLight(sun);
 
-        terrain = createGround();
+        rockModel = new RockModel(assetManager);
+        for (Physical physical : game.getPhysicals()) {
+            if (physical instanceof WallImpl) {
+                java.util.List<Point2D> vertices = ((WallImpl) physical).getVertices();
+                Spatial rock = rockModel.createRock(vertices);
+                rootNode.attachChild(rock);
+            }
+        }
+
+        groundModel = new GroundModel(assetManager, cam, game);
+        terrain = groundModel.createGround();
         rootNode.attachChild(terrain);
 
         robotModel = new RobotModel(assetManager);
@@ -145,7 +147,7 @@ public class LiveFrame extends SimpleApplication {
         camPos.setX((float) newPos.y);
         cam.setLocation(camPos);
         float aspect = (float) cam.getWidth() / (float) cam.getHeight();
-        cam.setFrustumPerspective(70f, aspect, 0.01f, cam.getFrustumFar());
+        cam.setFrustumPerspective(70f, aspect, 0.01f, 200f);
 
         // GUI
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
@@ -201,6 +203,9 @@ public class LiveFrame extends SimpleApplication {
         ray.setDirection(dir);
         terrain.collideWith(ray, results);
         CollisionResult result = results.getClosestCollision();
+        if (result == null) {
+            return new Vector3f();
+        }
         return result.getContactPoint();
     }
 
@@ -226,7 +231,7 @@ public class LiveFrame extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         updateRobots();
-        updatePlayer();
+//        updatePlayer();
     }
 
     private void updatePlayer() {
@@ -292,62 +297,6 @@ public class LiveFrame extends SimpleApplication {
         //TODO: add render code
     }
 
-    private TerrainQuad createGround() {
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Terrain/Terrain.j3md");
-        mat.setBoolean("useTriPlanarMapping", false);
-        mat.setTexture("Alpha", assetManager.loadTexture("models/ground/alphamap.png"));
-
-        Texture grass = assetManager.loadTexture("models/ground/grass.jpg");
-        grass.setWrap(Texture.WrapMode.Repeat);
-        mat.setTexture("Tex1", grass);
-        mat.setFloat("Tex1Scale", 64);
-
-        Texture dirt = assetManager.loadTexture("models/ground/dirt.jpg");
-        dirt.setWrap(Texture.WrapMode.Repeat);
-        mat.setTexture("Tex2", dirt);
-        mat.setFloat("Tex2Scale", 16);
-
-        Texture rock = assetManager.loadTexture("models/ground/ground.jpg");
-        rock.setWrap(Texture.WrapMode.Repeat);
-        mat.setTexture("Tex3", rock);
-        mat.setFloat("Tex3Scale", 450);
-
-        Texture heightMapImage = assetManager.loadTexture("models/ground/ground2048.png");
-        ImagePainter painter = new ImagePainter(heightMapImage.getImage());
-
-        float[] blur = {.5f, .5f, .5f, .5f, .5f,
-                .5f, .5f, .5f, .5f, .5f,
-                .5f, .5f, .5f, .5f, .5f,
-                .5f, .5f, .5f, .5f, .5f,
-                .5f, .5f, .5f, .5f, .5f};
-        BufferedImage img = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_BGR);
-        Graphics2D g = img.createGraphics();
-        g.setColor(Color.BLACK);
-        g.setBackground(Color.BLACK);
-        g.fillRect(0, 0, 2048, 2048);
-        g.setColor(Color.WHITE);
-        g.setBackground(Color.WHITE);
-        g.fillRect(1000, 1000, 20, 40);
-        BufferedImage imgOut = new BufferedImage(2048, 2048, BufferedImage.TYPE_INT_BGR);
-        Kernel kernel = new Kernel(5, 5, blur);
-        ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-        cop.filter(img, imgOut);
-        com.jme3.texture.Image image = new AWTLoader().load(imgOut, true);
-        painter.paintImage(0, 0, new ImagePainter(image).getImageRaster(), ImagePainter.BlendMode.LIGHTEN_ONLY, 0.5f);
-//        painter.paintRect(1000, 1000, 20, 40, new ColorRGBA(0.6f, 0.6f, 0.6f, 1.0f), ImagePainter.BlendMode.SET);
-        AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.3f);
-        heightmap.load();
-
-        TerrainQuad terrain = new TerrainQuad("ground", 65, 2049, heightmap.getHeightMap());
-        terrain.setShadowMode(RenderQueue.ShadowMode.Receive);
-        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-        control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier
-        terrain.addControl(control);
-        terrain.setMaterial(mat);
-
-        return terrain;
-    }
 
     private DirectionalLight createSun() {
         DirectionalLight sun = new DirectionalLight();
