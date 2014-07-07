@@ -7,6 +7,7 @@ import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class WayTest extends RobotTest {
 
@@ -25,6 +26,7 @@ public class WayTest extends RobotTest {
         points.add(new Point2D.Double(w / 2, -(h * 2 + sp) / 2));
         points.add(new Point2D.Double(w / 2, -(h * 2 + sp) / 2 + h));
         points.add(new Point2D.Double(-w / 2, -(h * 2 + sp) / 2 + h));
+        Collections.reverse(points);
         game.addWall(new WallImpl(points, 0));
 
         points.clear();
@@ -34,7 +36,7 @@ public class WayTest extends RobotTest {
         points.add(new Point2D.Double(-w / 2, (h * 2 + sp) / 2 - h));
         game.addWall(new WallImpl(points, 0));
 
-        PlayerImpl player1 = new PlayerImpl("player1");
+        PlayerImpl player1 = new PlayerImpl("player1", new KPoint(0, 0), 0);
         game.addPlayer(player1);
 
         RobotImpl robot = new RobotImpl("MR-WY-1", game, player1, new KPoint(0, -10), Math.PI * 4 * Math.random());

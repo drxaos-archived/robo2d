@@ -36,7 +36,6 @@ import slick2d.NativeLoader;
 import straightedge.geom.KPoint;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,8 +119,7 @@ public class LiveFrame extends SimpleApplication {
         rockModel = new RockModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
             if (physical instanceof WallImpl) {
-                java.util.List<Point2D> vertices = ((WallImpl) physical).getVertices();
-                Spatial rock = rockModel.createRock(vertices);
+                Spatial rock = rockModel.createRock((WallImpl) physical);
                 rootNode.attachChild(rock);
             }
         }
@@ -146,6 +144,7 @@ public class LiveFrame extends SimpleApplication {
         camPos.setZ((float) newPos.x);
         camPos.setX((float) newPos.y);
         cam.setLocation(camPos);
+        cam.setRotation(new Quaternion().fromAngleAxis(game.getPlayer().getInitAngle(), new Vector3f(0, 1, 0)));
         float aspect = (float) cam.getWidth() / (float) cam.getHeight();
         cam.setFrustumPerspective(70f, aspect, 0.01f, 200f);
 
@@ -192,6 +191,10 @@ public class LiveFrame extends SimpleApplication {
     }
 
     private Vector3f getTerrainPoint(float x, float z) {
+        return getTerrainPoint(x, z, false);
+    }
+
+    private Vector3f getTerrainPoint(float x, float z, boolean failOnNoResult) {
         x += 0.001;
         z += 0.001;
         CollisionResults results = new CollisionResults();
@@ -204,7 +207,11 @@ public class LiveFrame extends SimpleApplication {
         terrain.collideWith(ray, results);
         CollisionResult result = results.getClosestCollision();
         if (result == null) {
-            return new Vector3f();
+            if (failOnNoResult) {
+                throw new TerrainNotFoundException();
+            } else {
+                return new Vector3f(x, 0, z);
+            }
         }
         return result.getContactPoint();
     }
@@ -230,8 +237,20 @@ public class LiveFrame extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+        if (!isSceneRendered()) {
+            return;
+        }
         updateRobots();
-//        updatePlayer();
+        updatePlayer();
+    }
+
+    private boolean isSceneRendered() {
+        try {
+            getTerrainPoint(cam.getLocation().getX(), cam.getLocation().getZ());
+        } catch (TerrainNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     private void updatePlayer() {

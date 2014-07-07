@@ -9,10 +9,12 @@ import straightedge.geom.KPoint;
 public class PlayerImpl implements Player, Physical {
     String name;
     PlayerBox box;
+    float initAngle;
 
-    public PlayerImpl(String name) {
+    public PlayerImpl(String name, KPoint position, float angle) {
         this.name = name;
-        box = new PlayerBox(new KPoint(0, 0));
+        this.initAngle = angle;
+        box = new PlayerBox(position);
     }
 
     @Override
@@ -23,5 +25,9 @@ public class PlayerImpl implements Player, Physical {
     @Override
     public Box getBox() {
         return box;
+    }
+
+    public float getInitAngle() {
+        return initAngle;
     }
 }

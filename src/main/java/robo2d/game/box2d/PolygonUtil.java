@@ -20,6 +20,9 @@ public class PolygonUtil {
         for (int i = 0; i < triangles.getNumGeometries(); i++) {
             Polygon polygonTriangle = (Polygon) triangles.getGeometryN(i);
             KPolygon kPolygonTriangle = polygonConverter.makeKPolygonFromExterior(polygonTriangle);
+            if (kPolygonTriangle.isCounterClockWise()) {
+                kPolygonTriangle.reversePointOrder();
+            }
             result.add(kPolygonTriangle);
         }
         return result;

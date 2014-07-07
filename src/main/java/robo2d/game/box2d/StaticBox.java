@@ -13,8 +13,10 @@ import java.util.List;
 
 public class StaticBox extends Box {
 
+    List<KPolygon> triangulated;
+
     public StaticBox(KPolygon kPolygon, KPoint position, double angle) {
-        List<KPolygon> triangulated = PolygonUtil.triangulate(kPolygon);
+        triangulated = PolygonUtil.triangulate(kPolygon);
         for (KPolygon polygon : triangulated) {
             PolygonShape shape = new PolygonShape();
             ArrayList<KPoint> points = polygon.getPoints();
@@ -39,5 +41,9 @@ public class StaticBox extends Box {
         bodyDef.allowSleep = true;
 //        bodyDef.linearDamping = 10f;
 //        bodyDef.angularDamping = 8f;
+    }
+
+    public List<KPolygon> getTriangulated() {
+        return triangulated;
     }
 }

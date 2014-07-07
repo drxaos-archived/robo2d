@@ -19,10 +19,10 @@ public class WallImpl implements Obj, Physical {
     List<Point2D> vertices;
 
     public WallImpl(List<Point2D> vertices, double angle) {
-        this.vertices = Collections.unmodifiableList(vertices);
+        this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
 
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();
-        for (Point2D vertice : vertices) {
+        for (Point2D vertice : this.vertices) {
             kPoints.add(new KPoint(vertice.getX(), vertice.getY()));
         }
 
@@ -42,6 +42,10 @@ public class WallImpl implements Obj, Physical {
     @Override
     public List<Point2D> getVertices() {
         return vertices;
+    }
+
+    public List<KPolygon> getTriangulation() {
+        return box.getTriangulated();
     }
 
     @Override

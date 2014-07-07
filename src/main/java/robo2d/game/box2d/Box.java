@@ -1,10 +1,7 @@
 package robo2d.game.box2d;
 
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.Fixture;
-import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.*;
 import straightedge.geom.KPoint;
 
 import java.util.ArrayList;
@@ -54,5 +51,14 @@ public class Box {
             }
         }
         return false;
+    }
+
+    public void resetPosition(float x, float y) {
+        if (body == null) {
+            return;
+        }
+        body.setType(BodyType.STATIC);
+        body.setTransform(new Vec2(x, y), 0);
+        body.setType(BodyType.DYNAMIC);
     }
 }

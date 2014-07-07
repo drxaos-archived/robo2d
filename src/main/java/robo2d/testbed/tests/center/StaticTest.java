@@ -12,7 +12,7 @@ public class StaticTest extends RobotTest {
     public Game createGame() {
         Game game = new Game(getWorld(), getDebugDraw());
 
-        PlayerImpl player1 = new PlayerImpl("player1");
+        PlayerImpl player1 = new PlayerImpl("player1", new KPoint(0, -2), 0);
         game.addPlayer(player1);
 
         RobotImpl robot = new RobotImpl("AGR-ENG-1", game, player1, new KPoint(0, 0), 0);
