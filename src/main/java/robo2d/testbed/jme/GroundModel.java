@@ -2,13 +2,13 @@ package robo2d.testbed.jme;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
-import com.jme3.bounding.BoundingSphere;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.*;
 import com.jme3.terrain.geomipmap.grid.ImageTileLoader;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
@@ -16,16 +16,8 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import com.jme3.texture.plugins.AWTLoader;
-import composite.BlendComposite;
-import jme3tools.converters.ImageToAwt;
 import robo2d.game.Game;
-import robo2d.game.box2d.Physical;
-import robo2d.game.impl.WallImpl;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.IOException;
@@ -43,8 +35,8 @@ public class GroundModel {
         this.game = game;
     }
 
-    public TerrainQuad createGround() {
-        TerrainGrid terrain = new TerrainGrid("ground", 65, 257, new GroundTileLoader(assetManager, game));
+    public Node createGround() {
+        TerrainGrid terrain = new TerrainGrid("grid", 65, 257, new GroundTileLoader(assetManager, game));
 
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Terrain/Terrain.j3md");
@@ -74,7 +66,10 @@ public class GroundModel {
         control.setLodCalculator(new DistanceLodCalculator(65, 2.7f)); // patch size, and a multiplier
         terrain.addControl(control);
 
-        return terrain;
+        Node node = new Node("ground");
+        node.attachChild(terrain);
+
+        return node;
     }
 
 }
