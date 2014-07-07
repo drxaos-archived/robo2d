@@ -8,6 +8,7 @@ import com.jme3.scene.*;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
+import org.jbox2d.common.Vec2;
 import robo2d.game.impl.WallImpl;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -36,9 +37,9 @@ public class RockModel {
 
             Mesh mesh = new Mesh();
             Vector3f[] vertices = new Vector3f[3];
-            vertices[0] = new Vector3f((float) points.get(0).getY(), H, (float) points.get(0).getX());
-            vertices[1] = new Vector3f((float) points.get(1).getY(), H, (float) points.get(1).getX());
-            vertices[2] = new Vector3f((float) points.get(2).getY(), H, (float) points.get(2).getX());
+            vertices[0] = new Vector3f((float) points.get(0).getY(), H / 2, (float) points.get(0).getX());
+            vertices[1] = new Vector3f((float) points.get(1).getY(), H / 2, (float) points.get(1).getX());
+            vertices[2] = new Vector3f((float) points.get(2).getY(), H / 2, (float) points.get(2).getX());
 
             Vector2f[] texCoord = new Vector2f[3];
             texCoord[0] = new Vector2f((float) points.get(0).getY(), (float) points.get(0).getX());
@@ -62,6 +63,9 @@ public class RockModel {
             node.attachChild(geo);
         }
 
+        Vec2 center = new Vec2();
+        int pointsCounter = 0;
+
         for (int i = 0; i < vert.size(); i++) {
             Point2D v1 = vert.get(i);
             Point2D v2 = vert.get((i + 1) % vert.size());
@@ -70,15 +74,18 @@ public class RockModel {
                 continue;
             }
 
+            center = center.add(new Vec2((float) v1.getX(), (float) v1.getY()));
+            pointsCounter++;
+
             Mesh mesh = new Mesh();
 
             final float W = (float) v1.distance(v2);
 
             Vector3f[] vertices = new Vector3f[4];
-            vertices[0] = new Vector3f((float) v1.getY(), 0, (float) v1.getX());
-            vertices[1] = new Vector3f((float) v2.getY(), 0, (float) v2.getX());
-            vertices[2] = new Vector3f((float) v2.getY(), H, (float) v2.getX());
-            vertices[3] = new Vector3f((float) v1.getY(), H, (float) v1.getX());
+            vertices[0] = new Vector3f((float) v1.getY(), -H / 2, (float) v1.getX());
+            vertices[1] = new Vector3f((float) v2.getY(), -H / 2, (float) v2.getX());
+            vertices[2] = new Vector3f((float) v2.getY(), H / 2, (float) v2.getX());
+            vertices[3] = new Vector3f((float) v1.getY(), H / 2, (float) v1.getX());
 
             Vector2f[] texCoord = new Vector2f[4];
             texCoord[0] = new Vector2f(0, 0);
@@ -117,6 +124,10 @@ public class RockModel {
         mat.setTexture("SpecularMap", tex);
         mat.setTexture("ParallaxMap", tex);
         spatial.setMaterial(mat);
+
+        center = center.mul(1f / pointsCounter);
+        spatial.setUserData("centerZ", center.x);
+        spatial.setUserData("centerX", center.y);
 
         return spatial;
     }

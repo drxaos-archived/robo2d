@@ -18,18 +18,18 @@ import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import robo2d.game.Game;
 
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GroundModel {
+    GroundObjectsControl groundObjectsControl;
     AssetManager assetManager;
     Camera camera;
     Game game;
 
-    public GroundModel(AssetManager assetManager, Camera camera, Game game) {
+    public GroundModel(GroundObjectsControl groundObjectsControl, AssetManager assetManager, Camera camera, Game game) {
+        this.groundObjectsControl = groundObjectsControl;
         this.assetManager = assetManager;
         this.camera = camera;
         this.game = game;
@@ -37,6 +37,22 @@ public class GroundModel {
 
     public Node createGround() {
         TerrainGrid terrain = new TerrainGrid("grid", 65, 257, new GroundTileLoader(assetManager, game));
+        terrain.addListener(new TerrainGridListener() {
+            @Override
+            public void gridMoved(Vector3f vector3f) {
+
+            }
+
+            @Override
+            public void tileAttached(Vector3f vector3f, TerrainQuad terrainQuad) {
+                groundObjectsControl.onTerrainLoaded();
+            }
+
+            @Override
+            public void tileDetached(Vector3f vector3f, TerrainQuad terrainQuad) {
+
+            }
+        });
 
         Material mat = new Material(assetManager,
                 "Common/MatDefs/Terrain/Terrain.j3md");
@@ -89,45 +105,6 @@ class GroundTileLoader implements TerrainGridTileLoader {
         this.game = game;
     }
 
-    public void setHeightScale(float heightScale) {
-        this.heightScale = heightScale;
-    }
-
-
-    public static ConvolveOp getGaussianBlurFilter(int radius,
-                                                   boolean horizontal) {
-        if (radius < 1) {
-            throw new IllegalArgumentException("Radius must be >= 1");
-        }
-
-        int size = radius * 2 + 1;
-        float[] data = new float[size];
-
-        float sigma = radius / 3.0f;
-        float twoSigmaSquare = 2.0f * sigma * sigma;
-        float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
-        float total = 0.0f;
-
-        for (int i = -radius; i <= radius; i++) {
-            float distance = i * i;
-            int index = i + radius;
-            data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
-            total += data[index];
-        }
-
-        for (int i = 0; i < data.length; i++) {
-            data[i] /= total;
-        }
-
-        Kernel kernel = null;
-        if (horizontal) {
-            kernel = new Kernel(size, 1, data);
-        } else {
-            kernel = new Kernel(1, size, data);
-        }
-        return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-    }
-
     private HeightMap getHeightMapAt(Vector3f location) {
         int x = ((int) Math.abs(location.x)) % 2;
         int z = ((int) Math.abs(location.z)) % 2;
@@ -137,38 +114,9 @@ class GroundTileLoader implements TerrainGridTileLoader {
         String name = null;
         try {
             final Texture texture = assetManager.loadTexture("models/ground/ground_" + x + "_" + z + ".png");
-//            BufferedImage heightMapAwtImage = ImageToAwt.convert(texture.getImage(), false, true, 0);
-//            BufferedImage rocksImg = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
-//            Graphics2D g = rocksImg.createGraphics();
-//            g.setColor(Color.BLACK);
-//            g.setBackground(Color.BLACK);
-//            g.fillRect(0, 0, 128, 128);
-//            Color rocksColor = new Color(50, 50, 50);
-//            g.setColor(rocksColor);
-//            g.setBackground(rocksColor);
-//            for (Physical physical : game.getPhysicals()) {
-//                if (physical instanceof WallImpl) {
-//                    java.util.List<Point2D> vertices = ((WallImpl) physical).getVertices();
-//                    int[] xp = new int[vertices.size()];
-//                    int[] yp = new int[vertices.size()];
-//                    for (int i = 0; i < vertices.size(); i++) {
-//                        xp[i] = (int) vertices.get(i).getX();
-//                        yp[i] = (int) vertices.get(i).getY();
-//                    }
-//                    g.fillPolygon(xp, yp, vertices.size());
-//                }
-//            }
-//            rocksImg = getGaussianBlurFilter(2, true).filter(rocksImg, null);
-//            rocksImg = getGaussianBlurFilter(2, false).filter(rocksImg, null);
-//            Graphics2D g2 = heightMapAwtImage.createGraphics();
-//            g2.setComposite(BlendComposite.Add);
-//            g2.drawImage(rocksImg, 0, 0, null);
-//            texture.setImage(new AWTLoader().load(heightMapAwtImage, true));
-
             heightmap = new ImageBasedHeightMap(texture.getImage());
             heightmap.setHeightScale(heightScale);
             heightmap.load();
-//            heightmap.smooth(0.8f, 1);
         } catch (AssetNotFoundException e) {
             logger.log(Level.WARNING, "Asset {0} not found, loading zero heightmap instead", name);
         }

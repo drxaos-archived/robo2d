@@ -155,8 +155,6 @@ public class Game {
             if (computer != null) {
                 if (robot.getEnergy() < 0.01) {
                     computer.stopProgram();
-                } else {
-                    computer.startProgram();
                 }
             }
         }

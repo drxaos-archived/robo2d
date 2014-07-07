@@ -16,7 +16,6 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
-import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
@@ -40,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LiveFrame extends SimpleApplication {
+public class LiveFrame extends SimpleApplication implements GroundObjectsControl {
 
     static {
         NativeLoader.load("build/natives");
@@ -55,6 +54,7 @@ public class LiveFrame extends SimpleApplication {
         appSettings.setResolution(1024, 768);
         appSettings.setDepthBits(24);
         appSettings.setBitsPerPixel(24);
+        appSettings.setSamples(4);
         app.setSettings(appSettings);
         app.setShowSettings(false);
         app.setPauseOnLostFocus(false);
@@ -83,7 +83,7 @@ public class LiveFrame extends SimpleApplication {
 
     Game game;
 
-    TerrainQuad terrain;
+    Node terrain;
     RobotModel robotModel;
     GroundModel groundModel;
     RockModel rockModel;
@@ -124,7 +124,7 @@ public class LiveFrame extends SimpleApplication {
             }
         }
 
-        groundModel = new GroundModel(assetManager, cam, game);
+        groundModel = new GroundModel(this, assetManager, cam, game);
         terrain = groundModel.createGround();
         rootNode.attachChild(terrain);
 
@@ -244,6 +244,22 @@ public class LiveFrame extends SimpleApplication {
         updatePlayer();
     }
 
+    private void updateRocks() {
+        for (Spatial spatial : rootNode.getChildren()) {
+            if (spatial.getName().equals("rock") && spatial.getUserData("centerY") == null) {
+                float z = spatial.getUserData("centerZ");
+                float x = spatial.getUserData("centerX");
+                try {
+                    Vector3f terrainPoint = getTerrainPoint(x, z, true);
+                    spatial.setLocalTranslation(0, terrainPoint.getY(), 0);
+                    spatial.setUserData("centerY", terrainPoint.getY());
+                } catch (TerrainNotFoundException e) {
+                    // wait more
+                }
+            }
+        }
+    }
+
     private boolean isSceneRendered() {
         try {
             getTerrainPoint(cam.getLocation().getX(), cam.getLocation().getZ());
@@ -328,5 +344,10 @@ public class LiveFrame extends SimpleApplication {
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(1f));
         return al;
+    }
+
+    @Override
+    public void onTerrainLoaded() {
+        updateRocks();
     }
 }

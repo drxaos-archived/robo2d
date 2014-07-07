@@ -14,9 +14,8 @@ abstract public class RobotProgram implements Runnable {
 
     @Override
     final public void run() {
-        while (true) {
-            program();
-        }
+        robot.waitForStep();
+        program();
     }
 
     final public void init(Robot robot) {

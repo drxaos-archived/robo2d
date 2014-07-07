@@ -60,6 +60,6 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     }
 
     public boolean isRunning() {
-        return program != null;
+        return program != null && program.isAlive();
     }
 }
