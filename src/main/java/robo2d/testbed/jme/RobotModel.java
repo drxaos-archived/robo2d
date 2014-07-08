@@ -38,7 +38,7 @@ public class RobotModel {
 
     protected Node createRobot() {
         if (robotModel1 == null) {
-            robotModel1 = assetManager.loadModel("models/robot/robot.j3o");
+            robotModel1 = assetManager.loadModel("models/robot/robot.obj");
             Vector3f[] vertices = getVertices(robotModel1);
             for (Vector3f v : vertices) {
                 if (v.z < back) {
