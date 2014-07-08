@@ -1,12 +1,17 @@
 package robo2d.testbed.jme;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
+import com.jme3.scene.*;
+import com.jme3.texture.Texture;
+import com.jme3.util.BufferUtils;
 import straightedge.geom.KPoint;
+
+import java.awt.geom.Point2D;
 
 public class BaseModel {
     AssetManager assetManager;
@@ -15,7 +20,7 @@ public class BaseModel {
         this.assetManager = assetManager;
     }
 
-    Spatial baseModel1;
+    Spatial baseModel1, rackModel1;
     float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
     float scaleW, scaleL, scaleH;
 
@@ -45,13 +50,60 @@ public class BaseModel {
             }
             scaleW = 6.2f / Math.max(left, Math.abs(right));
             scaleL = 9.7f / Math.max(front, Math.abs(back));
-            scaleH = 6.2f / Math.max(top, Math.abs(bottom));
+            scaleH = 4.2f / Math.max(top, Math.abs(bottom));
             baseModel1.setLocalScale(scaleW, scaleH, scaleL);
-            baseModel1.setLocalTranslation((right + left) / -2 * scaleW, bottom * scaleH, (front + back) / -2 * scaleL);
+            baseModel1.setLocalTranslation((right + left) / -2 * scaleW, bottom / -2 * scaleH - 0.3f, (front + back) / -2 * scaleL);
             baseModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        }
+        if (rackModel1 == null) {
+            Point2D v2 = new Point2D.Float(0, 2);
+            Point2D v1 = new Point2D.Float(2, 3);
+
+            Mesh mesh = new Mesh();
+
+            final float W = 2.5f;
+            final float H = 3;
+
+            Vector3f[] vertices = new Vector3f[4];
+            vertices[0] = new Vector3f((float) v1.getY(), 0, (float) v1.getX());
+            vertices[1] = new Vector3f((float) v2.getY(), 0, (float) v2.getX());
+            vertices[2] = new Vector3f((float) v2.getY(), H, (float) v2.getX());
+            vertices[3] = new Vector3f((float) v1.getY(), H, (float) v1.getX());
+
+            Vector2f[] texCoord = new Vector2f[4];
+            texCoord[1] = new Vector2f(1, 0);
+            texCoord[2] = new Vector2f(1, 1);
+            texCoord[3] = new Vector2f(0, 1);
+            texCoord[0] = new Vector2f(0, 0);
+
+            Vector3f[] normals = new Vector3f[4];
+            normals[0] = normals[1] = normals[2] = normals[3] = vertices[3].subtract(vertices[0]).cross(vertices[1].subtract(vertices[0]));
+
+            int[] indexes = {
+                    3, 1, 0,
+                    3, 2, 1,
+            };
+
+            mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
+            mesh.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
+            mesh.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indexes));
+            mesh.setBuffer(VertexBuffer.Type.Normal, 3, BufferUtils.createFloatBuffer(normals));
+            mesh.updateBound();
+
+            //mesh.scaleTextureCoordinates(new Vector2f(0.2f, 0.2f));
+
+            rackModel1 = new Geometry("mesh", mesh);
+            Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            mat.setFloat("Shininess", 10000);
+            Texture tex = assetManager.loadTexture("models/computer/rack/server.jpg");
+            mat.setTexture("DiffuseMap", tex);
+            mat.setTexture("SpecularMap", tex);
+            mat.setTexture("ParallaxMap", tex);
+            rackModel1.setMaterial(mat);
         }
         Node node = new Node("base");
         node.attachChild(baseModel1.clone());
+        node.attachChild(rackModel1.clone());
 
         node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
