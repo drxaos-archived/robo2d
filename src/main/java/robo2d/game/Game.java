@@ -23,6 +23,7 @@ public class Game {
     protected List<Physical> physicals = new ArrayList<Physical>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
     protected PlayerImpl player;
+    protected BaseImpl base;
 
     final Map<SatelliteScanner, SatelliteScanner.Request> satelliteRequests = new HashMap<SatelliteScanner, SatelliteScanner.Request>();
 
@@ -49,6 +50,11 @@ public class Game {
     public void addPlayer(PlayerImpl player) {
         physicals.add(player);
         this.player = player;
+    }
+
+    public void addBase(BaseImpl base) {
+        physicals.add(base);
+        this.base = base;
     }
 
     public PlayerImpl getPlayer() {
@@ -207,6 +213,10 @@ public class Game {
             }
         }
         return new Radar.SatelliteScanData(map, accuracy, satelliteResolution, satelliteResolution);
+    }
+
+    public BaseImpl getBase() {
+        return base;
     }
 
     private static class RayCastClosestCallback implements RayCastCallback {

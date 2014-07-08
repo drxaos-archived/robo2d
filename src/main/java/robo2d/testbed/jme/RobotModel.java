@@ -6,16 +6,10 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Texture;
-import com.jme3.util.BufferUtils;
 import robo2d.game.impl.RobotImpl;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 public class RobotModel {
     AssetManager assetManager;
@@ -39,7 +33,7 @@ public class RobotModel {
     protected Node createRobot() {
         if (robotModel1 == null) {
             robotModel1 = assetManager.loadModel("models/robot/robot.obj");
-            Vector3f[] vertices = getVertices(robotModel1);
+            Vector3f[] vertices = ModelUtils.getVertices(robotModel1);
             for (Vector3f v : vertices) {
                 if (v.z < back) {
                     back = v.z;
@@ -97,7 +91,7 @@ public class RobotModel {
     protected Node createRobotAgr() {
         if (agrModel1 == null) {
             agrModel1 = assetManager.loadModel("models/agr/AGR.obj");
-            Vector3f[] vertices = getVertices(agrModel1);
+            Vector3f[] vertices = ModelUtils.getVertices(agrModel1);
             for (Vector3f v : vertices) {
                 if (v.x < front) {
                     front = v.x;
@@ -154,37 +148,5 @@ public class RobotModel {
             robot.getChild("r2").setCullHint(Spatial.CullHint.Dynamic);
             robot.getChild("r1").setCullHint(Spatial.CullHint.Always);
         }
-    }
-
-    public Vector3f[] getVertices(Spatial s) {
-
-        if (s instanceof Geometry) {
-            Geometry geometry = (Geometry) s;
-            FloatBuffer vertexBuffer = geometry.getMesh().getFloatBuffer(VertexBuffer.Type.Position);
-            return BufferUtils.getVector3Array(vertexBuffer);
-        } else if (s instanceof Node) {
-            Node n = (Node) s;
-
-            ArrayList<Vector3f[]> array = new ArrayList<Vector3f[]>();
-
-            for (Spatial ss : n.getChildren()) {
-                array.add(getVertices(ss));
-            }
-
-            int count = 0;
-            for (Vector3f[] vec : array) {
-                count += vec.length;
-            }
-
-            Vector3f[] returnn = new Vector3f[count];
-            count = -1;
-            for (Vector3f[] vec : array) {
-                for (Vector3f aVec : vec) {
-                    returnn[++count] = aVec;
-                }
-            }
-            return returnn;
-        }
-        return new Vector3f[0];
     }
 }

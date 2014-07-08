@@ -29,6 +29,7 @@ import robo2d.game.Game;
 import robo2d.game.api.Chassis;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
+import robo2d.game.impl.BaseImpl;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
 import slick2d.NativeLoader;
@@ -84,9 +85,11 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     Game game;
 
     Node terrain;
+    Node base;
     RobotModel robotModel;
     GroundModel groundModel;
     RockModel rockModel;
+    BaseModel baseModel;
     Nifty nifty;
 
     Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
@@ -138,6 +141,15 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                 walls.add((WallImpl) physical);
             }
         }
+
+        BaseImpl baseImpl = game.getBase();
+        if (baseImpl != null) {
+            baseModel = new BaseModel(assetManager);
+            base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
+            rootNode.attachChild(base);
+        }
+
+        ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));
 
         Vector3f camPos = cam.getLocation();
         KPoint newPos = game.getPlayer().getBox().getPosition();
@@ -244,14 +256,18 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         updatePlayer();
     }
 
-    private void updateRocks() {
+    private void updateStatics() {
+        ArrayList<String> statics = new ArrayList<String>();
+        statics.add("rock");
+        statics.add("base");
+
         for (Spatial spatial : rootNode.getChildren()) {
-            if (spatial.getName().equals("rock") && spatial.getUserData("centerY") == null) {
+            if (statics.contains(spatial.getName()) && spatial.getUserData("centerY") == null) {
                 float z = spatial.getUserData("centerZ");
                 float x = spatial.getUserData("centerX");
                 try {
                     Vector3f terrainPoint = getTerrainPoint(x, z, true);
-                    spatial.setLocalTranslation(0, terrainPoint.getY(), 0);
+                    spatial.setLocalTranslation(x, terrainPoint.getY(), z);
                     spatial.setUserData("centerY", terrainPoint.getY());
                 } catch (TerrainNotFoundException e) {
                     // wait more
@@ -348,6 +364,6 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     @Override
     public void onTerrainLoaded() {
-        updateRocks();
+        updateStatics();
     }
 }
