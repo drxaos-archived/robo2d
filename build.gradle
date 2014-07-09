@@ -12,6 +12,9 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'com.google.guava:guava-collections:r03'
+    compile 'commons-io:commons-io:2.4'
+    compile files('api/target/api-1.0.jar')
+    compile files('os/target/os-1.0.jar')
 //    compile localGroovy()
     compile 'org.jbox2d:jbox2d:2.2.1.1'
     compile 'org.jbox2d:jbox2d-testbed:2.2.1.1'

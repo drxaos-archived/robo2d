@@ -1,10 +1,10 @@
 package robo2d.game.impl;
 
 import robo2d.game.Game;
-import robo2d.game.api.Equipment;
-import robo2d.game.api.Player;
-import robo2d.game.api.Robot;
-import robo2d.game.api.map.Obj;
+import com.robotech.military.api.Equipment;
+import com.robotech.military.api.Player;
+import com.robotech.military.api.Robot;
+import com.robotech.military.api.map.Obj;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;

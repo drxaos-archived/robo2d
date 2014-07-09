@@ -37,12 +37,13 @@ public class WayTest extends RobotTest {
         game.addWall(new WallImpl(points, 0));
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(0, 0), 0);
+        player1.setNotebookDir("src/main/java/robo2d/testbed/tests/waypoints/notebook");
         game.addPlayer(player1);
 
-        RobotImpl robot = new RobotImpl("MR-WY-1", game, player1, new KPoint(0, -10), Math.PI * 4 * Math.random());
+        RobotImpl robot = new RobotImpl("MR_WY_1", game, player1, new KPoint(0, -10), Math.PI * 4 * Math.random());
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game, 100d);
-        ComputerImpl computer = new ComputerImpl(WayTestProgram.class);
+        ComputerImpl computer = new ComputerImpl(true);
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);

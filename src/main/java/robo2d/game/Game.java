@@ -1,5 +1,7 @@
 package robo2d.game;
 
+import com.robotech.military.api.Radar;
+import org.apache.commons.io.FileUtils;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.callbacks.RayCastCallback;
 import org.jbox2d.common.Color3f;
@@ -8,13 +10,14 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
-import robo2d.game.api.Radar;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
 import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,9 +107,31 @@ public class Game {
             physical.getBox().body = body;
         }
 
+
+        // Setup notebook
+
+        File template = new File("templates/notebook");
+        File notebook = new File("notebook");
+        try {
+            FileUtils.deleteDirectory(notebook);
+        } catch (IOException e) {
+        }
+        try {
+            FileUtils.copyDirectory(template, notebook);
+        } catch (IOException e) {
+        }
+
+        File playerNotebook = new File(getPlayer().getNotebookDir());
+        try {
+            FileUtils.copyDirectory(playerNotebook, notebook);
+        } catch (IOException e) {
+        }
+
+        // Start programs
+
         for (RobotImpl robot : robots) {
             ComputerImpl computer = robot.getComputer();
-            if (computer != null) {
+            if (computer != null && computer.isInitWorking()) {
                 computer.startProgram();
             }
         }

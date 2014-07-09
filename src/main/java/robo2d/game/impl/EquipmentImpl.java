@@ -1,6 +1,6 @@
 package robo2d.game.impl;
 
-import robo2d.game.api.Equipment;
+import com.robotech.military.api.Equipment;
 
 public interface EquipmentImpl extends Equipment {
     void setup(RobotImpl robot);

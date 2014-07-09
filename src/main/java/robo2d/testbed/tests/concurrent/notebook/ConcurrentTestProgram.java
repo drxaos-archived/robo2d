@@ -1,8 +1,8 @@
-package robo2d.testbed.tests.concurrent;
+package robo2d.testbed.tests.concurrent.notebook;
 
-import robo2d.game.api.Chassis;
-import robo2d.game.api.Radar;
-import robo2d.game.program.RobotProgram;
+import com.robotech.military.api.Chassis;
+import com.robotech.military.api.Radar;
+import com.robotech.military.os.RobotProgram;
 import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;

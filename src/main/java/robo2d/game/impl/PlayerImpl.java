@@ -1,6 +1,6 @@
 package robo2d.game.impl;
 
-import robo2d.game.api.Player;
+import com.robotech.military.api.Player;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.PlayerBox;
@@ -12,6 +12,7 @@ public class PlayerImpl implements Player, Physical {
     String name;
     PlayerBox box;
     float initAngle;
+    String notebookDir;
 
     Enterable entered;
 
@@ -19,6 +20,14 @@ public class PlayerImpl implements Player, Physical {
         this.name = name;
         this.initAngle = angle;
         box = new PlayerBox(position);
+    }
+
+    public String getNotebookDir() {
+        return notebookDir;
+    }
+
+    public void setNotebookDir(String notebookDir) {
+        this.notebookDir = notebookDir;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package robo2d.game.api;
+package com.robotech.military.api;
 
 public interface Turret extends Equipment {
 

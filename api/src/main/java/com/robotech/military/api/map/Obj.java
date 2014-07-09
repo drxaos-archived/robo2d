@@ -1,6 +1,7 @@
-package robo2d.game.api.map;
+package com.robotech.military.api.map;
 
-import robo2d.game.api.Player;
+
+import com.robotech.military.api.Player;
 
 import java.awt.geom.Point2D;
 import java.util.List;

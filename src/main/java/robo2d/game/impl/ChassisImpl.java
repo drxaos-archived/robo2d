@@ -1,7 +1,7 @@
 package robo2d.game.impl;
 
 import org.jbox2d.common.Vec2;
-import robo2d.game.api.Chassis;
+import com.robotech.military.api.Chassis;
 import straightedge.geom.KPoint;
 
 import java.util.HashMap;

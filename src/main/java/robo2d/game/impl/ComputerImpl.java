@@ -1,19 +1,24 @@
 package robo2d.game.impl;
 
-import robo2d.game.api.Computer;
-import robo2d.game.program.RobotProgram;
+import com.robotech.military.api.Computer;
+import com.robotech.military.os.RobotProgram;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ComputerImpl implements Computer, EquipmentImpl {
 
-    RobotImpl robot;
-    Thread program;
-    Map<String, Object> memory = new HashMap<String, Object>();
+    boolean initWorking;
 
-    public ComputerImpl(Class<? extends RobotProgram> code) {
-        memory.put("boot", code);
+    RobotImpl robot;
+
+    public ComputerImpl(boolean working) {
+        initWorking = working;
+    }
+
+    public boolean isInitWorking() {
+        return initWorking;
     }
 
     @Override
@@ -21,43 +26,18 @@ public class ComputerImpl implements Computer, EquipmentImpl {
         this.robot = robot;
     }
 
-    public void startProgram() {
+    public synchronized void startProgram() {
         try {
-            if (program == null) {
-                Class code = (Class) memory.get("boot");
-                if (code == null || !RobotProgram.class.isAssignableFrom(code)) {
-                    return;
-                }
-                RobotProgram robotProgram = (RobotProgram) code.getConstructor().newInstance();
-                robotProgram.init(robot);
-                program = new Thread(robotProgram);
-                program.setDaemon(true);
-                program.setPriority(Thread.MIN_PRIORITY);
-                program.start();
-            } else {
-                double consumption = 0.0001;
-                if (!robot.consumeEnergy(consumption)) {
-                    stopProgram();
-                }
-            }
-        } catch (Exception e) {
+            Process process = Runtime.getRuntime().exec("java -cp programs/" + robot.getUid() + " Boot");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void stopProgram() {
-        try {
-            if (program != null) {
-                program.interrupt();
-                program.stop();
-                program = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public synchronized void stopProgram() {
     }
 
     public boolean isRunning() {
-        return program != null && program.isAlive();
+        return false;
     }
 }

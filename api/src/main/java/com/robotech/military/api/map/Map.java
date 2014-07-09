@@ -1,4 +1,4 @@
-package robo2d.game.api.map;
+package com.robotech.military.api.map;
 
 import java.util.List;
 

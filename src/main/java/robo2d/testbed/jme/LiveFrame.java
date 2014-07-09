@@ -31,7 +31,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
-import robo2d.game.api.Chassis;
+import com.robotech.military.api.Chassis;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.BaseImpl;

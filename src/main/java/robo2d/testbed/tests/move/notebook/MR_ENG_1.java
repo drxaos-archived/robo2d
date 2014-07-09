@@ -1,13 +1,13 @@
-package robo2d.testbed.tests.move;
+package robo2d.testbed.tests.move.notebook;
 
-import robo2d.game.api.Chassis;
-import robo2d.game.api.Radar;
-import robo2d.game.program.RobotProgram;
+import com.robotech.military.api.Chassis;
+import com.robotech.military.api.Radar;
+import com.robotech.military.os.RobotProgram;
 
 import java.awt.geom.Point2D;
 
 
-public class EngineTestProgram extends RobotProgram {
+public class MR_ENG_1 extends RobotProgram {
 
     Chassis chassis;
     Radar radar;

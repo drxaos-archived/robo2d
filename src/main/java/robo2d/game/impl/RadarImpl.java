@@ -2,7 +2,7 @@ package robo2d.game.impl;
 
 import org.jbox2d.common.Vec2;
 import robo2d.game.Game;
-import robo2d.game.api.Radar;
+import com.robotech.military.api.Radar;
 import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;

@@ -1,11 +1,11 @@
-package robo2d.testbed.tests.base;
+package robo2d.testbed.tests.base.notebook;
 
-import robo2d.game.api.Chassis;
-import robo2d.game.api.Radar;
-import robo2d.game.program.RobotProgram;
+import com.robotech.military.api.Chassis;
+import com.robotech.military.api.Radar;
+import com.robotech.military.os.RobotProgram;
 
 
-public class BaseTestProgram extends RobotProgram {
+public class MR_BS_1 extends RobotProgram {
 
     Chassis chassis;
     Radar radar;

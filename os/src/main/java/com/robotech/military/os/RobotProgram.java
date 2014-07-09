@@ -1,8 +1,8 @@
-package robo2d.game.program;
+package com.robotech.military.os;
 
-import robo2d.game.api.Chassis;
-import robo2d.game.api.Radar;
-import robo2d.game.api.Robot;
+import com.robotech.military.api.Chassis;
+import com.robotech.military.api.Radar;
+import com.robotech.military.api.Robot;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

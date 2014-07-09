@@ -16,12 +16,13 @@ public class BaseTest extends RobotTest {
         game.addBase(base);
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(15, 15), FastMath.PI / 4 * 5);
+        player1.setNotebookDir("src/main/java/robo2d/testbed/tests/base/notebook");
         game.addPlayer(player1);
 
-        RobotImpl robot = new RobotImpl("MR-BS-1", game, player1, new KPoint(15, 5), 0);
+        RobotImpl robot = new RobotImpl("MR_BS_1", game, player1, new KPoint(15, 5), 0);
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game, 100d);
-        ComputerImpl computer = new ComputerImpl(BaseTestProgram.class);
+        ComputerImpl computer = new ComputerImpl(true);
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);
