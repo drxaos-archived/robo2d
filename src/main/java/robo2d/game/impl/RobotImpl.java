@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RobotImpl implements Robot, Obj, Physical {
+public class RobotImpl implements Robot, Obj, Physical, Enterable {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
@@ -30,6 +30,8 @@ public class RobotImpl implements Robot, Obj, Physical {
     final Object sync = new Object();
     String debugMsg;
     Point2D debugPoint;
+
+    PlayerImpl enteredPlayer;
 
     public RobotImpl(String uid, Game game, PlayerImpl owner, KPoint position, double angle) {
         this.uid = uid;
@@ -157,5 +159,21 @@ public class RobotImpl implements Robot, Obj, Physical {
         synchronized (sync) {
             sync.notifyAll();
         }
+    }
+
+    @Override
+    public boolean canEnter(PlayerImpl player) {
+        return owner == player;
+    }
+
+    @Override
+    public void enter(PlayerImpl player) {
+        enteredPlayer = player;
+    }
+
+    @Override
+    public Point2D exit() {
+        enteredPlayer = null;
+        return getBox().getPosition();
     }
 }

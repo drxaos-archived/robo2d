@@ -85,6 +85,12 @@ public class RobotModel {
         node.attachChild(robotModel1.clone());
         node.attachChild(robotModel2.clone());
 
+        {
+            Node player = new Node("player");
+            player.setLocalTranslation(-0.35f, 1.7f, -0.3f);
+            node.attachChild(player);
+        }
+
         return node;
     }
 

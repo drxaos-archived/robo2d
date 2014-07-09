@@ -1,9 +1,14 @@
 package robo2d.testbed.jme;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.*;
@@ -30,6 +35,7 @@ import robo2d.game.api.Chassis;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.BaseImpl;
+import robo2d.game.impl.Enterable;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
 import slick2d.NativeLoader;
@@ -37,7 +43,6 @@ import slick2d.NativeLoader;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LiveFrame extends SimpleApplication implements GroundObjectsControl {
@@ -92,7 +97,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     BaseModel baseModel;
     Nifty nifty;
 
-    Map<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
+    RobotImpl targetRobot;
+    float lastEnteredRobotAngle;
+
+    BiMap<RobotImpl, Node> robotMap = HashBiMap.create();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -185,6 +193,24 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         }}.build(nifty));
         nifty.gotoScreen("LabelScreen"); // start the screen
         guiViewPort.addProcessor(niftyDisplay);
+
+        inputManager.addMapping("use", new KeyTrigger(KeyInput.KEY_E));
+        inputManager.addListener(new ActionListener() {
+            @Override
+            public void onAction(String name, boolean keyPressed, float tpf) {
+                if (!keyPressed) {
+                    return;
+                }
+                if (game.getPlayer().getEntered() != null) {
+                    game.getPlayer().exit();
+                } else {
+                    if (targetRobot != null) {
+                        game.getPlayer().enter(targetRobot);
+                        lastEnteredRobotAngle = (float) targetRobot.getBox().getAngle();
+                    }
+                }
+            }
+        }, "use");
 
         /* Drop shadows */
         final int SHADOWMAP_SIZE = 2048;
@@ -286,16 +312,26 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     }
 
     private void updatePlayer() {
+        Enterable entered = game.getPlayer().getEntered();
         Vector3f cam = getCamera().getLocation();
-        game.getPlayer().getBox().setPosition(cam.z, cam.x);
-        game.stepSync();
-        Point2D newPos = game.getPlayer().getBox().getPosition();
-        cam.setY(getTerrainPoint((float) newPos.getY(), (float) newPos.getX()).y + 1.3f);
-        cam.setZ((float) newPos.getX());
-        cam.setX((float) newPos.getY());
-        getCamera().setLocation(cam);
 
-        RobotImpl targetRobot = getTargetRobot(cam, getCamera().getDirection());
+        if (entered == null) {
+            game.getPlayer().getBox().setPosition(cam.z, cam.x);
+            game.stepSync();
+            Point2D newPos = game.getPlayer().getBox().getPosition();
+            cam.setY(getTerrainPoint((float) newPos.getY(), (float) newPos.getX()).y + 1.3f);
+            cam.setZ((float) newPos.getX());
+            cam.setX((float) newPos.getY());
+            getCamera().setLocation(cam);
+        } else if (entered instanceof RobotImpl) {
+            Node node = robotMap.get(entered);
+            getCamera().setLocation(node.getChild("player").getWorldTranslation());
+            float newRobotRotation = (float) ((RobotImpl) entered).getBox().getAngle();
+            getCamera().setRotation(new Quaternion().fromAngleAxis(newRobotRotation - lastEnteredRobotAngle, Vector3f.UNIT_Y).mult(getCamera().getRotation()));
+            lastEnteredRobotAngle = newRobotRotation;
+        }
+
+        targetRobot = getTargetRobot(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());

@@ -13,7 +13,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseImpl implements Obj, Physical {
+public class BaseImpl implements Obj, Physical, Enterable {
 
     public static final float SIZE = 6;
 
@@ -21,6 +21,8 @@ public class BaseImpl implements Obj, Physical {
     List<Point2D> vertices;
     KPoint pos;
     float angle;
+
+    PlayerImpl enteredPlayer;
 
     public KPoint getPos() {
         return pos;
@@ -62,12 +64,24 @@ public class BaseImpl implements Obj, Physical {
         return vertices;
     }
 
-    public List<KPolygon> getTriangulation() {
-        return box.getTriangulated();
-    }
-
     @Override
     public Box getBox() {
         return box;
+    }
+
+    @Override
+    public boolean canEnter(PlayerImpl player) {
+        return true;
+    }
+
+    @Override
+    public void enter(PlayerImpl player) {
+        enteredPlayer = player;
+    }
+
+    @Override
+    public Point2D exit() {
+        enteredPlayer = null;
+        return getBox().getPosition();
     }
 }

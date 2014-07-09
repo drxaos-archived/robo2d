@@ -35,10 +35,7 @@ public class ComputerImpl implements Computer, EquipmentImpl {
                 program.setPriority(Thread.MIN_PRIORITY);
                 program.start();
             } else {
-                double consumption = 0.01;
-                if (program.getState() == Thread.State.RUNNABLE) {
-                    consumption = 0.05;
-                }
+                double consumption = 0.0001;
                 if (!robot.consumeEnergy(consumption)) {
                     stopProgram();
                 }
