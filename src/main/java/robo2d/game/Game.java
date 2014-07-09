@@ -116,14 +116,13 @@ public class Game {
             FileUtils.deleteDirectory(notebook);
         } catch (IOException e) {
         }
-        try {
-            FileUtils.copyDirectory(template, notebook);
-        } catch (IOException e) {
-        }
-
         File playerNotebook = new File(getPlayer().getNotebookDir());
         try {
             FileUtils.copyDirectory(playerNotebook, notebook);
+        } catch (IOException e) {
+        }
+        try {
+            FileUtils.copyDirectory(template, notebook);
         } catch (IOException e) {
         }
 

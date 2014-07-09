@@ -1,6 +1,6 @@
 package com.robotech.military.api;
 
-import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 public interface Radar extends Equipment {
 
@@ -13,7 +13,7 @@ public interface Radar extends Equipment {
         Type, ME
     }
 
-    public static class LocatorScanData {
+    public static class LocatorScanData implements Serializable {
         public Type pixel;
         public double distance;
         public double angle;
@@ -25,7 +25,7 @@ public interface Radar extends Equipment {
         }
     }
 
-    public static class SatelliteScanData {
+    public static class SatelliteScanData implements Serializable {
 
         public Type[][] image;
         public double accuracy;
@@ -39,7 +39,7 @@ public interface Radar extends Equipment {
         }
     }
 
-    boolean satelliteRequest(Point2D center, double accuracy);
+    Boolean satelliteRequest(Point center, double accuracy);
 
     SatelliteScanData getSatelliteResponse();
 
@@ -49,6 +49,6 @@ public interface Radar extends Equipment {
 
     Double getAngle();
 
-    Point2D getPosition();
+    Point getPosition();
 
 }

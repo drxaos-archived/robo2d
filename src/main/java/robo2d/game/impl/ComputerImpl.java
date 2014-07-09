@@ -1,11 +1,8 @@
 package robo2d.game.impl;
 
 import com.robotech.military.api.Computer;
-import com.robotech.military.os.RobotProgram;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ComputerImpl implements Computer, EquipmentImpl {
 

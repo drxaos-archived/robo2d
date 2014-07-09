@@ -5,8 +5,8 @@ version = '0.3'
 
 repositories {
     mavenCentral()
-    maven {url "https://oss.sonatype.org/content/groups/public/"}
-    maven {url "http://nifty-gui.sourceforge.net/nifty-maven-repo/"}
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
+    maven { url "http://nifty-gui.sourceforge.net/nifty-maven-repo/" }
 }
 
 dependencies {
@@ -14,7 +14,6 @@ dependencies {
     compile 'com.google.guava:guava-collections:r03'
     compile 'commons-io:commons-io:2.4'
     compile files('api/target/api-1.0.jar')
-    compile files('os/target/os-1.0.jar')
 //    compile localGroovy()
     compile 'org.jbox2d:jbox2d:2.2.1.1'
     compile 'org.jbox2d:jbox2d-testbed:2.2.1.1'
