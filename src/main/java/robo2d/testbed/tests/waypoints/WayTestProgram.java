@@ -2,9 +2,10 @@ package robo2d.testbed.tests.waypoints;
 
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
-import robo2d.game.impl.RobotProgram;
+import robo2d.game.program.RobotProgram;
 import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 
@@ -23,27 +24,27 @@ public class WayTestProgram extends RobotProgram {
             return;
         }
 
-        ArrayList<KPoint> way = new ArrayList<KPoint>();
-        way.add(new KPoint(0, -10));
-        way.add(new KPoint(12, -5));
-        way.add(new KPoint(12, 0));
-        way.add(new KPoint(0, 0));
-        way.add(new KPoint(-12, 0));
-        way.add(new KPoint(-12, 5));
-        way.add(new KPoint(0, 10));
-        way.add(new KPoint(15, 5));
+        ArrayList<Point2D> way = new ArrayList<Point2D>();
+        way.add(new Point2D.Float(0, -10));
+        way.add(new Point2D.Float(12, -5));
+        way.add(new Point2D.Float(12, 0));
+        way.add(new Point2D.Float(0, 0));
+        way.add(new Point2D.Float(-12, 0));
+        way.add(new Point2D.Float(-12, 5));
+        way.add(new Point2D.Float(0, 10));
+        way.add(new Point2D.Float(15, 5));
 //        way.add(new KPoint(15, -5));
-        way.add(new KPoint(0, -10));
+        way.add(new Point2D.Float(0, -10));
 
-        for (KPoint wayPoint : way) {
+        for (Point2D wayPoint : way) {
             while (!driver.moveSmooth(wayPoint, 4000)) {
                 driver.stop();
-                KPoint failPoint = radar.getPosition();
+                Point2D failPoint = radar.getPosition();
                 robot.debug(wayPoint);
                 robot.debug("Please drag me to that point!");
                 while (true) {
                     // save energy
-                    KPoint newPoint = radar.getPosition();
+                    Point2D newPoint = radar.getPosition();
                     if (Utils.distance(newPoint, failPoint) > 0.2) {
                         break;
                     }
@@ -65,7 +66,7 @@ public class WayTestProgram extends RobotProgram {
             }
             System.out.println("Time: 100ms, Scans: " + scans + ", walls: " + walls);
 
-            if (Utils.distance(radar.getPosition(), new KPoint(0, 0)) < 0.3) {
+            if (Utils.distance(radar.getPosition(), new Point2D.Float(0, 0)) < 0.3) {
                 driver.stop();
                 radar.satelliteRequest(radar.getPosition(), 0.5);
                 waitUntil = robot.getTime() + 10000;

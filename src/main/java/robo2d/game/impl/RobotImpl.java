@@ -29,7 +29,7 @@ public class RobotImpl implements Robot, Obj, Physical {
 
     final Object sync = new Object();
     String debugMsg;
-    KPoint debugPoint;
+    Point2D debugPoint;
 
     public RobotImpl(String uid, Game game, PlayerImpl owner, KPoint position, double angle) {
         this.uid = uid;
@@ -126,8 +126,8 @@ public class RobotImpl implements Robot, Obj, Physical {
         if (dbg == null) {
             debugPoint = null;
             debugMsg = null;
-        } else if (dbg instanceof KPoint) {
-            debugPoint = (KPoint) dbg;
+        } else if (dbg instanceof Point2D) {
+            debugPoint = (Point2D) dbg;
         } else {
             debugMsg = dbg.toString();
         }
@@ -137,7 +137,7 @@ public class RobotImpl implements Robot, Obj, Physical {
         return debugMsg;
     }
 
-    public KPoint getDebugPoint() {
+    public Point2D getDebugPoint() {
         return debugPoint;
     }
 

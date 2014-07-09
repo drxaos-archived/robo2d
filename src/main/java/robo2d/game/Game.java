@@ -14,6 +14,7 @@ import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
 import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -269,11 +270,12 @@ public class Game {
         if (physical == null || point == null) {
             return new Radar.LocatorScanData(Radar.Type.EMPTY, scanDistance, angle);
         }
+        Point2D forRobotPosition = forRobot.getBox().getPosition();
         return new Radar.LocatorScanData(
                 recognizeType(physical, forRobot),
                 KPoint.distance(
                         new KPoint(point.x, point.y),
-                        forRobot.getBox().getPosition()
+                        new KPoint(forRobotPosition.getX(), forRobotPosition.getY())
                 ),
                 angle
         );
@@ -295,7 +297,7 @@ public class Game {
             }
             debugDraw.getWorldToScreenToOut(robot.getBox().getPositionVec2().add(new Vec2(1.5f * (float) RobotBox.SIZE, -1.5f * (float) RobotBox.SIZE)), res);
             debugDraw.drawString(res, String.format("E:%.2f", robot.getEnergy()) + ", " + (robot.getComputer() != null && robot.getComputer().isRunning() ? "ON" : "OFF"), Color3f.BLUE);
-            KPoint point = robot.getDebugPoint();
+            Point2D point = robot.getDebugPoint();
             if (point != null) {
                 debugDraw.drawPoint(new Vec2((float) point.getX(), (float) point.getY()), 3, Color3f.WHITE);
                 debugDraw.drawSegment(new Vec2((float) point.getX(), (float) point.getY()), robot.getBox().getPositionVec2(), GRAY);

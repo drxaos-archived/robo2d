@@ -1,10 +1,10 @@
-package robo2d.game.impl;
+package robo2d.game.program;
 
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
 import robo2d.game.api.Robot;
-import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,9 +97,9 @@ abstract public class RobotProgram implements Runnable {
                 return false;
             }
             stop();
-            KPoint start = radar.getPosition();
+            Point2D start = radar.getPosition();
             while (robot.getTime() < end) {
-                KPoint current = radar.getPosition();
+                Point2D current = radar.getPosition();
                 double remains = distance - Utils.distance(start, current);
                 if (Math.abs(remains) < (precise ? 0.001 : 0.01)) {
                     stop();
@@ -117,7 +117,7 @@ abstract public class RobotProgram implements Runnable {
             return false;
         }
 
-        public boolean move(KPoint to, boolean precise, int maxMs) {
+        public boolean move(Point2D to, boolean precise, int maxMs) {
             long end = robot.getTime() + maxMs;
             Chassis chassis = robot.getEquipment(Chassis.class);
             Radar radar = robot.getEquipment(Radar.class);
@@ -130,7 +130,7 @@ abstract public class RobotProgram implements Runnable {
             double shortAng = (precise ? 0.005 : 0.05);
             double enoughDist = (precise ? 0.1 : 0.8);
             while (robot.getTime() < end) {
-                KPoint current = radar.getPosition();
+                Point2D current = radar.getPosition();
                 double angleToTarget = Utils.angle(current, to);
                 double azimuth = Utils.differenceAngle(radar.getAngle(), angleToTarget);
                 double distance = Utils.distance(to, current);
@@ -161,7 +161,7 @@ abstract public class RobotProgram implements Runnable {
         }
 
 
-        public boolean moveSmooth(KPoint to, int maxMs) {
+        public boolean moveSmooth(Point2D to, int maxMs) {
             long end = robot.getTime() + maxMs;
             Chassis chassis = robot.getEquipment(Chassis.class);
             Radar radar = robot.getEquipment(Radar.class);
@@ -172,7 +172,7 @@ abstract public class RobotProgram implements Runnable {
                 int force = 80;
                 int rotateForce = 120;
                 double width = 2;
-                KPoint current = radar.getPosition();
+                Point2D current = radar.getPosition();
                 double myAngle = radar.getAngle();
                 double angleToTarget = Utils.angle(current, to);
                 double azimuth = Utils.differenceAngle(myAngle, angleToTarget);
@@ -184,8 +184,8 @@ abstract public class RobotProgram implements Runnable {
                 } else if (distance < 0.2) {
                     return true;
                 } else {
-                    double distanceLeft = Utils.distance(to, current.translateCopy(Math.cos(myAngle + Math.PI / 2) * width, Math.sin(myAngle + Math.PI / 2) * width));
-                    double distanceRight = Utils.distance(to, current.translateCopy(Math.cos(myAngle - Math.PI / 2) * width, Math.sin(myAngle - Math.PI / 2) * width));
+                    double distanceLeft = Utils.distance(to, new Point2D.Double(current.getX() + Math.cos(myAngle + Math.PI / 2) * width, current.getY() + Math.sin(myAngle + Math.PI / 2) * width));
+                    double distanceRight = Utils.distance(to, new Point2D.Double(current.getX() + Math.cos(myAngle - Math.PI / 2) * width, current.getY() + Math.sin(myAngle - Math.PI / 2) * width));
                     double distDiff = distanceLeft - distanceRight;
                     chassis.setLeftAcceleration(direction * (Math.min(1 * force * distance, 100) - rotateForce * distDiff));
                     chassis.setRightAcceleration(direction * (Math.min(1 * force * distance, 100) + rotateForce * distDiff));
@@ -204,11 +204,13 @@ abstract public class RobotProgram implements Runnable {
             return dif;
         }
 
-        public static double angle(KPoint from, KPoint to) {
-            return to.findAngle(from);
+        public static double angle(Point2D from, Point2D to) {
+            double dx = from.getX() - to.getX();
+            double dy = from.getY() - to.getY();
+            return Math.atan2(dy, dx);
         }
 
-        public static double distance(KPoint from, KPoint to) {
+        public static double distance(Point2D from, Point2D to) {
             return from.distance(to);
         }
 

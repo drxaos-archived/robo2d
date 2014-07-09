@@ -2,8 +2,10 @@ package robo2d.testbed.tests.concurrent;
 
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
-import robo2d.game.impl.RobotProgram;
+import robo2d.game.program.RobotProgram;
 import straightedge.geom.KPoint;
+
+import java.awt.geom.Point2D;
 
 
 public class ConcurrentTestProgram extends RobotProgram {
@@ -28,7 +30,7 @@ public class ConcurrentTestProgram extends RobotProgram {
 
         robot.debug("move");
         robot.debug(new KPoint(x, y));
-        driver.moveSmooth(new KPoint(x, y), 10000);
+        driver.moveSmooth(new Point2D.Double(x, y), 10000);
         driver.stop();
         robot.debug(null);
 

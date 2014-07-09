@@ -1,6 +1,6 @@
 package robo2d.game.api;
 
-import straightedge.geom.KPoint;
+import java.awt.geom.Point2D;
 
 public interface Radar extends Equipment {
 
@@ -39,7 +39,7 @@ public interface Radar extends Equipment {
         }
     }
 
-    boolean satelliteRequest(KPoint center, double accuracy);
+    boolean satelliteRequest(Point2D center, double accuracy);
 
     SatelliteScanData getSatelliteResponse();
 
@@ -49,6 +49,6 @@ public interface Radar extends Equipment {
 
     Double getAngle();
 
-    KPoint getPosition();
+    Point2D getPosition();
 
 }

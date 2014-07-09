@@ -2,8 +2,9 @@ package robo2d.testbed.tests.move;
 
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
-import robo2d.game.impl.RobotProgram;
-import straightedge.geom.KPoint;
+import robo2d.game.program.RobotProgram;
+
+import java.awt.geom.Point2D;
 
 
 public class EngineTestProgram extends RobotProgram {
@@ -24,15 +25,15 @@ public class EngineTestProgram extends RobotProgram {
         }
 
         robot.debug("Move smooth to 15,40");
-        robot.debug(new KPoint(15, 40));
-        driver.moveSmooth(new KPoint(15, 40), 20000);
+        robot.debug(new Point2D.Float(15, 40));
+        driver.moveSmooth(new Point2D.Float(15, 40), 20000);
         driver.stop();
         robot.debug("Move to 25,30");
-        robot.debug(new KPoint(25, 30));
-        driver.move(new KPoint(25, 30), false, 20000);
+        robot.debug(new Point2D.Float(25, 30));
+        driver.move(new Point2D.Float(25, 30), false, 20000);
         robot.debug("Move precise to 5,20");
-        robot.debug(new KPoint(5, 20));
-        driver.move(new KPoint(5, 20), true, 20000);
+        robot.debug(new Point2D.Float(5, 20));
+        driver.move(new Point2D.Float(5, 20), true, 20000);
         robot.debug(null);
 
         robot.debug("Rotate to 0");

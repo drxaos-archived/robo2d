@@ -2,10 +2,7 @@ package robo2d.testbed.tests.base;
 
 import robo2d.game.api.Chassis;
 import robo2d.game.api.Radar;
-import robo2d.game.impl.RobotProgram;
-import straightedge.geom.KPoint;
-
-import java.util.ArrayList;
+import robo2d.game.program.RobotProgram;
 
 
 public class BaseTestProgram extends RobotProgram {

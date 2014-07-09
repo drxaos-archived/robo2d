@@ -1,6 +1,7 @@
 package robo2d.game.impl;
 
 import robo2d.game.api.Computer;
+import robo2d.game.program.RobotProgram;
 
 import java.util.HashMap;
 import java.util.Map;

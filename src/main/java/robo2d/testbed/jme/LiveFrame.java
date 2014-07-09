@@ -33,9 +33,9 @@ import robo2d.game.impl.BaseImpl;
 import robo2d.game.impl.RobotImpl;
 import robo2d.game.impl.WallImpl;
 import slick2d.NativeLoader;
-import straightedge.geom.KPoint;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -152,9 +152,9 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));
 
         Vector3f camPos = cam.getLocation();
-        KPoint newPos = game.getPlayer().getBox().getPosition();
-        camPos.setZ((float) newPos.x);
-        camPos.setX((float) newPos.y);
+        Point2D newPos = game.getPlayer().getBox().getPosition();
+        camPos.setZ((float) newPos.getX());
+        camPos.setX((float) newPos.getY());
         cam.setLocation(camPos);
         cam.setRotation(new Quaternion().fromAngleAxis(game.getPlayer().getInitAngle(), new Vector3f(0, 1, 0)));
         float aspect = (float) cam.getWidth() / (float) cam.getHeight();
@@ -267,7 +267,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                 float x = spatial.getUserData("centerX");
                 try {
                     Vector3f terrainPoint = getTerrainPoint(x, z, true);
-                    spatial.setLocalTranslation(x, terrainPoint.getY(), z);
+                    spatial.setLocalTranslation(spatial.getLocalTranslation().getX(), terrainPoint.getY(), spatial.getLocalTranslation().getZ());
                     spatial.setUserData("centerY", terrainPoint.getY());
                 } catch (TerrainNotFoundException e) {
                     // wait more
@@ -289,10 +289,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         Vector3f cam = getCamera().getLocation();
         game.getPlayer().getBox().setPosition(cam.z, cam.x);
         game.stepSync();
-        KPoint newPos = game.getPlayer().getBox().getPosition();
-        cam.setY(getTerrainPoint((float) newPos.y, (float) newPos.x).y + 1.3f);
-        cam.setZ((float) newPos.x);
-        cam.setX((float) newPos.y);
+        Point2D newPos = game.getPlayer().getBox().getPosition();
+        cam.setY(getTerrainPoint((float) newPos.getY(), (float) newPos.getX()).y + 1.3f);
+        cam.setZ((float) newPos.getX());
+        cam.setX((float) newPos.getY());
         getCamera().setLocation(cam);
 
         RobotImpl targetRobot = getTargetRobot(cam, getCamera().getDirection());
@@ -304,7 +304,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     private void updateRobots() {
         for (Map.Entry<RobotImpl, Node> e : robotMap.entrySet()) {
-            KPoint point = e.getKey().getBox().getPosition();
+            Point2D point = e.getKey().getBox().getPosition();
             float x = (float) point.getY();
             float z = (float) point.getX();
             float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;

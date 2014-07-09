@@ -5,6 +5,8 @@ import robo2d.game.Game;
 import robo2d.game.api.Radar;
 import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
+
 public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
 
     Game game;
@@ -24,7 +26,7 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     }
 
     @Override
-    public boolean satelliteRequest(KPoint center, double accuracy) {
+    public boolean satelliteRequest(Point2D center, double accuracy) {
         if (game.getSatelliteResolution() == null) {
             return false;
         }
@@ -68,7 +70,7 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     }
 
     @Override
-    public KPoint getPosition() {
+    public Point2D getPosition() {
         if (!game.hasGps()) {
             return null;
         }

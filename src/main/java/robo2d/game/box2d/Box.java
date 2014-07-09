@@ -2,8 +2,8 @@ package robo2d.game.box2d;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
-import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +19,12 @@ public class Box {
         return (double) body.getAngle();
     }
 
-    public KPoint getPosition() {
+    public Point2D getPosition() {
         if (body == null) {
-            return new KPoint();
+            return new Point2D.Double();
         }
         Vec2 vec2 = body.getPosition();
-        return new KPoint(vec2.x, vec2.y);
+        return new Point2D.Double(vec2.x, vec2.y);
     }
 
     public void setPosition(float x, float y) {
