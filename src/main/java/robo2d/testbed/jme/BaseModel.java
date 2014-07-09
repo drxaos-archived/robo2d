@@ -2,6 +2,7 @@ package robo2d.testbed.jme;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -20,7 +21,7 @@ public class BaseModel {
         this.assetManager = assetManager;
     }
 
-    Spatial baseModel1, rackModel1;
+    Spatial baseModel1, laptopModel1, barrelModel1, rackModel1;
     float right = 0, left = 0, front = 0, back = 0, top = 0, bottom = 0;
     float scaleW, scaleL, scaleH;
 
@@ -55,13 +56,27 @@ public class BaseModel {
             baseModel1.setLocalTranslation((right + left) / -2 * scaleW, bottom / -2 * scaleH - 0.3f, (front + back) / -2 * scaleL);
             baseModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         }
+        if (laptopModel1 == null) {
+            laptopModel1 = assetManager.loadModel("models/computer/laptop/Computer_Laptop.obj");
+            float scale = 0.8f;
+            laptopModel1.setLocalScale(scale, scale, scale);
+            laptopModel1.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.PI * 8 / 5, Vector3f.UNIT_Y));
+            laptopModel1.setLocalTranslation(-2, 0, 0);
+            laptopModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        }
+        if (barrelModel1 == null) {
+            barrelModel1 = assetManager.loadModel("models/barrel/barrel.obj");
+            float scale = 0.0017f;
+            barrelModel1.setLocalScale(scale, scale, scale);
+            barrelModel1.setLocalTranslation(-3, 0, -2.5f);
+            barrelModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        }
         if (rackModel1 == null) {
-            Point2D v2 = new Point2D.Float(0, 2);
-            Point2D v1 = new Point2D.Float(2, 3);
+            Point2D v2 = new Point2D.Float(-1.2f, 2.4f);
+            Point2D v1 = new Point2D.Float(0, 3.4f);
 
             Mesh mesh = new Mesh();
 
-            final float W = 2.5f;
             final float H = 3;
 
             Vector3f[] vertices = new Vector3f[4];
@@ -90,8 +105,6 @@ public class BaseModel {
             mesh.setBuffer(VertexBuffer.Type.Normal, 3, BufferUtils.createFloatBuffer(normals));
             mesh.updateBound();
 
-            //mesh.scaleTextureCoordinates(new Vector2f(0.2f, 0.2f));
-
             rackModel1 = new Geometry("mesh", mesh);
             Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
             mat.setFloat("Shininess", 10000);
@@ -103,7 +116,9 @@ public class BaseModel {
         }
         Node node = new Node("base");
         node.attachChild(baseModel1.clone());
+        node.attachChild(laptopModel1.clone());
         node.attachChild(rackModel1.clone());
+        node.attachChild(barrelModel1.clone());
 
         node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
