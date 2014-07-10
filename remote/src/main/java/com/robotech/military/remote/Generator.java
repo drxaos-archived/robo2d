@@ -2,6 +2,7 @@ package com.robotech.military.remote;
 
 import com.robotech.military.api.Equipment;
 import com.robotech.military.api.Robot;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +27,7 @@ public class Generator {
             b.append("import com.robotech.military.remote.RemoteUtil;\n");
             b.append("public class " + c.getSimpleName() + " implements " + c.getCanonicalName() + " {\n");
             b.append("    String rid;\n");
-            b.append("    public "+c.getSimpleName()+"(String rid) {\n");
+            b.append("    public " + c.getSimpleName() + "(String rid) {\n");
             b.append("        this.rid = rid;\n");
             b.append("    }\n");
             b.append("\n");
@@ -40,12 +41,12 @@ public class Generator {
                     paramsM.add(parameterTypes[i].getCanonicalName() + " arg" + i);
                     paramsF.add("arg" + i);
                 }
-                b.append("    public " + method.getReturnType().getCanonicalName() + " " + method.getName() + "(" + String.join(", ", paramsM) + ") {\n");
+                b.append("    public " + method.getReturnType().getCanonicalName() + " " + method.getName() + "(" + StringUtils.join(paramsM, ", ") + ") {\n");
                 String returnType = method.getReturnType().getCanonicalName();
-                if(returnType.equals("void")){
-                    b.append("        RemoteUtil.request(rid, \"" + method.getName() + "\"" + String.join(", ", paramsF) + ");\n");
-                }else {
-                    b.append("        return (" + method.getReturnType().getCanonicalName() + ") RemoteUtil.request(rid, \"" + method.getName() + "\"" + String.join(", ", paramsF) + ");\n");
+                if (returnType.equals("void")) {
+                    b.append("        RemoteUtil.request(rid, \"" + method.getName() + "\"" + StringUtils.join(paramsF, ", ") + ");\n");
+                } else {
+                    b.append("        return (" + method.getReturnType().getCanonicalName() + ") RemoteUtil.request(rid, \"" + method.getName() + "\"" + StringUtils.join(paramsF, ", ") + ");\n");
                 }
                 b.append("    }\n");
                 b.append("\n");

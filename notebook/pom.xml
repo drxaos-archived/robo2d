@@ -6,11 +6,36 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.robotech.military</groupId>
             <artifactId>api</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>../libs/api-1.0.jar</systemPath>
+            <systemPath>${basedir}/../libs/api-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.robotech.military</groupId>
+            <artifactId>remote</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../libs/remote-1.0.jar</systemPath>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <mainClass>com.robotech.military.remote.Loader</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

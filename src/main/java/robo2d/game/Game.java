@@ -2,6 +2,7 @@ package robo2d.game;
 
 import com.robotech.military.api.Radar;
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.cli.MavenCli;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.callbacks.RayCastCallback;
 import org.jbox2d.common.Color3f;
@@ -115,15 +116,24 @@ public class Game {
         try {
             FileUtils.deleteDirectory(notebook);
         } catch (IOException e) {
+            e.printStackTrace();
         }
         File playerNotebook = new File(getPlayer().getNotebookDir());
         try {
             FileUtils.copyDirectory(playerNotebook, notebook);
         } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             FileUtils.copyDirectory(template, notebook);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            MavenCli cli = new MavenCli();
+            cli.doMain(new String[]{"clean", "compile"}, notebook.getAbsolutePath(), System.out, System.out);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Start programs
