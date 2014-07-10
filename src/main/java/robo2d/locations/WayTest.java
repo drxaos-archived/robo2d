@@ -37,7 +37,6 @@ public class WayTest extends RobotTest {
         game.addWall(new WallImpl(points, 0));
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(0, 0), 0);
-        player1.setNotebookDir("locations/waypointsTest/notebook");
         game.addPlayer(player1);
 
         RobotImpl robot = new RobotImpl("MR_WY_1", game, player1, new KPoint(0, -10), Math.PI * 4 * Math.random());

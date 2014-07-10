@@ -12,7 +12,6 @@ public class ConcurrentTest extends RobotTest {
         Game game = new Game(getWorld(), getDebugDraw());
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(10, 10), 0);
-        player1.setNotebookDir("locations/concurrentTest/notebook");
         game.addPlayer(player1);
 
         for (int i = 0; i < 10; i++) {

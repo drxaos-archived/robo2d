@@ -1,7 +1,5 @@
 package robo2d.testbed.jme;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.collision.CollisionResult;
@@ -22,6 +20,7 @@ import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
 import com.jme3.util.SkyFactory;
+import com.robotech.military.api.Chassis;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
@@ -31,7 +30,6 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
-import com.robotech.military.api.Chassis;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.BaseImpl;
@@ -43,6 +41,7 @@ import slick2d.NativeLoader;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class LiveFrame extends SimpleApplication implements GroundObjectsControl {
@@ -100,7 +99,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     RobotImpl targetRobot;
     float lastEnteredRobotAngle;
 
-    BiMap<RobotImpl, Node> robotMap = HashBiMap.create();
+    HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -334,7 +333,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
-            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
+//            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
         }
     }
 

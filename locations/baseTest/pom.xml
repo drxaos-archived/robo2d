@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.robotech.military</groupId>
-    <artifactId>tech.notebook.baseTest</artifactId>
+    <artifactId>baseTest</artifactId>
     <version>1.0</version>
 
     <dependencies>
@@ -11,6 +11,13 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/../../../libs/api-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.robotech.military</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../build/libs/threadstest-0.3.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

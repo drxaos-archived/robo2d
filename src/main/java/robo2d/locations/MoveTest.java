@@ -27,7 +27,6 @@ public class MoveTest extends RobotTest {
         game.addWall(new WallImpl(points, Math.PI * 0.01));
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(-15, 15), 0);
-        player1.setNotebookDir("locations/moveTest/notebook");
         game.addPlayer(player1);
 
         RobotImpl robot = new RobotImpl("MR_ENG_1", game, player1, new KPoint(15, 15), Math.PI * 4 * Math.random());

@@ -1,9 +1,9 @@
 package robo2d.game.impl;
 
+import com.robotech.military.api.Point;
+import com.robotech.military.api.Radar;
 import org.jbox2d.common.Vec2;
 import robo2d.game.Game;
-import com.robotech.military.api.Radar;
-import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 
@@ -26,14 +26,14 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     }
 
     @Override
-    public boolean satelliteRequest(Point2D center, double accuracy) {
+    public Boolean satelliteRequest(Point center, double accuracy) {
         if (game.getSatelliteResolution() == null) {
             return false;
         }
         if (!robot.consumeEnergy(0.5)) {
             return false;
         }
-        game.satelliteRequest(this, new Vec2((float) center.getX(), (float) center.getY()), accuracy, game.getSatelliteResolution());
+        game.satelliteRequest(this, new Vec2((float) center.x, (float) center.y), accuracy, game.getSatelliteResolution());
         satelliteScanData = null;
         return true;
     }
@@ -70,11 +70,12 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     }
 
     @Override
-    public Point2D getPosition() {
+    public Point getPosition() {
         if (!game.hasGps()) {
             return null;
         }
-        return robot.box.getPosition();
+        Point2D position = robot.box.getPosition();
+        return new Point((float) position.getX(), (float) position.getY());
     }
 
     @Override

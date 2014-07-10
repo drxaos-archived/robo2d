@@ -1,0 +1,126 @@
+
+bluej.language=english
+bluej.language1=english:English
+bluej.language2=russian:Russian
+
+bluej.url.bluej=http://www.bluej.org
+bluej.url.tutorial=http://www.bluej.org/doc/documentation.html
+bluej.url.reference=http://www.bluej.org/reference/manual.pdf
+bluej.url.versionCheck=http://www.bluej.org/version.info
+
+bluej.url.javaStdLib=http://download.oracle.com/javase/6/docs/api/
+
+#bluej.jdk.source=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/src.jar
+
+#bluej.help.items=myCustomLib courseInfo
+#bluej.help.myCustomLib.label=My CS1 libraries
+#bluej.help.myCustomLib.url=http://www.google.com/
+#bluej.help.courseInfo.label=CS1 course info
+#bluej.help.courseInfo.url=http://www.bluej.org/help/archive.html
+
+#bluej.userlibrary1.location=../libs/api-1.0.jar
+
+bluej.numberOfRecentProjects=0
+
+#bluej.userHome=/home/mik/tmp
+bluej.userlibLocation=../libs
+
+#bluej.extensions.systempath=C\:\\some\\other\\directory
+
+bluej.autoOpenLastProject=false
+
+#doctool.command=javadoc
+doctool.options=-author -version -nodeprecated -package
+doctool.outputdir=doc
+doctool.linkToStandardLib=true
+
+#appletViewer.command=appletviewer
+
+bluej.macos.screenmenubar=true
+
+bluej.classTemplates = stdclass abstract interface unittest enum
+#bluej.templatePath = /home/mik/bluej/lib/english/templates/newclass
+#bluej.templatePath = F:\\shared\\bluej\\templates
+
+#bluej.lookAndFeel=system
+#bluej.lookAndFeel=crossplatform
+
+
+bluej.useTheme=false
+bluej.fontsize=12
+bluej.font=SansSerif
+#bluej.font=Monospaced
+#bluej.font=SIMSUN
+bluej.menu.font=SansSerif-bold
+bluej.menu.fontsize=12
+bluej.target.font=SansSerif-bold
+bluej.target.fontsize=12
+bluej.editor.fontsize=12
+bluej.terminal.font=Monospaced
+#bluej.terminal.font=Monospaced-bold
+#bluej.terminal.fontsize=12
+#bluej.codepad.fontsize=12
+bluej.editor.font=Monospaced
+bluej.editor.MacOS.font=Monaco
+# bluej.editor.font=Monospaced-bold
+# bluej.editor.font=SansSerif
+# bluej.editor.font=SansSerif-bold
+# bluej.editor.font=Arial-bold
+bluej.codecompletion.font=Courier
+bluej.fontsize.printText=10
+bluej.fontsize.printTitle=14
+bluej.print.scale=60
+bluej.terminal.height=22
+bluej.terminal.width=80
+bluej.terminal.clearscreen=false
+bluej.terminal.recordcalls=false
+bluej.terminal.buffering=false
+bluej.terminal.encoding=UTF-8
+
+bluej.editor.autoIndent=true
+bluej.editor.syntaxHilighting=true
+bluej.editor.displayLineNumbers=true
+bluej.editor.makeBackup=false
+bluej.editor.matchBrackets=true
+
+bluej.editor.tabsize=4
+
+bluej.editor.codecompletion=true
+
+bluej.testing.showtools=false
+bluej.teamwork.showtools=true
+bluej.javame.showtools=false
+
+colour.selection=233,225,0
+colour.selection2=255,250,0
+colour.highlight=180,220,255
+colour.highlight2=110,190,255
+
+bluej.compiler.options=-source 1.6 -target 1.6
+bluej.compiler.unchecked=false
+
+bluej.vm.args=-ea -Djavafx.macosx.embedded=true
+#bluej.windows.vm.args=
+
+bluej.vm.transport=dt_shmem
+bluej.debug=true
+
+
+image.readme=readme.png
+image.readme-selected=readme-selected.png
+image.build.depends=arrow_black_uml.gif
+image.build.extends=darrow_black_uml.gif
+image.editor.breakmark=break.gif
+image.editor.stepmark=stepmark.gif
+image.editor.breakstepmark=stepbreak.gif
+image.bench.object=object.png
+image.bench.object-selected=object-selected.png
+image.eval.prompt=prompt.gif
+image.eval.continue=prompt-continue.gif
+image.eval.object=small-object.gif
+image.eval.dragobject-plus=drag-object-plus.gif
+image.eval.dragobject-noplus=drag-object-noplus.gif
+image.editordivider.open=bluej_arrow_naviview_open.gif
+image.editordivider.close=bluej_arrow_naviview_close.gif
+image.extmgr.info=extmgr-info.gif
+image.inspector.objectref=objectref.gif

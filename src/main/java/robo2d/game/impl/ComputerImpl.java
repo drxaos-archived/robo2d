@@ -1,22 +1,20 @@
 package robo2d.game.impl;
 
 import com.robotech.military.api.Computer;
-import org.apache.maven.cli.MavenCli;
+import com.robotech.military.api.Program;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ComputerImpl implements Computer, EquipmentImpl {
 
-    boolean initWorking;
-
     RobotImpl robot;
+    Thread program;
+    Map<String, String> memory = new HashMap<String, String>();
+    boolean initWorking;
 
     public ComputerImpl(boolean working) {
         initWorking = working;
-    }
-
-    public boolean isInitWorking() {
-        return initWorking;
     }
 
     @Override
@@ -24,28 +22,66 @@ public class ComputerImpl implements Computer, EquipmentImpl {
         this.robot = robot;
     }
 
-    public synchronized void startProgram() {
+    protected Class compile() {
         try {
-            new Thread() {
-                @Override
-                public void run() {
-                    File notebook = new File("notebook");
-                    MavenCli cli = new MavenCli();
-                    String uid = robot.getUid();
-                    String rid = robot.getUid();
-                    cli.doMain(new String[]{"exec:java", "-Dexec.args=\"" + uid + " " + rid + "\""}, notebook.getAbsolutePath(), System.out, System.out);
-                    System.out.println("PROGRAM END");
+            return Class.forName(memory.get("Program.java"));
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+
+    public void startProgram() {
+        try {
+            if (program == null) {
+                Class code = compile();
+                if (code == null || !Program.class.isAssignableFrom(code)) {
+                    return;
                 }
-            }.start();
+                Program robotProgram = (Program) code.getConstructor().newInstance();
+                robotProgram.init(robot); // TODO move to thread
+                program = new Thread(robotProgram);
+                program.setDaemon(true);
+                program.setPriority(Thread.MIN_PRIORITY);
+                program.start();
+            } else {
+                double consumption = 0.0001;
+                if (!robot.consumeEnergy(consumption)) {
+                    stopProgram();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void stopProgram() {
+    public void stopProgram() {
+        try {
+            if (program != null) {
+                program.interrupt();
+                program.stop();
+                program = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isRunning() {
-        return false;
+        return program != null && program.isAlive();
+    }
+
+    public boolean isInitWorking() {
+        return initWorking;
+    }
+
+    @Override
+    public void saveFile(String fileName, String content) {
+        memory.put(fileName, content);
+    }
+
+    @Override
+    public String loadFile(String fileName) {
+        return memory.get(fileName);
     }
 }

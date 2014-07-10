@@ -1,5 +1,5 @@
 package com.robotech.military.api;
 
-public interface Program {
-    void run(Robot robot);
+public interface Program extends Runnable {
+    void init(Robot robot);
 }

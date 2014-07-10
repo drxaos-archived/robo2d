@@ -1,5 +1,3 @@
-package robo2d.locations;
-
 import com.jme3.math.FastMath;
 import robo2d.game.Game;
 import robo2d.game.impl.*;
@@ -22,6 +20,7 @@ public class BaseTest extends RobotTest {
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game, 100d);
         ComputerImpl computer = new ComputerImpl(true);
+        computer.saveFile("Program.java", "robo2d.locations.TestProgram");
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);

@@ -12,7 +12,6 @@ public class PlayerImpl implements Player, Physical {
     String name;
     PlayerBox box;
     float initAngle;
-    String notebookDir;
 
     Enterable entered;
 
@@ -20,14 +19,6 @@ public class PlayerImpl implements Player, Physical {
         this.name = name;
         this.initAngle = angle;
         box = new PlayerBox(position);
-    }
-
-    public String getNotebookDir() {
-        return notebookDir;
-    }
-
-    public void setNotebookDir(String notebookDir) {
-        this.notebookDir = notebookDir;
     }
 
     @Override
