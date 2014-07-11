@@ -116,7 +116,7 @@ public class InterfacePanel extends JPanel
                 }
                 testPanel.add( toolkitPanel );
             }
-            box.add(testPanel);
+//            box.add(testPanel);
 
             box.add(Box.createVerticalStrut(BlueJTheme.generalSpacingWidth));
             

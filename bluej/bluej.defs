@@ -36,7 +36,7 @@ doctool.linkToStandardLib=true
 
 #appletViewer.command=appletviewer
 
-bluej.macos.screenmenubar=true
+bluej.macos.screenmenubar=false
 
 bluej.classTemplates = stdclass abstract interface unittest enum
 #bluej.templatePath = /home/mik/bluej/lib/english/templates/newclass

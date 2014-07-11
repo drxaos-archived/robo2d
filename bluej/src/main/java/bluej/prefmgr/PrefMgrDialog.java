@@ -70,7 +70,6 @@ public class PrefMgrDialog extends JFrame
      * of the screen.  Otherwise, the argument should be the
      * component on top of which the dialog should appear.
      *
-     * @param comp the parent component for the dialog.
      */
     public static void showDialog() {
         getInstance().prepareDialog();
@@ -83,10 +82,6 @@ public class PrefMgrDialog extends JFrame
      * of the screen.  Otherwise, the argument should be the
      * component on top of which the dialog should appear.
      *
-     * @param comp the parent component for the dialog.
-     * @param actiontable 
-     * @param categories 
-     * @param categoryIndex 
      */
     public static void showDialog(int paneNumber) {
         dialog.prepareDialog();
@@ -127,7 +122,6 @@ public class PrefMgrDialog extends JFrame
     /**
      * Setup the UI for the dialog and event handlers for the dialog's buttons.
      *
-     * @param title the title of the dialog
      */
     private PrefMgrDialog()
     {
@@ -144,14 +138,14 @@ public class PrefMgrDialog extends JFrame
         kbPanel=new KeyBindingsPanel();
         add(kbPanel.makePanel(), Config.getString("prefmgr.edit.keybindingstitle"), kbPanel);
         MiscPrefPanel panel2 = new MiscPrefPanel();
-        add(panel2, Config.getString("prefmgr.misc.prefpaneltitle"), panel2);
+//        add(panel2, Config.getString("prefmgr.misc.prefpaneltitle"), panel2);
         InterfacePanel panel3 = new InterfacePanel();
         add(panel3, Config.getString("prefmgr.interface.title"), panel3);
         userConfigLibPanel = new ClassMgrPrefPanel();
-        add(userConfigLibPanel, Config.getString("classmgr.prefpaneltitle"), userConfigLibPanel);
+//        add(userConfigLibPanel, Config.getString("classmgr.prefpaneltitle"), userConfigLibPanel);
         if(!Config.isGreenfoot()) {
             ExtensionPrefManager mgr = ExtensionsManager.getInstance().getPrefManager();
-            add(mgr.getPanel(), Config.getString("extmgr.extensions"), mgr);
+//            add(mgr.getPanel(), Config.getString("extmgr.extensions"), mgr);
         }
 
     }

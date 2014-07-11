@@ -87,7 +87,7 @@ public class EditorPrefPanel extends JPanel implements PrefPanelListener
             topPanel.add(hilightingBox);
             
             makeBackupBox = new JCheckBox(Config.getString("prefmgr.edit.makeBackup"));
-            topPanel.add(makeBackupBox);
+//            topPanel.add(makeBackupBox);
 
             lineNumbersBox = new JCheckBox(Config.getString("prefmgr.edit.displaylinenumbers"));
             topPanel.add(lineNumbersBox);

@@ -382,37 +382,39 @@ public class Boot
     private static File calculateBluejLibDir()
     {
         File bluejDir = null;
-        String bootFullName = Boot.class.getResource("Boot.class").toString();
+//        String bootFullName = Boot.class.getResource("Boot.class").toString();
+//
+//        try {
+//            if (! bootFullName.startsWith("jar:")) {
+//                // Boot.class is not in a jar-file. Find a lib directory somewhere
+//                // above us to use
+//                File startingDir = (new File(new URI(bootFullName)).getParentFile());
+//                while((startingDir != null) &&
+//                        !(new File(startingDir.getParentFile(), "lib").isDirectory())) {
+//                    startingDir = startingDir.getParentFile();
+//                }
+//
+//                if (startingDir == null) {
+//                    bluejDir = null;
+//                }
+//                else {
+//                    bluejDir = new File(startingDir.getParentFile(), "lib");
+//                }
+//            }
+//            else {
+//                // The class is in a jar file, '!' separates the jar file name
+//                // from the class name. Cut off the class name and the "jar:" prefix.
+//                int classIndex = bootFullName.indexOf("!");
+//                String bootName = bootFullName.substring(4, classIndex);
+//
+//                File finalFile = new File(new URI(bootName));
+//                bluejDir = finalFile.getParentFile();
+//            }
+//        }
+//        catch (URISyntaxException use) { }
 
-        try {
-            if (! bootFullName.startsWith("jar:")) {
-                // Boot.class is not in a jar-file. Find a lib directory somewhere
-                // above us to use
-                File startingDir = (new File(new URI(bootFullName)).getParentFile());
-                while((startingDir != null) &&
-                        !(new File(startingDir.getParentFile(), "lib").isDirectory())) {
-                    startingDir = startingDir.getParentFile();
-                }
-                
-                if (startingDir == null) {
-                    bluejDir = null;
-                }
-                else {
-                    bluejDir = new File(startingDir.getParentFile(), "lib");
-                }
-            }
-            else {
-                // The class is in a jar file, '!' separates the jar file name
-                // from the class name. Cut off the class name and the "jar:" prefix.
-                int classIndex = bootFullName.indexOf("!");
-                String bootName = bootFullName.substring(4, classIndex);
-                
-                File finalFile = new File(new URI(bootName));
-                bluejDir = finalFile.getParentFile();
-            }   
-        } 
-        catch (URISyntaxException use) { }
-        
+        bluejDir = new File("./bluej");
+
         return bluejDir;
     }
 
