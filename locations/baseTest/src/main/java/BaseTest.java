@@ -1,8 +1,12 @@
 import com.jme3.math.FastMath;
+import org.apache.commons.io.FileUtils;
 import robo2d.game.Game;
 import robo2d.game.impl.*;
 import robo2d.testbed.RobotTest;
 import straightedge.geom.KPoint;
+
+import java.io.File;
+import java.io.IOException;
 
 public class BaseTest extends RobotTest {
 
@@ -19,8 +23,12 @@ public class BaseTest extends RobotTest {
         RobotImpl robot = new RobotImpl("MR_BS_1", game, player1, new KPoint(15, 5), 0);
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game, 100d);
-        ComputerImpl computer = new ComputerImpl(false);
-        computer.saveFile("Program.java", "robo2d.locations.TestProgram");
+        ComputerImpl computer = new ComputerImpl(true);
+        try {
+            computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/MR_BS_1.txt")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         robot.addEquipment(chassis);
         robot.addEquipment(radar);
         robot.addEquipment(computer);

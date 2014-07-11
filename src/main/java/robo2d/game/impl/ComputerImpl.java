@@ -3,6 +3,9 @@ package robo2d.game.impl;
 import com.robotech.military.api.Computer;
 import com.robotech.military.api.Program;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,13 +26,28 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     }
 
     protected Class compile() {
+        File file = ComputerHelper.compile(this);
+        if (file == null) {
+            return null;
+        }
         try {
-            return Class.forName(memory.get("Program.java"));
+            // Try this if reloading fails
+            //  http://tutorials.jenkov.com/java-reflection/dynamic-class-loading-reloading.html
+            URL classUrl = file.toURI().toURL();
+            URL[] urls = new URL[]{classUrl};
+            ClassLoader ucl = new URLClassLoader(urls, getClass().getClassLoader());
+            return ucl.loadClass("Boot");
         } catch (ClassNotFoundException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
+    public Map<String, String> getMemory() {
+        return memory;
+    }
 
     public void startProgram() {
         try {
@@ -64,6 +82,7 @@ public class ComputerImpl implements Computer, EquipmentImpl {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            program = null;
         }
     }
 
