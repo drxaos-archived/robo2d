@@ -1,6 +1,11 @@
 package com.robotech.military.api;
 
-public interface Turret extends Equipment {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    void fire();
+public interface Turret extends Remote {
+
+    void shock() throws RemoteException;
+
+    void fire() throws RemoteException;
 }

@@ -1,10 +1,13 @@
 package com.robotech.military.api;
 
-public interface Radio extends Equipment {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    void setChannel(Double frequency);
+public interface Radio extends Remote {
 
-    void broadcast(Double data);
+    void setChannel(Double frequency) throws RemoteException;
 
-    Double listen();
+    void broadcast(Double data) throws RemoteException;
+
+    Double listen() throws RemoteException;
 }

@@ -1,8 +1,6 @@
 package robo2d.game.impl;
 
 import com.jme3.math.FastMath;
-import com.robotech.military.api.Player;
-import com.robotech.military.api.map.Obj;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.StaticBox;
@@ -13,7 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseImpl implements Obj, Physical, Enterable {
+public class BaseImpl implements Physical, Enterable {
 
     public static final float SIZE = 6;
 
@@ -47,21 +45,6 @@ public class BaseImpl implements Obj, Physical, Enterable {
         }
 
         box = new StaticBox(new KPolygon(kPoints), pos, angle);
-    }
-
-    @Override
-    public Player getOwner() {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.WALL;
-    }
-
-    @Override
-    public List<Point2D> getVertices() {
-        return vertices;
     }
 
     @Override

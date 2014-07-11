@@ -4,8 +4,10 @@ import com.robotech.military.api.Computer;
 import com.robotech.military.api.Program;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     Thread program;
     Map<String, String> memory = new HashMap<String, String>();
     boolean initWorking;
+    ComputerInterfaceImpl computerInterface;
 
     public ComputerImpl(boolean working) {
         initWorking = working;
@@ -23,6 +26,11 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     @Override
     public void setup(RobotImpl robot) {
         this.robot = robot;
+        computerInterface = new ComputerInterfaceImpl(robot);
+    }
+
+    public ComputerInterfaceImpl getComputerInterface() {
+        return computerInterface;
     }
 
     protected Class compile() {
@@ -52,13 +60,21 @@ public class ComputerImpl implements Computer, EquipmentImpl {
     public void startProgram() {
         try {
             if (program == null) {
-                Class code = compile();
+                final Class code = compile();
                 if (code == null || !Program.class.isAssignableFrom(code)) {
                     return;
                 }
-                Program robotProgram = (Program) code.getConstructor().newInstance();
-                robotProgram.init(robot); // TODO move to thread
-                program = new Thread(robotProgram);
+                program = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Program robotProgram = (Program) code.getConstructor().newInstance();
+                            robotProgram.run(robot);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 program.setDaemon(true);
                 program.setPriority(Thread.MIN_PRIORITY);
                 program.start();

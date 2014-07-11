@@ -1,7 +1,5 @@
 package robo2d.game.impl;
 
-import com.robotech.military.api.Player;
-import com.robotech.military.api.map.Obj;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.StaticBox;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WallImpl implements Obj, Physical {
+public class WallImpl implements Physical {
 
     StaticBox box;
     List<Point2D> vertices;
@@ -29,17 +27,6 @@ public class WallImpl implements Obj, Physical {
         box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), angle);
     }
 
-    @Override
-    public Player getOwner() {
-        return null;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.WALL;
-    }
-
-    @Override
     public List<Point2D> getVertices() {
         return vertices;
     }

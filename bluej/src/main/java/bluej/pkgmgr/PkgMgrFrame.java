@@ -1206,6 +1206,7 @@ public class PkgMgrFrame extends JFrame
      */
     private boolean openProject(String projectPath) {
         Project openProj = Project.openProject(projectPath, this);
+        Main.openProj = openProj;
         if (openProj == null)
             return false;
         else {

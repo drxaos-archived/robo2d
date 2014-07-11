@@ -1,8 +1,10 @@
 package com.robotech.military.api;
 
 import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-public interface Radar extends Equipment {
+public interface Radar extends Remote {
 
     public static enum Type {
         UNKNOWN,
@@ -10,7 +12,7 @@ public interface Radar extends Equipment {
         WALL,
         ENEMY_BOT,
         MATE_BOT,
-        Type, ME
+        ME
     }
 
     public static class LocatorScanData implements Serializable {
@@ -39,16 +41,16 @@ public interface Radar extends Equipment {
         }
     }
 
-    Boolean satelliteRequest(Point center, double accuracy);
+    Boolean satelliteRequest(Point center, double accuracy) throws RemoteException;
 
-    SatelliteScanData getSatelliteResponse();
+    SatelliteScanData getSatelliteResponse() throws RemoteException;
 
-    void clearSatelliteResponse();
+    void clearSatelliteResponse() throws RemoteException;
 
-    LocatorScanData locate(double angle);
+    LocatorScanData locate(double angle) throws RemoteException;
 
-    Double getAngle();
+    Double getAngle() throws RemoteException;
 
-    Point getPosition();
+    Point getPosition() throws RemoteException;
 
 }

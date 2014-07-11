@@ -1,9 +1,6 @@
 package robo2d.game.impl;
 
-import com.robotech.military.api.Equipment;
-import com.robotech.military.api.Player;
-import com.robotech.military.api.Robot;
-import com.robotech.military.api.map.Obj;
+import com.robotech.military.api.*;
 import robo2d.game.Game;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
@@ -12,10 +9,9 @@ import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class RobotImpl implements Robot, Obj, Physical, Enterable {
+public class RobotImpl implements Robot, Physical, Enterable {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
@@ -40,8 +36,46 @@ public class RobotImpl implements Robot, Obj, Physical, Enterable {
         box = new RobotBox(uid, position, angle);
     }
 
+    public <T extends EquipmentImpl> T getEquipment(Class<T> type) {
+        for (EquipmentImpl eq : equipment) {
+            if (type.isAssignableFrom(eq.getClass())) {
+                return (T) eq;
+            }
+        }
+        return null;
+    }
+
+    public PlayerImpl getOwner() {
+        return owner;
+    }
+
+    @Override
+    public Chassis getChassis() {
+        return getEquipment(ChassisImpl.class);
+    }
+
     public ComputerImpl getComputer() {
         return computer;
+    }
+
+    @Override
+    public Radar getRadar() {
+        return getEquipment(RadarImpl.class);
+    }
+
+    @Override
+    public Radio getRadio() {
+        return null;
+    }
+
+    @Override
+    public Turret getTurret() {
+        return null;
+    }
+
+    @Override
+    public Extention[] getExtentions() {
+        return new Extention[0];
     }
 
     public void addEquipment(EquipmentImpl equipment) {
@@ -53,32 +87,6 @@ public class RobotImpl implements Robot, Obj, Physical, Enterable {
             computer = (ComputerImpl) equipment;
         }
         equipment.setup(this);
-    }
-
-    @Override
-    public Player getOwner() {
-        return owner;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.BOT;
-    }
-
-    @Override
-    public List<Point2D> getVertices() {
-        return null;
-    }
-
-
-    @Override
-    public <T extends Equipment> T getEquipment(Class<T> type) {
-        for (EquipmentImpl eq : equipment) {
-            if (type.isAssignableFrom(eq.getClass())) {
-                return (T) eq;
-            }
-        }
-        return null;
     }
 
     @Override

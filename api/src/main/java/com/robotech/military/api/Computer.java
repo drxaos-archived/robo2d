@@ -1,9 +1,12 @@
 package com.robotech.military.api;
 
-public interface Computer extends Equipment {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    void saveFile(String fileName, String content);
+public interface Computer extends Remote {
 
-    String loadFile(String fileName);
+    void saveFile(String fileName, String content) throws RemoteException;
+
+    String loadFile(String fileName) throws RemoteException;
 
 }

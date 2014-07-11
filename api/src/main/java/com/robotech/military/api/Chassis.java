@@ -1,14 +1,17 @@
 package com.robotech.military.api;
 
-public interface Chassis extends Equipment {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    void setLeftAcceleration(Double percent);
+public interface Chassis extends Remote {
 
-    void setRightAcceleration(Double percent);
+    void setLeftAcceleration(Double percent) throws RemoteException;
 
-    Double getLeftSpeed();
+    void setRightAcceleration(Double percent) throws RemoteException;
 
-    Double getRightSpeed();
+    Double getLeftSpeed() throws RemoteException;
 
-    Boolean isWorking();
+    Double getRightSpeed() throws RemoteException;
+
+    Boolean isWorking() throws RemoteException;
 }

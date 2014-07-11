@@ -27,15 +27,11 @@ import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
-import robo2d.game.impl.BaseImpl;
-import robo2d.game.impl.Enterable;
-import robo2d.game.impl.RobotImpl;
-import robo2d.game.impl.WallImpl;
+import robo2d.game.impl.*;
 import slick2d.NativeLoader;
 
 import java.awt.*;
@@ -345,7 +341,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;
             Node node = e.getValue();
             moveRobot(e.getKey().getUid(), x, z, angle, node);
-            Chassis chassis = e.getKey().getEquipment(Chassis.class);
+            ChassisImpl chassis = (ChassisImpl) e.getKey().getChassis();
             if (chassis != null && chassis.isWorking()) {
                 robotModel.animateChassis(node);
             }

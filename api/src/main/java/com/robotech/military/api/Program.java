@@ -1,5 +1,7 @@
 package com.robotech.military.api;
 
-public interface Program extends Runnable {
-    void init(Robot robot);
+import java.rmi.RemoteException;
+
+public interface Program {
+    void run(Robot robot) throws RemoteException;
 }

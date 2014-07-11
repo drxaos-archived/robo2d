@@ -2,6 +2,7 @@ import com.robotech.military.api.Chassis;
 import com.robotech.military.api.Program;
 import com.robotech.military.api.Radar;
 import com.robotech.military.api.Robot;
+import java.rmi.RemoteException;
 
 public class Boot implements Program {
 
@@ -10,21 +11,17 @@ public class Boot implements Program {
     Radar radar;
 
     @Override
-    public void init(Robot robot) {
+    public void run(Robot robot) throws RemoteException {
         this.robot = robot;
-        chassis = robot.getEquipment(Chassis.class);
-        radar = robot.getEquipment(Radar.class);
+        chassis = robot.getChassis();
+        radar = robot.getRadar();
 
-    }
-
-    @Override
-    public void run() {
         if (chassis == null || radar == null) {
             robot.debug("fail");
             return;
         }
 
-        chassis.setLeftAcceleration(100d);
-        chassis.setLeftAcceleration(30d);
+        chassis.setLeftAcceleration(10d);
+        chassis.setRightAcceleration(0d);
     }
 }

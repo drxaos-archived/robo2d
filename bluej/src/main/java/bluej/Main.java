@@ -69,6 +69,8 @@ public class Main {
 
     private static QuitResponse macEventResponse = null;  // used to respond to external quit events on MacOS
 
+    public static Project openProj;
+
     /**
      * Entry point to starting up the system. Initialise the system and start
      * the first package manager frame.
@@ -115,6 +117,10 @@ public class Main {
         }.start();
     }
 
+    public static Project getOpenProj() {
+        return openProj;
+    }
+
     /**
      * Start everything off. This is used to open the projects specified on the
      * command line when starting BlueJ. Any parameters starting with '-' are
@@ -153,7 +159,6 @@ public class Main {
                 for (int i = 1; exists != null; i++) {
                     exists = Config.getPropString(Config.BLUEJ_OPENPACKAGE + i, null);
                     if (exists != null) {
-                        Project openProj;
                         // checking all is well (project exists)
                         if ((openProj = Project.openProject(exists, null)) != null) {
                             Package pkg = openProj.getPackage(openProj.getInitialPackageName());
@@ -429,12 +434,18 @@ public class Main {
         @Override
         public void deploy() {
         }
+
+        @Override
+        public void halt() {
+        }
     };
 
     public static interface BluejListener {
         void onExit();
 
         void deploy();
+
+        void halt();
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {
