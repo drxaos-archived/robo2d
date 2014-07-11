@@ -236,8 +236,10 @@ public final class Config
         // copy in all our command line properties (done first
         // incase the bluej.userHome property is one specified)
         commandProps.putAll(tempCommandLineProps);
-        commandProps.setProperty("bluej.libdir", bluejLibDir.getAbsolutePath());
-        
+        if (bluejLibDir != null) {
+            commandProps.setProperty("bluej.libdir", bluejLibDir.getAbsolutePath());
+        }
+
         if (createUserhome) {
 
             // get user home directory

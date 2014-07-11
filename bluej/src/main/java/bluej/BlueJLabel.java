@@ -37,7 +37,7 @@ class BlueJLabel extends SplashLabel
 {
     public BlueJLabel()
     {
-        super("splash.jpg");
+        super("/splash.jpg");
     }
 
     public void paintComponent(Graphics g)
