@@ -428,9 +428,6 @@ class VMReference
      * Launch the debug VM and set up the I/O connectors to the terminal.
      * @param initDir   the directory which the vm should be started in
      * @param params    the parameters (including executable as first param)
-     * @param line      a buffer which receives the first line of output from
-     *                  the debug vm process
-     * @param term      the terminal to connect to process I/O
      */
     private Process launchVM(File initDir, String [] params)
         throws IOException
@@ -834,14 +831,6 @@ class VMReference
 
     /**
      * "Start" a class (i.e. invoke its main method)
-     * 
-     * @param loader
-     *            the class loader to use
-     * @param classname
-     *            the class to start
-     * @param eventParam
-     *            when a BlueJEvent is generated for a breakpoint, this
-     *            parameter is passed as the event parameter
      */
     public DebuggerResult runShellClass(String className)
     {
@@ -1535,9 +1524,6 @@ class VMReference
 
     /**
      * Restore the previosuly saved breakpoints with the new classloader.
-     * 
-     * @param loader
-     *            The new class loader to restore the breakpoints into
      */
     public void restoreBreakpoints(List<Location> saved)
     {

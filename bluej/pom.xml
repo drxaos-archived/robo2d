@@ -1,8 +1,8 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>bluej</groupId>
-    <artifactId>bluej</artifactId>
-    <version>3.1.1.a</version>
+    <groupId>com.robotech.military</groupId>
+    <artifactId>terminal</artifactId>
+    <version>1.0</version>
 
     <dependencies>
         <dependency>
@@ -62,20 +62,5 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.2</version>
         </dependency>
-
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <configuration>
-                    <mainClass>com.robotech.military.remote.Loader</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

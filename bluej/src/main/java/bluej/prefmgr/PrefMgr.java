@@ -96,7 +96,7 @@ public class PrefMgr
     private static String projectDirectory;
 
     // list of recently used projects
-    private static List<String> recentProjects;
+//    private static List<String> recentProjects;
     
     // flags are all boolean preferences
     private static HashMap<String,String> flags = new HashMap<String,String>();
@@ -130,7 +130,7 @@ public class PrefMgr
         isNaviviewExpanded=initializeisNavivewExpanded();
         
         projectDirectory = Config.getPropString("bluej.projectPath");
-        recentProjects = readRecentProjects();
+//        recentProjects = readRecentProjects();
         
         flags.put(HILIGHTING, Config.getPropString(HILIGHTING, "true"));
         flags.put(AUTO_INDENT, Config.getPropString(AUTO_INDENT, "false"));
@@ -196,27 +196,27 @@ public class PrefMgr
         Config.putPropString("bluej.projectPath", newDir);
     }
 
-    public static List<String> getRecentProjects()
-    {
-        return recentProjects;
-    }
+//    public static List<String> getRecentProjects()
+//    {
+//        return recentProjects;
+//    }
     
-    public static void addRecentProject(String projectName)
-    {
-        if(projectName == null)
-            return;
-            
-        recentProjects.remove(projectName);
-        
-        if(recentProjects.size() == NUM_RECENT_PROJECTS)
-            recentProjects.remove(NUM_RECENT_PROJECTS-1);
-        
-        recentProjects.add(0, projectName);
-        
-        for(int i = 0; i < recentProjects.size(); i++) {
-            Config.putPropString("bluej.recentProject" + i, (String)recentProjects.get(i));
-        }
-    }
+//    public static void addRecentProject(String projectName)
+//    {
+//        if(projectName == null)
+//            return;
+//
+//        recentProjects.remove(projectName);
+//
+//        if(recentProjects.size() == NUM_RECENT_PROJECTS)
+//            recentProjects.remove(NUM_RECENT_PROJECTS-1);
+//
+//        recentProjects.add(0, projectName);
+//
+//        for(int i = 0; i < recentProjects.size(); i++) {
+//            Config.putPropString("bluej.recentProject" + i, (String)recentProjects.get(i));
+//        }
+//    }
     
     public static Font getStandardFont()
     {

@@ -19,7 +19,7 @@ public class BaseTest extends RobotTest {
         RobotImpl robot = new RobotImpl("MR_BS_1", game, player1, new KPoint(15, 5), 0);
         ChassisImpl chassis = new ChassisImpl(300d);
         RadarImpl radar = new RadarImpl(game, 100d);
-        ComputerImpl computer = new ComputerImpl(true);
+        ComputerImpl computer = new ComputerImpl(false);
         computer.saveFile("Program.java", "robo2d.locations.TestProgram");
         robot.addEquipment(chassis);
         robot.addEquipment(radar);

@@ -2736,9 +2736,9 @@ public class PkgMgrFrame extends JFrame
         menubar.add(menu);
         {
 //            createMenuItem(NewProjectAction.getInstance(), menu);
-//            javaMEnewProjMenuItem = createMenuItem(NewMEprojectAction.getInstance(), menu);
+            javaMEnewProjMenuItem = createMenuItem(NewMEprojectAction.getInstance(), menu);
 //            createMenuItem(OpenProjectAction.getInstance(), menu);
-//            recentProjectsMenu = new JMenu(Config.getString("menu.package.openRecent"));
+            recentProjectsMenu = new JMenu(Config.getString("menu.package.openRecent"));
 //            menu.add(recentProjectsMenu);
 //            createMenuItem(OpenNonBlueJAction.getInstance(), menu);
 //            createMenuItem(closeProjectAction, menu);
@@ -2748,7 +2748,7 @@ public class PkgMgrFrame extends JFrame
 
 //            createMenuItem(importProjectAction, menu);
 //            createMenuItem(exportProjectAction, menu);
-//            javaMEdeployMenuItem = createMenuItem(deployMIDletAction, menu);
+            javaMEdeployMenuItem = createMenuItem(deployMIDletAction, menu);
 //            javaMEdeployMenuItem.setVisible(false); //visible only in Java ME packages
             menu.addSeparator();
 
@@ -3003,14 +3003,14 @@ public class PkgMgrFrame extends JFrame
      * Update the 'Open Recent' menu
      */
     private void updateRecentProjects() {
-        ProjectOpener opener = new ProjectOpener();
-        recentProjectsMenu.removeAll();
+//        ProjectOpener opener = new ProjectOpener();
+//        recentProjectsMenu.removeAll();
 
-        List<String> projects = PrefMgr.getRecentProjects();
-        for (Iterator<String> it = projects.iterator(); it.hasNext(); ) {
-            JMenuItem item = recentProjectsMenu.add(it.next());
-            item.addActionListener(opener);
-        }
+//        List<String> projects = PrefMgr.getRecentProjects();
+//        for (Iterator<String> it = projects.iterator(); it.hasNext(); ) {
+//            JMenuItem item = recentProjectsMenu.add(it.next());
+//            item.addActionListener(opener);
+//        }
     }
 
     /**

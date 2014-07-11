@@ -101,8 +101,7 @@ public class Main {
         // process command line arguments, start BlueJ!
         EventQueue.invokeLater(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 processArgs(args);
             }
         });
@@ -418,7 +417,23 @@ public class Main {
 
         // save configuration properties
         Config.handleExit();
-        // exit with success status
-        System.exit(0);
+
+        bluejListener.onExit();
+    }
+
+    static BluejListener bluejListener = new BluejListener() {
+        @Override
+        public void onExit() {
+        }
+    };
+
+    public static interface BluejListener {
+        void onExit();
+    }
+
+    public static void registerBluejListener(BluejListener bluejListener) {
+        if (bluejListener != null) {
+            Main.bluejListener = bluejListener;
+        }
     }
 }

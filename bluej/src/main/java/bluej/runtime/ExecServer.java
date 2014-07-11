@@ -791,7 +791,7 @@ public class ExecServer
                             }
                             break;
                         case EXIT_VM:
-                            System.exit(0);
+                            //System.exit(0);
                         default:
                     }
                 }
