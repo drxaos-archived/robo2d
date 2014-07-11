@@ -421,14 +421,20 @@ public class Main {
         bluejListener.onExit();
     }
 
-    static BluejListener bluejListener = new BluejListener() {
+    public static BluejListener bluejListener = new BluejListener() {
         @Override
         public void onExit() {
+        }
+
+        @Override
+        public void deploy() {
         }
     };
 
     public static interface BluejListener {
         void onExit();
+
+        void deploy();
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {

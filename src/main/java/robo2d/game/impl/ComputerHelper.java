@@ -40,7 +40,7 @@ public class ComputerHelper {
         }
     }
 
-    public static synchronized void loadFromDisk(ComputerImpl computer, File path) {
+    public static synchronized void loadFromDisk(ComputerImpl computer, File path, boolean cleanUp) {
         for (File file : FileUtils.listFiles(path, new String[]{"java", "txt"}, true)) {
             try {
                 String content = FileUtils.readFileToString(file);
@@ -49,10 +49,12 @@ public class ComputerHelper {
                 e.printStackTrace();
             }
         }
-        try {
-            FileUtils.deleteDirectory(path);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (cleanUp) {
+            try {
+                FileUtils.deleteDirectory(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -21,10 +21,7 @@
  */
 package bluej.pkgmgr;
 
-import bluej.BlueJEvent;
-import bluej.BlueJEventListener;
-import bluej.BlueJTheme;
-import bluej.Config;
+import bluej.*;
 import bluej.collect.DataCollector;
 import bluej.debugger.Debugger;
 import bluej.debugger.DebuggerObject;
@@ -132,7 +129,7 @@ public class PkgMgrFrame extends JFrame
     private AbstractButton commitButton;
     private AbstractButton teamStatusButton;
     private List<JComponent> teamItems;
-    private JMenuItem javaMEnewProjMenuItem;
+//    private JMenuItem javaMEnewProjMenuItem;
     private JMenuItem javaMEdeployMenuItem;
 
     private TeamActionGroup teamActions;
@@ -690,8 +687,7 @@ public class PkgMgrFrame extends JFrame
      * Deploy the MIDlet suite contained in this project.
      */
     public void doDeployMIDlet() {
-        MIDletDeployer deployer = new MIDletDeployer(this);
-        deployer.deploy();
+        Main.bluejListener.deploy();
     }
 
     /**
@@ -2736,7 +2732,7 @@ public class PkgMgrFrame extends JFrame
         menubar.add(menu);
         {
 //            createMenuItem(NewProjectAction.getInstance(), menu);
-            javaMEnewProjMenuItem = createMenuItem(NewMEprojectAction.getInstance(), menu);
+//            javaMEnewProjMenuItem = createMenuItem(NewMEprojectAction.getInstance(), menu);
 //            createMenuItem(OpenProjectAction.getInstance(), menu);
             recentProjectsMenu = new JMenu(Config.getString("menu.package.openRecent"));
 //            menu.add(recentProjectsMenu);
