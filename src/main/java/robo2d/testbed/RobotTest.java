@@ -1,5 +1,6 @@
 package robo2d.testbed;
 
+import bluej.Boot;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
@@ -21,6 +22,7 @@ public abstract class RobotTest extends TestbedTest {
         game = createGame();
         game.start();
         LiveFrame.create(game).getCanvas();
+        Boot.start(null);
     }
 
     abstract public Game createGame();

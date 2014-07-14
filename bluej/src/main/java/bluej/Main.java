@@ -22,6 +22,7 @@
 package bluej;
 
 import bluej.collect.DataCollector;
+import bluej.debugger.Debugger;
 import bluej.extensions.event.ApplicationEvent;
 import bluej.extmgr.ExtensionsManager;
 import bluej.pkgmgr.Package;
@@ -438,6 +439,10 @@ public class Main {
         @Override
         public void halt() {
         }
+
+        @Override
+        public void debuggerReady(Debugger debugger) {
+        }
     };
 
     public static interface BluejListener {
@@ -446,6 +451,8 @@ public class Main {
         void deploy();
 
         void halt();
+
+        void debuggerReady(Debugger debugger);
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {

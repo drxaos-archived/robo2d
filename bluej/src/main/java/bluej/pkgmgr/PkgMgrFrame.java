@@ -567,6 +567,7 @@ public class PkgMgrFrame extends JFrame
             updateWindow();
             setStatus(bluej.Boot.BLUEJ_VERSION_TITLE);
         }
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
     /**
@@ -642,7 +643,7 @@ public class PkgMgrFrame extends JFrame
 
             pack();
             editor.revalidate();
-            editor.requestFocus();
+//            editor.requestFocus();
 
             enableFunctions(true); // changes menu items
             updateWindow();
@@ -1320,6 +1321,8 @@ public class PkgMgrFrame extends JFrame
         if (doSave) {
             doSave();
         }
+
+        keepLastFrame = true; // don't close
 
         // If only one frame and this was from the menu
         // "close", close should close existing package rather

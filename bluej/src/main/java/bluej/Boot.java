@@ -21,6 +21,8 @@
  */
 package bluej;
 
+import bluej.pkgmgr.PkgMgrFrame;
+
 import java.awt.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -129,11 +131,14 @@ public class Boot {
     }
 
     public static void exit() {
-        Main.doQuit();
+        PkgMgrFrame[] pkgFrames = PkgMgrFrame.getAllFrames();
+        for (PkgMgrFrame pkgFrame : pkgFrames) {
+            pkgFrame.doClose(true, true);
+        }
     }
 
     public static void start(String project) {
-        String[] args = new String[]{project};
+        String[] args = project != null ? new String[]{project} : new String[0];
 
         Properties commandLineProps = processCommandLineProperties(args);
         isGreenfoot = commandLineProps.getProperty("greenfoot", "false").equals("true");

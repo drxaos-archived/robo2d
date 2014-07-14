@@ -20,7 +20,6 @@ import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
 import com.jme3.util.SkyFactory;
-import com.robotech.military.api.Chassis;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
@@ -193,7 +192,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         inputManager.addListener(new ActionListener() {
             @Override
             public void onAction(String name, boolean keyPressed, float tpf) {
-                if (!keyPressed) {
+                if (keyPressed) {
                     return;
                 }
                 if (game.getPlayer().getEntered() != null) {

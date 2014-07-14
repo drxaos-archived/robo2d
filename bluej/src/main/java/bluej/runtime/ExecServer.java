@@ -243,7 +243,7 @@ public class ExecServer
                         // To make sure that screen readers announce the window being open,
                         // we de-focus and re-focus it once the right application has focus:
                         KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-                        ((Window)source).requestFocus();
+//                        ((Window)source).requestFocus();
                     }
                 } else if(event.getID() == WindowEvent.WINDOW_CLOSED) {
                     if (source instanceof Window) {
