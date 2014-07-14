@@ -24,6 +24,7 @@ package bluej.pkgmgr;
 import bluej.BlueJEvent;
 import bluej.Boot;
 import bluej.Config;
+import bluej.Main;
 import bluej.classmgr.BPClassLoader;
 import bluej.collect.DataCollector;
 import bluej.debugger.*;
@@ -45,7 +46,6 @@ import bluej.groupwork.ui.UpdateFilesFrame;
 import bluej.parser.entity.EntityResolver;
 import bluej.pkgmgr.target.ClassTarget;
 import bluej.pkgmgr.target.Target;
-import bluej.prefmgr.PrefMgr;
 import bluej.prefmgr.PrefMgrDialog;
 import bluej.terminal.Terminal;
 import bluej.testmgr.record.ClassInspectInvokerRecord;
@@ -1274,6 +1274,8 @@ public class Project implements DebuggerListener, InspectorManager {
         if (frame != null) {
             Utility.bringToFront(frame);
         }
+
+        Main.bluejListener.debuggerReady(getDebugger());
     }
 
     /**

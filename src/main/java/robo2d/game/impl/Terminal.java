@@ -6,6 +6,7 @@ import bluej.debugger.Debugger;
 import bluej.debugger.DebuggerResult;
 import bluej.pkgmgr.PkgMgrFrame;
 import bluej.pkgmgr.Project;
+import bluej.testmgr.record.ConstructionInvokerRecord;
 
 import java.io.File;
 import java.rmi.Remote;
@@ -70,6 +71,16 @@ public class Terminal {
                     if (debuggerResult.getResultObject() != null) {
                         Project openProj = Main.getOpenProj();
                         dbg.addObject(openProj.getPackage("").getId(), "computer", debuggerResult.getResultObject());
+                        for (PkgMgrFrame pkgMgrFrame : PkgMgrFrame.getAllFrames()) {
+                            if (pkgMgrFrame.getPackage().getId().equals(openProj.getPackage(""))) {
+                                pkgMgrFrame.getObjectBench().addInteraction(new ConstructionInvokerRecord(
+                                        "robo2d.game.impl.proxy.ComputerInterfaceProxy",
+                                        "computer",
+                                        "new robo2d.game.impl.proxy.ComputerInterfaceProxy()",
+                                        null
+                                ));
+                            }
+                        }
                     } else {
                         System.out.println(debuggerResult.getException());
                     }

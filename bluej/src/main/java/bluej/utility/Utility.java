@@ -489,49 +489,49 @@ public class Utility
      */
     public static void bringToFront(final Window window)
     {
-        // If not showing at all we return now.
-        if (window != null) {
-            if (!window.isShowing() || !window.getFocusableWindowState()) {
-                return;
-            }
-            window.toFront();
-        }
-        
-        if (Config.isMacOS()) {
-            Application.getApplication().requestForeground(false);
-            return;
-        }
-
-        String pid = getProcessId();
-        boolean isWindows = Config.isWinOS();
-
-        if (isWindows) {
-            // Use WSH (Windows Script Host) to execute a javascript that brings
-            // a window to front.
-            File libdir = calculateBluejLibDir();
-            String[] command = new String[] {"cscript","\"" + libdir.getAbsolutePath() + "\\windowtofront.js\"",pid };
-            
-            final StringBuffer commandAsStr = new StringBuffer();
-            for (int i = 0; i < command.length; i++) {
-                commandAsStr.append(command[i] + " ");
-            }
-
-            try {
-                Process p = Runtime.getRuntime().exec(command);
-                new ExternalProcessLogger(command[0], commandAsStr.toString(), p).start();
-                if (isWindows) {
-                    // An apparent JDK bug causes us to lose the ability to receive
-                    // input if the script is executed while a popup window is showing.
-                    // In an attempt to avoid that we'll wait for the script to execute
-                    // now:
-                    new ProcessWaiter(p).waitForProcess(500);
-                }
-            }
-            catch (IOException e) {
-                Debug.reportError("While trying to launch \"" + command[0] + "\", got this IOException:", e);
-            }
-            catch (InterruptedException ie) {}
-        }
+//        // If not showing at all we return now.
+//        if (window != null) {
+//            if (!window.isShowing() || !window.getFocusableWindowState()) {
+//                return;
+//            }
+//            window.toFront();
+//        }
+//
+//        if (Config.isMacOS()) {
+//            Application.getApplication().requestForeground(false);
+//            return;
+//        }
+//
+//        String pid = getProcessId();
+//        boolean isWindows = Config.isWinOS();
+//
+//        if (isWindows) {
+//            // Use WSH (Windows Script Host) to execute a javascript that brings
+//            // a window to front.
+//            File libdir = calculateBluejLibDir();
+//            String[] command = new String[] {"cscript","\"" + libdir.getAbsolutePath() + "\\windowtofront.js\"",pid };
+//
+//            final StringBuffer commandAsStr = new StringBuffer();
+//            for (int i = 0; i < command.length; i++) {
+//                commandAsStr.append(command[i] + " ");
+//            }
+//
+//            try {
+//                Process p = Runtime.getRuntime().exec(command);
+//                new ExternalProcessLogger(command[0], commandAsStr.toString(), p).start();
+//                if (isWindows) {
+//                    // An apparent JDK bug causes us to lose the ability to receive
+//                    // input if the script is executed while a popup window is showing.
+//                    // In an attempt to avoid that we'll wait for the script to execute
+//                    // now:
+//                    new ProcessWaiter(p).waitForProcess(500);
+//                }
+//            }
+//            catch (IOException e) {
+//                Debug.reportError("While trying to launch \"" + command[0] + "\", got this IOException:", e);
+//            }
+//            catch (InterruptedException ie) {}
+//        }
     }
 
     private static class ExternalProcessLogger extends Thread
