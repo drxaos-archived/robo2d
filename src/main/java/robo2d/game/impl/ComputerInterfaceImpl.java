@@ -1,15 +1,13 @@
 package robo2d.game.impl;
 
 import bluej.Main;
-import robo2d.game.impl.proxy.RobotProxy;
-
-import java.rmi.Remote;
-import java.rmi.server.UnicastRemoteObject;
+import com.robotech.military.api.Chassis;
+import com.robotech.military.api.Robot;
+import net.sf.lipermi.exception.LipeRMIException;
 
 public class ComputerInterfaceImpl implements ComputerInterface {
 
-    private com.robotech.military.api.Robot robot;
-    private RobotProxy robotProxy;
+    private Robot robot;
 
     protected ComputerInterfaceImpl(com.robotech.military.api.Robot robot) {
         this.robot = robot;
@@ -26,17 +24,15 @@ public class ComputerInterfaceImpl implements ComputerInterface {
     }
 
     @Override
-    public com.robotech.military.api.Robot getRobotForDebug() {
+    public Robot getRobotForDebug() {
         halt();
         try {
-            robotProxy = new RobotProxy(robot);
-            Remote stub = UnicastRemoteObject.exportObject(robotProxy, 0);
-            Terminal.registry.rebind(robotProxy.getClass().getCanonicalName() + "#" + System.identityHashCode(robotProxy), stub);
-            return robotProxy;
-        } catch (Exception e) {
+            Terminal.callHandler.exportObject(Robot.class, robot);
+            Terminal.callHandler.exportObject(Chassis.class, robot.getChassis());
+        } catch (LipeRMIException e) {
             e.printStackTrace();
-            return null;
         }
+        return robot;
     }
 
 }

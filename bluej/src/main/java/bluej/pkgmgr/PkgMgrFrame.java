@@ -2755,10 +2755,10 @@ public class PkgMgrFrame extends JFrame
             createMenuItem(pageSetupAction, menu);
             createMenuItem(printAction, menu);
 
-            if (!Config.usingMacScreenMenubar()) { // no "Quit" here for Mac
-                menu.addSeparator();
-                createMenuItem(QuitAction.getInstance(), menu);
-            }
+//            if (!Config.usingMacScreenMenubar()) { // no "Quit" here for Mac
+//                menu.addSeparator();
+//                createMenuItem(QuitAction.getInstance(), menu);
+//            }
         }
 
         menu = new JMenu(Config.getString("menu.edit"));

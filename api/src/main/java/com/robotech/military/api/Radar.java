@@ -1,10 +1,8 @@
 package com.robotech.military.api;
 
 import java.io.Serializable;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 
-public interface Radar extends Remote {
+public interface Radar {
 
     public static enum Type {
         UNKNOWN,
@@ -41,16 +39,16 @@ public interface Radar extends Remote {
         }
     }
 
-    Boolean satelliteRequest(Point center, double accuracy) throws RemoteException;
+    Boolean satelliteRequest(Point center, double accuracy);
 
-    SatelliteScanData getSatelliteResponse() throws RemoteException;
+    SatelliteScanData getSatelliteResponse();
 
-    void clearSatelliteResponse() throws RemoteException;
+    void clearSatelliteResponse();
 
-    LocatorScanData locate(double angle) throws RemoteException;
+    LocatorScanData locate(double angle);
 
-    Double getAngle() throws RemoteException;
+    Double getAngle();
 
-    Point getPosition() throws RemoteException;
+    Point getPosition();
 
 }

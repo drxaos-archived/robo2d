@@ -427,7 +427,8 @@ public class Main {
         bluejListener.onExit();
     }
 
-    public static BluejListener bluejListener = new BluejListener() {
+
+    public static BluejListener defaultBluejListener = new BluejListener() {
         @Override
         public void onExit() {
         }
@@ -444,6 +445,7 @@ public class Main {
         public void debuggerReady(Debugger debugger) {
         }
     };
+    public static BluejListener bluejListener = defaultBluejListener;
 
     public static interface BluejListener {
         void onExit();
@@ -458,6 +460,8 @@ public class Main {
     public static void registerBluejListener(BluejListener bluejListener) {
         if (bluejListener != null) {
             Main.bluejListener = bluejListener;
+        } else {
+            Main.bluejListener = defaultBluejListener;
         }
     }
 }

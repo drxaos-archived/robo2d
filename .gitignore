@@ -9,3 +9,5 @@ gradlew.bat
 *.log
 libs/
 notebook/
+computer/
+tmp/

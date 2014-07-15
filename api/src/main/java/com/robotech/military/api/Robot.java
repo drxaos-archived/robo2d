@@ -1,29 +1,26 @@
 package com.robotech.military.api;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+public interface Robot {
 
-public interface Robot extends Remote {
+    Chassis getChassis();
 
-    Chassis getChassis() throws RemoteException;
+    Computer getComputer();
 
-    Computer getComputer() throws RemoteException;
+    Radar getRadar();
 
-    Radar getRadar() throws RemoteException;
+    Radio getRadio();
 
-    Radio getRadio() throws RemoteException;
+    Turret getTurret();
 
-    Turret getTurret() throws RemoteException;
+    Extention[] getExtentions();
 
-    Extention[] getExtentions() throws RemoteException;
+    Double getEnergy();
 
-    Double getEnergy() throws RemoteException;
+    String getUid();
 
-    String getUid() throws RemoteException;
+    Long getTime();
 
-    Long getTime() throws RemoteException;
+    void waitForStep();
 
-    void waitForStep() throws RemoteException;
-
-    void debug(Object dbg) throws RemoteException;
+    void debug(Object dbg);
 }
