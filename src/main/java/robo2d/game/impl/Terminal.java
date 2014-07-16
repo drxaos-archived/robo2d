@@ -20,9 +20,8 @@ public class Terminal {
     static CallHandler callHandler;
     static Server server;
 
-    public synchronized static void open(final ComputerImpl computer) {
-        Terminal.computer = computer;
-        if (computer != null) {
+    public static void exportInterface() {
+        if (server == null) {
             ComputerInterfaceImpl computerInterface;
             try {
                 computerInterface = computer.getComputerInterface();
@@ -35,7 +34,12 @@ public class Terminal {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
 
+    public synchronized static void open(final ComputerImpl computer) {
+        Terminal.computer = computer;
+        if (computer != null) {
             final File dir = new File("computer");
             ComputerHelper.saveToDisk(computer, dir);
             Main.registerBluejListener(new Main.BluejListener() {
@@ -59,6 +63,7 @@ public class Terminal {
 
                 @Override
                 public void debuggerReady(Debugger dbg) {
+                    exportInterface();
                     DebuggerResult debuggerResult = dbg.instantiateClass("robo2d.game.impl.ComputerInterfaceProxy");
                     if (debuggerResult.getResultObject() != null) {
                         Project openProj = Main.getOpenProj();
@@ -99,8 +104,14 @@ public class Terminal {
     }
 
     private static void unbindRmi() {
-        server.close();
-        server = null;
+        if (server != null) {
+            server.close();
+            server = null;
+            Project openProj = Main.getOpenProj();
+            if (openProj != null) {
+                openProj.restartVM();
+            }
+        }
     }
 
 }

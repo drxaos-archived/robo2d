@@ -22,18 +22,17 @@
 
 package net.sf.lipermi.net;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.sf.lipermi.handler.CallHandler;
 import net.sf.lipermi.handler.ConnectionHandler;
 import net.sf.lipermi.handler.IConnectionHandlerListener;
 import net.sf.lipermi.handler.filter.DefaultFilter;
 import net.sf.lipermi.handler.filter.IProtocolFilter;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.*;
 
 
 /**
@@ -41,72 +40,95 @@ import net.sf.lipermi.handler.filter.IProtocolFilter;
  * This object listen to a specific port and
  * when a client connects it delegates the connection
  * to a {@link net.sf.lipermi.handler.ConnectionHandler ConnectionHandler}.
- * 
+ *
  * @author lipe
- * @date   05/10/2006
- * 
- * @see    net.sf.lipermi.handler.CallHandler
- * @see    net.sf.lipermi.net.Client
+ * @date 05/10/2006
+ * @see net.sf.lipermi.handler.CallHandler
+ * @see net.sf.lipermi.net.Client
  */
 public class Server {
 
-	private ServerSocket serverSocket;
-	
-	private boolean enabled;
-	
-	private List<IServerListener> listeners = new LinkedList<IServerListener>();
-	
-	public void addServerListener(IServerListener listener) {
-		listeners.add(listener);
-	}
+    private ServerSocket serverSocket;
 
-	public void removeServerListener(IServerListener listener) {
-		listeners.remove(listener);
-	}
-	
-	public void close() {
-		enabled = false;
-	}
-	
-	public void bind(int port, CallHandler callHandler) throws IOException {
-		bind(port, callHandler, new DefaultFilter());
-	}
-	
-	public void bind(final int port, final CallHandler callHandler, final IProtocolFilter filter) throws IOException {
-		serverSocket = new ServerSocket();
-		serverSocket.setPerformancePreferences(1, 0, 2);
-		enabled = true;
+    private boolean enabled;
 
-		serverSocket.bind(new InetSocketAddress(port));
-		
-		Thread bindThread = new Thread(new Runnable() {
-			public void run() {
-				while (enabled) {
-					Socket acceptSocket = null;
-					try {
-						acceptSocket = serverSocket.accept();
-						
-						final Socket clientSocket = acceptSocket;
-						ConnectionHandler.createConnectionHandler(clientSocket,
-								callHandler,
-								filter,
-								new IConnectionHandlerListener() {
-							
-							public void connectionClosed() {
-								for (IServerListener listener : listeners)
-									listener.clientDisconnected(clientSocket);
-							}
-							
-						});
-						for (IServerListener listener : listeners)
-							listener.clientConnected(clientSocket);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}, String.format("Bind (%d)", port)); //$NON-NLS-1$ //$NON-NLS-2$
-		bindThread.start();
-	}
-	
+    private List<IServerListener> listeners = new LinkedList<IServerListener>();
+
+    public void addServerListener(IServerListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeServerListener(IServerListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void close() {
+        enabled = false;
+        for (Socket s : allSockets) {
+            try {
+                s.close();
+            } catch (IOException e) {
+            }
+        }
+        allSockets.clear();
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void bind(int port, CallHandler callHandler) throws IOException {
+        bind(port, callHandler, new DefaultFilter());
+    }
+
+    final List<Socket> allSockets = Collections.synchronizedList(new ArrayList<Socket>());
+
+    public void bind(final int port, final CallHandler callHandler, final IProtocolFilter filter) throws IOException {
+        serverSocket = new ServerSocket();
+        serverSocket.setPerformancePreferences(1, 0, 2);
+        enabled = true;
+
+        serverSocket.bind(new InetSocketAddress(port));
+
+        Thread bindThread = new Thread(new Runnable() {
+            public void run() {
+                while (enabled) {
+                    Socket acceptSocket = null;
+                    try {
+                        acceptSocket = serverSocket.accept();
+
+                        final Socket clientSocket = acceptSocket;
+
+                        Iterator<Socket> i = allSockets.iterator();
+                        while (i.hasNext()) {
+                            Socket s = i.next();
+                            if (s.isClosed()) {
+                                i.remove();
+                            }
+                        }
+                        allSockets.add(clientSocket);
+
+                        ConnectionHandler.createConnectionHandler(clientSocket,
+                                callHandler,
+                                filter,
+                                new IConnectionHandlerListener() {
+
+                                    public void connectionClosed() {
+                                        for (IServerListener listener : listeners)
+                                            listener.clientDisconnected(clientSocket);
+                                    }
+
+                                });
+                        for (IServerListener listener : listeners)
+                            listener.clientConnected(clientSocket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, String.format("Bind (%d)", port)); //$NON-NLS-1$ //$NON-NLS-2$
+        bindThread.start();
+    }
+
 }
