@@ -25,7 +25,8 @@ public class BaseTest extends RobotTest {
         RadarImpl radar = new RadarImpl(game, 100d);
         ComputerImpl computer = new ComputerImpl(true);
         try {
-            computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/MR_BS_1.txt")));
+            computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
+            computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
         } catch (IOException e) {
             e.printStackTrace();
         }

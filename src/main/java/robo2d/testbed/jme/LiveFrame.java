@@ -24,8 +24,10 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import robo2d.game.Game;
 import robo2d.game.box2d.Physical;
@@ -92,9 +94,11 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     Nifty nifty;
 
     RobotImpl targetRobot;
+    BaseImpl targetLaptop;
     float lastEnteredRobotAngle;
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
+    HashMap<BaseImpl, Node> baseMap = new HashMap<BaseImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -148,6 +152,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         if (baseImpl != null) {
             baseModel = new BaseModel(assetManager);
             base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
+            baseMap.put(baseImpl, (Node) base.getChild("laptop"));
             rootNode.attachChild(base);
         }
 
@@ -165,21 +170,23 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         // GUI
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
-//        nifty.fromXml("models/gui/label.xml", "GScreen0");
-//        nifty.setDebugOptionPanelColors(true);
+        //nifty.fromXml("models/gui/label.xml", "GScreen0");
+        nifty.setDebugOptionPanelColors(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
 
         nifty.addScreen("LabelScreen", new ScreenBuilder("Label Nifty Screen") {{
             controller(new DefaultScreenController()); // Screen properties
             layer(new LayerBuilder("Layer1") {{
-                childLayoutVertical(); // layer properties, add more...
+                childLayoutCenter(); // layer properties, add more...
                 panel(new PanelBuilder("Panel1") {{
+                    align(Align.Center);
+                    valign(VAlign.Center);
                     childLayoutCenter(); // panel properties, add more...
-                    control(new LabelBuilder("label", "") {{
-                        alignCenter();
-                        valignCenter();
-                        height("5%");
+                    text(new TextBuilder("label") {{
+                        text("My Cool Game");
+                        font("Interface/Fonts/Default.fnt");
+                        height("100%");
                         width("100%");
                     }});
                 }});
@@ -267,6 +274,25 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         return null;
     }
 
+    private BaseImpl getTargetLaptop(Vector3f position, Vector3f direction) {
+        rootNode.updateGeometricState();
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray();
+        ray.setOrigin(position);
+        ray.setDirection(direction);
+        rootNode.collideWith(ray, results);
+        CollisionResult result = results.getClosestCollision();
+        if (result == null || result.getDistance() > 3) {
+            return null;
+        }
+        for (Map.Entry<BaseImpl, Node> e : baseMap.entrySet()) {
+            if (e.getValue().hasChild(result.getGeometry())) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
+
     @Override
     public void simpleUpdate(float tpf) {
         if (!isSceneRendered()) {
@@ -326,9 +352,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
+        targetLaptop = getTargetLaptop(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
-//            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
+            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
         }
     }
 

@@ -63,6 +63,7 @@ public class BaseModel {
             laptopModel1.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.PI * 8 / 5, Vector3f.UNIT_Y));
             laptopModel1.setLocalTranslation(-2, 0, 0);
             laptopModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+            laptopModel1.setName("laptop");
         }
         if (barrelModel1 == null) {
             barrelModel1 = assetManager.loadModel("models/barrel/barrel.obj");
@@ -117,8 +118,8 @@ public class BaseModel {
         Node node = new Node("base");
         node.attachChild(baseModel1.clone());
         node.attachChild(laptopModel1.clone());
-        node.attachChild(rackModel1.clone());
-        node.attachChild(barrelModel1.clone());
+        //node.attachChild(rackModel1.clone());
+        //node.attachChild(barrelModel1.clone());
 
         node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());

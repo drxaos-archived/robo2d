@@ -1,7 +1,4 @@
-import com.robotech.military.api.Chassis;
-import com.robotech.military.api.Program;
-import com.robotech.military.api.Radar;
-import com.robotech.military.api.Robot;
+import com.robotech.military.api.*;
 
 public class Boot implements Program {
 
@@ -20,7 +17,11 @@ public class Boot implements Program {
             return;
         }
 
-        chassis.setLeftAcceleration(10d);
-        chassis.setRightAcceleration(0d);
+        while (true) {
+            Driver driver = new Driver(robot);
+            driver.moveSmooth(new Point(20, 20), 50000);
+            driver.stop();
+            robot.waitForStep();
+        }
     }
 }

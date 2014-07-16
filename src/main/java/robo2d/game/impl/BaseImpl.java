@@ -9,14 +9,12 @@ import straightedge.geom.KPolygon;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BaseImpl implements Physical, Enterable {
 
     public static final float SIZE = 6;
 
     StaticBox box;
-    List<Point2D> vertices;
     KPoint pos;
     float angle;
 
@@ -34,17 +32,25 @@ public class BaseImpl implements Physical, Enterable {
         this.pos = pos;
         this.angle = angle;
 
-        this.vertices = new ArrayList<Point2D>();
-
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();
-        for (int i = 0; i < 4; i++) {
-            float x = FastMath.sin(FastMath.PI / 4 + FastMath.PI / 2 * i) * SIZE;
-            float y = FastMath.cos(FastMath.PI / 4 + FastMath.PI / 2 * i) * SIZE;
-            vertices.add(new Point2D.Float(x, y));
-            kPoints.add(new KPoint(x, y));
-        }
 
-        box = new StaticBox(new KPolygon(kPoints), pos, angle);
+        kPoints.add(new KPoint(1f, 1f));
+        kPoints.add(new KPoint(1f, -1f));
+        kPoints.add(new KPoint(-1f, -1f));
+        kPoints.add(new KPoint(-1f, 1f));
+        kPoints.add(new KPoint(-1f / 4f, 1f));
+        kPoints.add(new KPoint(-1f / 4f, 7f / 9f));
+        kPoints.add(new KPoint(-8f / 9f, 7f / 9f));
+        kPoints.add(new KPoint(-8f / 9f, -8f / 9f));
+        kPoints.add(new KPoint(8f / 9f, -8f / 9f));
+        kPoints.add(new KPoint(8f / 9f, 7f / 9f));
+        kPoints.add(new KPoint(1f / 4f, 7f / 9f));
+        kPoints.add(new KPoint(1f / 4f, 1f));
+        KPolygon polygon = new KPolygon(kPoints);
+        polygon.scale(SIZE * 0.7);
+        polygon.rotate(-FastMath.PI / 2);
+
+        box = new StaticBox(polygon, pos, angle);
     }
 
     @Override
