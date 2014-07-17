@@ -680,7 +680,7 @@ public class PkgMgrFrame extends JFrame
      * Show or hide the Java ME controls.
      */
     private void showJavaMEcontrols(boolean show) {
-        javaMEdeployMenuItem.setVisible(show);
+        javaMEdeployMenuItem.setVisible(true);
         javaMEPanel.setVisible(show);
     }
 
@@ -2749,7 +2749,7 @@ public class PkgMgrFrame extends JFrame
 //            createMenuItem(importProjectAction, menu);
 //            createMenuItem(exportProjectAction, menu);
             javaMEdeployMenuItem = createMenuItem(deployMIDletAction, menu);
-//            javaMEdeployMenuItem.setVisible(false); //visible only in Java ME packages
+            javaMEdeployMenuItem.setVisible(true);
             menu.addSeparator();
 
             createMenuItem(pageSetupAction, menu);

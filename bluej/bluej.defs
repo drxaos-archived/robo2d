@@ -89,7 +89,7 @@ bluej.editor.codecompletion=true
 
 bluej.testing.showtools=false
 bluej.teamwork.showtools=true
-bluej.javame.showtools=false
+bluej.javame.showtools=true
 
 colour.selection=233,225,0
 colour.selection2=255,250,0

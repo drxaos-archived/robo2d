@@ -16,6 +16,7 @@ import java.io.File;
 public class Terminal {
 
     static ComputerImpl computer;
+    static BaseImpl base;
 
     static CallHandler callHandler;
     static Server server;
@@ -92,31 +93,51 @@ public class Terminal {
                 }
             });
 
-            PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+            try {
+                PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public synchronized static void open(final BaseImpl base) {
-            final File dir = new File("computer");
-            ComputerHelper.saveToDisk(base, dir);
-            Main.registerBluejListener(null);
-            PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+        Terminal.base = base;
+        final File dir = new File("computer");
+        ComputerHelper.saveToDisk(base, dir);
+        Main.registerBluejListener(null);
+        PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
     }
 
-    public synchronized static void close() {
+    public synchronized static void close(ComputerImpl computer) {
         Main.registerBluejListener(null);
         unbindRmi();
         Boot.exit();
         ComputerHelper.loadFromDisk(computer, new File("computer"), true);
     }
 
+    public synchronized static void close(BaseImpl base) {
+        Main.registerBluejListener(null);
+        unbindRmi();
+        Boot.exit();
+        ComputerHelper.loadFromDisk(base, new File("computer"), true);
+    }
+
     private static void unbindRmi() {
         if (server != null) {
-            server.close();
+            try {
+                server.close();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
             server = null;
-            Project openProj = Main.getOpenProj();
-            if (openProj != null) {
-                openProj.restartVM();
+            try {
+                Project openProj = Main.getOpenProj();
+                if (openProj != null) {
+                    openProj.restartVM();
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
     }

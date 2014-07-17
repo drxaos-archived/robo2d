@@ -1,0 +1,8 @@
+Hello Tech!
+
+Some objectives for you:
+   = first
+   = second
+   = third
+
+END

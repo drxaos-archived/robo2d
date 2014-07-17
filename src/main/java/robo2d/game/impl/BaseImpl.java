@@ -83,15 +83,21 @@ public class BaseImpl implements Physical, Enterable {
 
     @Override
     public void enter(PlayerImpl player) {
-        enteredPlayer = player;
-        Terminal.open(this);
+        if (enteredPlayer == null) {
+            enteredPlayer = player;
+            Terminal.open(this);
+        }
     }
 
     @Override
     public Point2D exit() {
-        Terminal.close();
-        enteredPlayer = null;
-        return getBox().getPosition();
+        if (enteredPlayer != null) {
+            Terminal.close(this);
+            enteredPlayer = null;
+            return getBox().getPosition();
+        } else {
+            return null;
+        }
     }
 
     public String getLaptopName() {

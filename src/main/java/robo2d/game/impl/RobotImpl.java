@@ -176,14 +176,20 @@ public class RobotImpl implements Robot, Physical, Enterable {
 
     @Override
     public void enter(PlayerImpl player) {
-        enteredPlayer = player;
-        Terminal.open(getComputer());
+        if (enteredPlayer == null) {
+            enteredPlayer = player;
+            Terminal.open(getComputer());
+        }
     }
 
     @Override
     public Point2D exit() {
-        Terminal.close();
-        enteredPlayer = null;
-        return getBox().getPosition();
+        if (enteredPlayer != null) {
+            Terminal.close(getComputer());
+            enteredPlayer = null;
+            return getBox().getPosition();
+        } else {
+            return null;
+        }
     }
 }

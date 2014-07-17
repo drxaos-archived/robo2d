@@ -19,7 +19,8 @@ public class ComputerHelper {
     public static synchronized void saveToDisk(ComputerImpl computer, File path) {
         saveToDisk(computer.getMemory(), path);
     }
-   public static synchronized void saveToDisk(BaseImpl base, File path) {
+
+    public static synchronized void saveToDisk(BaseImpl base, File path) {
         saveToDisk(base.getMemory(), path);
     }
 
@@ -48,10 +49,18 @@ public class ComputerHelper {
     }
 
     public static synchronized void loadFromDisk(ComputerImpl computer, File path, boolean cleanUp) {
+        loadFromDisk(computer.getMemory(), path, cleanUp);
+    }
+
+    public static synchronized void loadFromDisk(BaseImpl base, File path, boolean cleanUp) {
+        loadFromDisk(base.getMemory(), path, cleanUp);
+    }
+
+    public static synchronized void loadFromDisk(Map<String, String> memory, File path, boolean cleanUp) {
         for (File file : FileUtils.listFiles(path, new String[]{"java", "txt"}, true)) {
             try {
                 String content = FileUtils.readFileToString(file);
-                computer.getMemory().put(file.getName(), content);
+                memory.put(file.getName(), content);
             } catch (Exception e) {
                 e.printStackTrace();
             }
