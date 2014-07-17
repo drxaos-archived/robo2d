@@ -14,12 +14,14 @@ public class BaseTest extends RobotTest {
     public Game createGame() {
         Game game = new Game(getWorld(), getDebugDraw());
 
-        BaseImpl base = new BaseImpl(new KPoint(5, 5), FastMath.PI / 4);
-        base.setLaptopName("LP-501");
-        game.addBase(base);
-
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(15, 15), FastMath.PI / 4 * 5);
         game.addPlayer(player1);
+
+        BaseImpl base = new BaseImpl(player1, new KPoint(5, 5), FastMath.PI / 4);
+        base.setLaptopName("LP-501");
+        base.saveFile("Help.java", "/* Run help */");
+        base.saveFile("Communicator.java", "/* Run comm */");
+        game.addBase(base);
 
         RobotImpl robot = new RobotImpl("MR_BS_1", game, player1, new KPoint(15, 5), 0);
         ChassisImpl chassis = new ChassisImpl(300d);

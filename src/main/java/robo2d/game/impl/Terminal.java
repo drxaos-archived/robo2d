@@ -96,6 +96,13 @@ public class Terminal {
         }
     }
 
+    public synchronized static void open(final BaseImpl base) {
+            final File dir = new File("computer");
+            ComputerHelper.saveToDisk(base, dir);
+            Main.registerBluejListener(null);
+            PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+    }
+
     public synchronized static void close() {
         Main.registerBluejListener(null);
         unbindRmi();

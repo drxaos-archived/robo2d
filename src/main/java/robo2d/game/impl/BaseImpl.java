@@ -9,6 +9,8 @@ import straightedge.geom.KPolygon;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseImpl implements Physical, Enterable {
 
@@ -18,6 +20,8 @@ public class BaseImpl implements Physical, Enterable {
     KPoint pos;
     float angle;
     String laptopName;
+    Map<String, String> memory = new HashMap<String, String>();
+    PlayerImpl owner;
 
     PlayerImpl enteredPlayer;
 
@@ -29,9 +33,10 @@ public class BaseImpl implements Physical, Enterable {
         return angle;
     }
 
-    public BaseImpl(KPoint pos, float angle) {
+    public BaseImpl(PlayerImpl owner, KPoint pos, float angle) {
         this.pos = pos;
         this.angle = angle;
+        this.owner = owner;
 
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();
 
@@ -54,6 +59,18 @@ public class BaseImpl implements Physical, Enterable {
         box = new StaticBox(polygon, pos, angle);
     }
 
+    public Map<String, String> getMemory() {
+        return memory;
+    }
+
+    public void saveFile(String fileName, String content) {
+        memory.put(fileName, content);
+    }
+
+    public String loadFile(String fileName) {
+        return memory.get(fileName);
+    }
+
     @Override
     public Box getBox() {
         return box;
@@ -61,16 +78,18 @@ public class BaseImpl implements Physical, Enterable {
 
     @Override
     public boolean canEnter(PlayerImpl player) {
-        return true;
+        return owner == player;
     }
 
     @Override
     public void enter(PlayerImpl player) {
         enteredPlayer = player;
+        Terminal.open(this);
     }
 
     @Override
     public Point2D exit() {
+        Terminal.close();
         enteredPlayer = null;
         return getBox().getPosition();
     }

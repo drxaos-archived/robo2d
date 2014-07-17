@@ -17,6 +17,13 @@ import java.util.Map;
 public class ComputerHelper {
 
     public static synchronized void saveToDisk(ComputerImpl computer, File path) {
+        saveToDisk(computer.getMemory(), path);
+    }
+   public static synchronized void saveToDisk(BaseImpl base, File path) {
+        saveToDisk(base.getMemory(), path);
+    }
+
+    public static synchronized void saveToDisk(Map<String, String> memory, File path) {
         try {
             FileUtils.deleteDirectory(path);
         } catch (Exception e) {
@@ -30,7 +37,7 @@ public class ComputerHelper {
             e.printStackTrace();
         }
 
-        for (Map.Entry<String, String> e : computer.getMemory().entrySet()) {
+        for (Map.Entry<String, String> e : memory.entrySet()) {
             File file = new File(path, e.getKey());
             try {
                 FileUtils.write(file, e.getValue());
