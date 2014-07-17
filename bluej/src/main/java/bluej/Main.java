@@ -99,7 +99,7 @@ public class Main {
             System.setProperty("java.rmi.server.useCodebaseOnly", "false");
         }
 
-        DataCollector.bluejOpened(getOperatingSystem(), getJavaVersion(), getBlueJVersion(), getInterfaceLanguage(), ExtensionsManager.getInstance().getLoadedExtensions(null));
+        //DataCollector.bluejOpened(getOperatingSystem(), getJavaVersion(), getBlueJVersion(), getInterfaceLanguage(), ExtensionsManager.getInstance().getLoadedExtensions(null));
 
         // process command line arguments, start BlueJ!
         EventQueue.invokeLater(new Runnable() {
@@ -419,7 +419,7 @@ public class Main {
             Debug.reportError("Frame count was not zero when exiting. Work may not have been saved");
         }
 
-        DataCollector.bluejClosed();
+        //DataCollector.bluejClosed();
 
         // save configuration properties
         Config.handleExit();

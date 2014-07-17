@@ -25,7 +25,6 @@ import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.builder.TextBuilder;
-import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
@@ -170,8 +169,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         // GUI
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
-        //nifty.fromXml("models/gui/label.xml", "GScreen0");
-        nifty.setDebugOptionPanelColors(true);
+        //nifty.setDebugOptionPanelColors(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
 
@@ -208,6 +206,8 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                     if (targetRobot != null) {
                         game.getPlayer().enter(targetRobot);
                         lastEnteredRobotAngle = (float) targetRobot.getBox().getAngle();
+                    } else if (targetLaptop != null) {
+                        game.getPlayer().enter(targetLaptop);
                     }
                 }
             }
@@ -349,13 +349,19 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             float newRobotRotation = (float) ((RobotImpl) entered).getBox().getAngle();
             getCamera().setRotation(new Quaternion().fromAngleAxis(newRobotRotation - lastEnteredRobotAngle, Vector3f.UNIT_Y).mult(getCamera().getRotation()));
             lastEnteredRobotAngle = newRobotRotation;
+        } else if (entered instanceof BaseImpl) {
+            Node node = baseMap.get(entered);
+            getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
+            getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
         targetLaptop = getTargetLaptop(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
-            label.getRenderer(TextRenderer.class).setText(targetRobot == null ? "" : targetRobot.getUid());
+            label.getRenderer(TextRenderer.class).setText(
+                    targetRobot != null ? targetRobot.getUid() : targetLaptop != null ? targetLaptop.getLaptopName() : ""
+            );
         }
     }
 

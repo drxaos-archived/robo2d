@@ -121,6 +121,12 @@ public class BaseModel {
         //node.attachChild(rackModel1.clone());
         //node.attachChild(barrelModel1.clone());
 
+        {
+            Node player = new Node("player");
+            player.setLocalTranslation(-2.9f, 0.8f, 0.2f);
+            node.attachChild(player);
+        }
+
         node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
 

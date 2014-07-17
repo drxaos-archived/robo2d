@@ -15,6 +15,7 @@ public class BaseTest extends RobotTest {
         Game game = new Game(getWorld(), getDebugDraw());
 
         BaseImpl base = new BaseImpl(new KPoint(5, 5), FastMath.PI / 4);
+        base.setLaptopName("LP-501");
         game.addBase(base);
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(15, 15), FastMath.PI / 4 * 5);

@@ -17,6 +17,7 @@ public class BaseImpl implements Physical, Enterable {
     StaticBox box;
     KPoint pos;
     float angle;
+    String laptopName;
 
     PlayerImpl enteredPlayer;
 
@@ -72,5 +73,13 @@ public class BaseImpl implements Physical, Enterable {
     public Point2D exit() {
         enteredPlayer = null;
         return getBox().getPosition();
+    }
+
+    public String getLaptopName() {
+        return laptopName;
+    }
+
+    public void setLaptopName(String laptopName) {
+        this.laptopName = laptopName;
     }
 }
