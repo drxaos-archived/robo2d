@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Point {
+import java.io.Serializable;
+
+public class Point implements Serializable {
     public float x, y;
 
     public Point(float x, float y) {

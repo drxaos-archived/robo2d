@@ -1,11 +1,9 @@
 package robo2d.game.impl.proxy;
 
-import com.robotech.military.api.Chassis;
+public class Chassis implements com.robotech.military.api.Chassis {
+    com.robotech.military.api.Chassis chassis;
 
-public class ChassisProxy implements Chassis {
-    Chassis chassis;
-
-    public ChassisProxy(Chassis chassis) {
+    public Chassis(com.robotech.military.api.Chassis chassis) {
         this.chassis = chassis;
     }
 

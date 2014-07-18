@@ -65,7 +65,7 @@ public class Terminal {
                 @Override
                 public void debuggerReady(Debugger dbg) {
                     exportInterface();
-                    DebuggerResult debuggerResult = dbg.instantiateClass("robo2d.game.impl.ComputerInterfaceProxy");
+                    DebuggerResult debuggerResult = dbg.instantiateClass("robo2d.game.impl.proxy.Remote");
                     if (debuggerResult.getResultObject() != null) {
                         Project openProj = Main.getOpenProj();
                         for (PkgMgrFrame pkgMgrFrame : PkgMgrFrame.getAllFrames()) {
@@ -80,9 +80,9 @@ public class Terminal {
                                 dbg.addObject(pkgMgrFrame.getPackage().getId(), wrapper.getName(), debuggerResult.getResultObject());
 
                                 pkgMgrFrame.getObjectBench().addInteraction(new ConstructionInvokerRecord(
-                                        "robo2d.game.impl.ComputerInterfaceProxy",
+                                        "robo2d.game.impl.proxy.Remote",
                                         "computer",
-                                        "new robo2d.game.impl.ComputerInterfaceProxy()",
+                                        "new robo2d.game.impl.proxy.Remote()",
                                         null
                                 ));
                             }
@@ -97,6 +97,17 @@ public class Terminal {
                 PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
             } catch (Throwable e) {
                 e.printStackTrace();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    // try again
+                    PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+                } catch (Throwable e2) {
+                    e2.printStackTrace();
+                }
             }
         }
     }

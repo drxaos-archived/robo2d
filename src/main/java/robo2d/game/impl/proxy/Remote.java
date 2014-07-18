@@ -1,18 +1,17 @@
-package robo2d.game.impl;
+package robo2d.game.impl.proxy;
 
-import com.robotech.military.api.Robot;
 import net.sf.lipermi.handler.CallHandler;
 import net.sf.lipermi.net.Client;
-import robo2d.game.impl.proxy.RobotProxy;
+import robo2d.game.impl.ComputerInterface;
 
 import java.io.IOException;
 
-public class ComputerInterfaceProxy implements ComputerInterface {
+public class Remote implements ComputerInterface {
 
     private Client client;
     private ComputerInterface computerInterface;
 
-    public ComputerInterfaceProxy() {
+    public Remote() {
         CallHandler callHandler = new CallHandler();
         String remoteHost = "localhost";
         int portWasBinded = 4455;
@@ -36,7 +35,7 @@ public class ComputerInterfaceProxy implements ComputerInterface {
     }
 
     @Override
-    public Robot getRobotForDebug() {
-        return new RobotProxy(computerInterface.getRobotForDebug());
+    public com.robotech.military.api.Robot getRobotForDebug() {
+        return new Robot(computerInterface.getRobotForDebug());
     }
 }
