@@ -1,6 +1,6 @@
 import com.robotech.military.api.*;
 
-public class Boot implements Program {
+public class Boot1 implements Program {
 
     Robot robot;
     Chassis chassis;
@@ -18,7 +18,8 @@ public class Boot implements Program {
         }
 
         //while (true) {
-            Driver driver = new Driver(robot);
+            Driver1 driver = new Driver1(robot);
+        driver.sleep(30000);
             driver.moveSmooth(new Point(20, 20), 50000);
             driver.stop();
             robot.waitForStep();

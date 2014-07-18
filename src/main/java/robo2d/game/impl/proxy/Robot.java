@@ -59,11 +59,12 @@ public class Robot implements com.robotech.military.api.Robot {
 
     @Override
     public void waitForStep() {
-        robot.waitForStep();
+        //robot.waitForStep();
     }
 
     @Override
     public void debug(Object o) {
         robot.debug(o);
+        System.out.println(o);
     }
 }

@@ -5,10 +5,10 @@ import com.robotech.military.api.Robot;
 
 import java.awt.geom.Point2D;
 
-public class Driver {
+public class Driver1 {
     protected Robot robot;
 
-    public Driver(Robot robot) {
+    public Driver1(Robot robot) {
         this.robot = robot;
     }
 

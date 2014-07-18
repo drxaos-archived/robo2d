@@ -29,7 +29,7 @@ public class BaseTest extends RobotTest {
             RobotImpl robot = new RobotImpl("MR-BS-01", game, player1, new KPoint(15, 5), 0);
             ChassisImpl chassis = new ChassisImpl(300d);
             RadarImpl radar = new RadarImpl(game, 100d);
-            ComputerImpl computer = new ComputerImpl(true);
+            ComputerImpl computer = new ComputerImpl(false);
             computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
             computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
             computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));

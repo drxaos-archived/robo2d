@@ -17,4 +17,9 @@ public class Point implements Serializable {
     public float getY() {
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Point{" + "x=" + x + ", y=" + y + '}';
+    }
 }

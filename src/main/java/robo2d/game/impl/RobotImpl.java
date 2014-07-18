@@ -140,6 +140,7 @@ public class RobotImpl implements Robot, Physical, Enterable {
             debugPoint = (Point2D) dbg;
         } else {
             debugMsg = dbg.toString();
+            System.out.println(debugMsg);
         }
     }
 
