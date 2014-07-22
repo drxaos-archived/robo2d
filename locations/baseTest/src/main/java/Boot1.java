@@ -19,7 +19,7 @@ public class Boot1 implements Program {
 
         //while (true) {
             Driver1 driver = new Driver1(robot);
-        driver.sleep(30000);
+            //driver.sleep(30000);
             driver.moveSmooth(new Point(20, 20), 50000);
             driver.stop();
             robot.waitForStep();

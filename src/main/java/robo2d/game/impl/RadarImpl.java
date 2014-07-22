@@ -7,13 +7,11 @@ import robo2d.game.Game;
 
 import java.awt.geom.Point2D;
 
-public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
+public class RadarImpl implements EquipmentImpl, SatelliteScanner {
 
     Game game;
     RobotImpl robot;
     Double scanDistance = null;
-
-    SatelliteScanData satelliteScanData;
 
     public RadarImpl(Game game, Double scanDistance) {
         this.game = game;
@@ -23,29 +21,6 @@ public class RadarImpl implements Radar, EquipmentImpl, SatelliteScanner {
     @Override
     public void setup(RobotImpl robot) {
         this.robot = robot;
-    }
-
-    @Override
-    public Boolean satelliteRequest(Point center, double accuracy) {
-        if (game.getSatelliteResolution() == null) {
-            return false;
-        }
-        if (!robot.consumeEnergy(0.5)) {
-            return false;
-        }
-        game.satelliteRequest(this, new Vec2((float) center.x, (float) center.y), accuracy, game.getSatelliteResolution());
-        satelliteScanData = null;
-        return true;
-    }
-
-    @Override
-    public SatelliteScanData getSatelliteResponse() {
-        return satelliteScanData;
-    }
-
-    @Override
-    public void clearSatelliteResponse() {
-        satelliteScanData = null;
     }
 
     @Override

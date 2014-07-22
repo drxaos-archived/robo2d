@@ -26,8 +26,6 @@ public class Game {
     protected PlayerImpl player;
     protected BaseImpl base;
 
-    final Map<SatelliteScanner, SatelliteScanner.Request> satelliteRequests = new HashMap<SatelliteScanner, SatelliteScanner.Request>();
-
     Object stepSync = new Object();
 
     protected World worldBox;
@@ -123,32 +121,11 @@ public class Game {
         }
     }
 
-    public void satelliteRequest(SatelliteScanner scanner, Vec2 request, double accuracy, int resolution) {
-        synchronized (satelliteRequests) {
-            satelliteRequests.put(scanner, new SatelliteScanner.Request(request, accuracy, resolution, getTime() + satelliteLag));
-        }
-    }
-
-    public void satelliteProcess() {
-        synchronized (satelliteRequests) {
-            Map<SatelliteScanner, SatelliteScanner.Request> tmp = new HashMap<SatelliteScanner, SatelliteScanner.Request>(satelliteRequests);
-            satelliteRequests.clear();
-            for (Map.Entry<SatelliteScanner, SatelliteScanner.Request> e : tmp.entrySet()) {
-                if (e.getValue().waitUntil > getTime()) {
-                    satelliteRequests.put(e.getKey(), e.getValue());
-                } else {
-                    e.getKey().setSatResponse(satelliteScan(e.getValue().accuracy, e.getValue().point, e.getKey().getRobot(), e.getValue().resolution));
-                }
-            }
-        }
-    }
-
     public Long getTime() {
         return System.currentTimeMillis();
     }
 
     public void beforeStep() {
-        satelliteProcess();
         managePrograms();
         applyEffects();
         sync();
@@ -175,47 +152,29 @@ public class Game {
         }
     }
 
-    private Radar.Type recognizeType(Physical physical, RobotImpl forRobot) {
+    private String recognizeType(Physical physical, RobotImpl forRobot) {
         if (physical instanceof WallImpl) {
-            return Radar.Type.WALL;
+            return Radar.WALL;
         } else if (physical instanceof RobotImpl) {
             if (physical == forRobot) {
-                return Radar.Type.ME;
+                return Radar.MATE;
             } else if (((RobotImpl) physical).getOwner() == forRobot.getOwner()) {
-                return Radar.Type.MATE_BOT;
+                return Radar.MATE;
             } else {
-                return Radar.Type.ENEMY_BOT;
+                return Radar.ENEMY;
             }
         } else {
-            return Radar.Type.UNKNOWN;
+            return Radar.UNKNOWN;
         }
     }
 
-    public Radar.Type resolvePoint(double x, double y, RobotImpl forRobot) {
+    public String resolvePoint(double x, double y, RobotImpl forRobot) {
         for (Physical physical : physicals) {
             if (physical.getBox().hasPoint(new Vec2((float) x, (float) y))) {
                 return recognizeType(physical, forRobot);
             }
         }
-        return Radar.Type.EMPTY;
-    }
-
-    public Radar.SatelliteScanData satelliteScan(double accuracy, Vec2 center, RobotImpl robot, int satelliteResolution) {
-        double centerX = Math.round(center.x / accuracy) * accuracy;
-        double centerY = Math.round(center.y / accuracy) * accuracy;
-        Radar.Type[][] map = new Radar.Type[satelliteResolution * 2 + 1][satelliteResolution * 2 + 1];
-        for (int x = -satelliteResolution; x <= satelliteResolution; x++) {
-            for (int y = -satelliteResolution; y <= satelliteResolution; y++) {
-                if (Math.sqrt(x * x + y * y) > satelliteResolution) {
-                    map[x + satelliteResolution][y + satelliteResolution] = Radar.Type.UNKNOWN;
-                } else {
-                    double resolveX = centerX + ((Math.random() - 0.5) * 0.4 + x) * accuracy;
-                    double resolveY = centerY + ((Math.random() - 0.5) * 0.4 + y) * accuracy;
-                    map[x + satelliteResolution][y + satelliteResolution] = resolvePoint(resolveX, resolveY, robot);
-                }
-            }
-        }
-        return new Radar.SatelliteScanData(map, accuracy, satelliteResolution, satelliteResolution);
+        return Radar.EMPTY;
     }
 
     public BaseImpl getBase() {

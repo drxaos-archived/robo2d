@@ -1,26 +1,34 @@
 package com.robotech.military.api;
 
-public interface Robot {
+import java.lang.reflect.Method;
 
-    Chassis getChassis();
+public class Robot {
 
-    Computer getComputer();
+    IO io;
 
-    Radar getRadar();
+    public Robot(IO io) {
+        this.io = io;
+    }
 
-    Radio getRadio();
+    public Double getEnergy() {
+        return Double.valueOf(io.get("robot/energy"));
+    }
 
-    Turret getTurret();
+    public String getUid() {
+        return io.get("robot/uid");
+    }
 
-    Extention[] getExtentions();
+    public void debug(String msg) {
+        io.set("debug", msg);
+    }
 
-    Double getEnergy();
-
-    String getUid();
-
-    Long getTime();
-
-    void waitForStep();
-
-    void debug(Object dbg);
+    public <T> T getDevice(Class<T> type) {
+        try {
+            T dev = type.getConstructor(IO.class).newInstance(io);
+            Method ready = type.getMethod("ready");
+            return (ready != null && ready.invoke(dev) == Boolean.FALSE) ? null : dev;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

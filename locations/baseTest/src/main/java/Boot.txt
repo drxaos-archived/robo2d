@@ -19,6 +19,7 @@ public class Boot implements Program {
 
         //while (true) {
             Driver driver = new Driver(robot);
+            driver.sleep(30000);
             driver.moveSmooth(new Point(20, 20), 50000);
             driver.stop();
             robot.waitForStep();

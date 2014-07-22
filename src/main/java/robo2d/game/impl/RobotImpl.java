@@ -1,6 +1,5 @@
 package robo2d.game.impl;
 
-import com.robotech.military.api.*;
 import robo2d.game.Game;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
@@ -11,7 +10,7 @@ import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RobotImpl implements Robot, Physical, Enterable {
+public class RobotImpl implements Physical, Enterable {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
@@ -49,8 +48,7 @@ public class RobotImpl implements Robot, Physical, Enterable {
         return owner;
     }
 
-    @Override
-    public Chassis getChassis() {
+    public ChassisImpl getChassis() {
         return getEquipment(ChassisImpl.class);
     }
 
@@ -58,24 +56,8 @@ public class RobotImpl implements Robot, Physical, Enterable {
         return computer;
     }
 
-    @Override
-    public Radar getRadar() {
+    public RadarImpl getRadar() {
         return getEquipment(RadarImpl.class);
-    }
-
-    @Override
-    public Radio getRadio() {
-        return null;
-    }
-
-    @Override
-    public Turret getTurret() {
-        return null;
-    }
-
-    @Override
-    public Extention[] getExtentions() {
-        return new Extention[0];
     }
 
     public void addEquipment(EquipmentImpl equipment) {
@@ -89,12 +71,10 @@ public class RobotImpl implements Robot, Physical, Enterable {
         equipment.setup(this);
     }
 
-    @Override
     public Double getEnergy() {
         return energy;
     }
 
-    @Override
     public String getUid() {
         return uid;
     }
@@ -116,12 +96,10 @@ public class RobotImpl implements Robot, Physical, Enterable {
         this.energy += energy;
     }
 
-    @Override
     public Long getTime() {
         return game.getTime();
     }
 
-    @Override
     public void waitForStep() {
         try {
             synchronized (sync) {
@@ -131,7 +109,6 @@ public class RobotImpl implements Robot, Physical, Enterable {
         }
     }
 
-    @Override
     public void debug(Object dbg) {
         if (dbg == null) {
             debugPoint = null;

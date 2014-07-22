@@ -1,6 +1,5 @@
 package robo2d.game.impl;
 
-import com.robotech.military.api.Player;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.PlayerBox;
@@ -8,7 +7,7 @@ import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 
-public class PlayerImpl implements Player, Physical {
+public class PlayerImpl implements Physical {
     String name;
     PlayerBox box;
     float initAngle;
@@ -21,7 +20,6 @@ public class PlayerImpl implements Player, Physical {
         box = new PlayerBox(position);
     }
 
-    @Override
     public String getName() {
         return name;
     }

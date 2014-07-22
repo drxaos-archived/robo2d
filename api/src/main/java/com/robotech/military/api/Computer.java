@@ -1,9 +1,22 @@
 package com.robotech.military.api;
 
-public interface Computer {
+public class Computer {
 
-    void saveFile(String fileName, String content);
+    IO io;
 
-    String loadFile(String fileName);
+    public Computer(IO io) {
+        this.io = io;
+    }
 
+    public void saveFile(String fileName, String content) {
+        io.set("computer/fs/" + fileName, content);
+    }
+
+    public String loadFile(String fileName) {
+        return io.get("computer/fs/" + fileName);
+    }
+
+    public String listFiles() {
+        return io.get("computer/fs");
+    }
 }

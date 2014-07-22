@@ -9,7 +9,7 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ComputerImpl implements Computer, EquipmentImpl {
+public class ComputerImpl implements EquipmentImpl {
 
     RobotImpl robot;
     Thread program;

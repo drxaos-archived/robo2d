@@ -7,7 +7,7 @@ import straightedge.geom.KPoint;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChassisImpl implements Chassis, EquipmentImpl, HasEffects {
+public class ChassisImpl implements EquipmentImpl, HasEffects {
 
     RobotImpl robot;
 
@@ -25,29 +25,16 @@ public class ChassisImpl implements Chassis, EquipmentImpl, HasEffects {
         effectsMap.put(new KPoint(-1, 0), LEFT_ENGINE);
     }
 
-    @Override
     public void setLeftAcceleration(Double percent) {
         percent = Math.max(Math.min(percent, 100), -100);
         leftAccel = maxAccel * percent / 100;
     }
 
-    @Override
     public void setRightAcceleration(Double percent) {
         percent = Math.max(Math.min(percent, 100), -100);
         rightAccel = maxAccel * percent / 100;
     }
 
-    @Override
-    public Double getLeftSpeed() {
-        return null;
-    }
-
-    @Override
-    public Double getRightSpeed() {
-        return null;
-    }
-
-    @Override
     public Boolean isWorking() {
         return Math.max(Math.abs(rightAccel), Math.abs(leftAccel)) > 0.01;
     }

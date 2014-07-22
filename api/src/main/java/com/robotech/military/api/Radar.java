@@ -1,54 +1,32 @@
 package com.robotech.military.api;
 
-import java.io.Serializable;
+public class Radar {
 
-public interface Radar {
+    public static final String UNKNOWN = "unknown";
+    public static final String EMPTY = "empty";
+    public static final String WALL = "wall";
+    public static final String ENEMY = "enemy";
+    public static final String MATE = "mate";
 
-    public static enum Type {
-        UNKNOWN,
-        EMPTY,
-        WALL,
-        ENEMY_BOT,
-        MATE_BOT,
-        ME
+    IO io;
+
+    public Radar(IO io) {
+        this.io = io;
     }
 
-    public static class LocatorScanData implements Serializable {
-        public Type pixel;
-        public double distance;
-        public double angle;
-
-        public LocatorScanData(Type pixel, double distance, double angle) {
-            this.pixel = pixel;
-            this.distance = distance;
-            this.angle = angle;
-        }
+    public boolean ready() {
+        return io.get("radar/ready") != null;
     }
 
-    public static class SatelliteScanData implements Serializable {
-
-        public Type[][] image;
-        public double accuracy;
-        public int centerX, centerY;
-
-        public SatelliteScanData(Type[][] image, double accuracy, int centerX, int centerY) {
-            this.image = image;
-            this.accuracy = accuracy;
-            this.centerX = centerX;
-            this.centerY = centerY;
-        }
+    public void rotate(double angle) {
+        io.set("radar/angle", "" + angle);
     }
 
-    Boolean satelliteRequest(Point center, double accuracy);
+    public Float distance() {
+        return Float.valueOf(io.get("radar/distance"));
+    }
 
-    SatelliteScanData getSatelliteResponse();
-
-    void clearSatelliteResponse();
-
-    LocatorScanData locate(double angle);
-
-    Double getAngle();
-
-    Point getPosition();
-
+    public String type() {
+        return io.get("radar/type");
+    }
 }

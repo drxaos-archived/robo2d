@@ -1,14 +1,22 @@
 package com.robotech.military.api;
 
-public interface Chassis {
+public class Chassis {
+    IO io;
 
-    void setLeftAcceleration(Double percent);
+    public Chassis(IO io) {
+        this.io = io;
+    }
 
-    void setRightAcceleration(Double percent);
+    public boolean ready() {
+        return io.get("chassis/ready") != null;
+    }
 
-    Double getLeftSpeed();
+    public void setLeftAcceleration(Double percent) {
+        io.set("chassis/left", "" + percent);
+    }
 
-    Double getRightSpeed();
+    public void setRightAcceleration(Double percent) {
+        io.set("chassis/right", "" + percent);
+    }
 
-    Boolean isWorking();
 }
