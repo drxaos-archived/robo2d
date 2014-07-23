@@ -1,19 +1,17 @@
 package robo2d.game.impl;
 
 import com.robotech.military.api.Point;
-import com.robotech.military.api.Radar;
-import org.jbox2d.common.Vec2;
 import robo2d.game.Game;
 
 import java.awt.geom.Point2D;
 
-public class RadarImpl implements EquipmentImpl {
+public class GpsImpl implements EquipmentImpl {
 
     Game game;
     RobotImpl robot;
     Double scanDistance = null;
 
-    public RadarImpl(Game game, Double scanDistance) {
+    public GpsImpl(Game game, Double scanDistance) {
         this.game = game;
         this.scanDistance = scanDistance;
     }

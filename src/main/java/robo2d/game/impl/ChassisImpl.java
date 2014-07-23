@@ -1,7 +1,6 @@
 package robo2d.game.impl;
 
 import org.jbox2d.common.Vec2;
-import com.robotech.military.api.Chassis;
 import straightedge.geom.KPoint;
 
 import java.util.HashMap;
@@ -25,12 +24,12 @@ public class ChassisImpl implements EquipmentImpl, HasEffects {
         effectsMap.put(new KPoint(-1, 0), LEFT_ENGINE);
     }
 
-    public void setLeftAcceleration(Double percent) {
+    private void setLeftAcceleration(Double percent) {
         percent = Math.max(Math.min(percent, 100), -100);
         leftAccel = maxAccel * percent / 100;
     }
 
-    public void setRightAcceleration(Double percent) {
+    private void setRightAcceleration(Double percent) {
         percent = Math.max(Math.min(percent, 100), -100);
         rightAccel = maxAccel * percent / 100;
     }
@@ -39,9 +38,11 @@ public class ChassisImpl implements EquipmentImpl, HasEffects {
         return Math.max(Math.abs(rightAccel), Math.abs(leftAccel)) > 0.01;
     }
 
-
     @Override
     public Map<KPoint, Vec2> getEffects() {
+        setLeftAcceleration(robot.getComputer().getStateDouble("chassis/left"));
+        setRightAcceleration(robot.getComputer().getStateDouble("chassis/right"));
+
         if (!robot.consumeEnergy((Math.abs(leftAccel) + Math.abs(rightAccel)) / maxAccel / 100)) {
             leftAccel = rightAccel = 0;
         }

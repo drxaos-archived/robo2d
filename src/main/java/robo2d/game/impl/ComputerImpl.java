@@ -1,7 +1,8 @@
 package robo2d.game.impl;
 
-import com.robotech.military.api.Computer;
 import com.robotech.military.api.Program;
+import com.robotech.military.api.Robot;
+import com.robotech.military.internal.LocalConnection;
 
 import java.io.File;
 import java.net.URL;
@@ -13,9 +14,8 @@ public class ComputerImpl implements EquipmentImpl {
 
     RobotImpl robot;
     Thread program;
-    Map<String, String> memory = new HashMap<String, String>();
+    Map<String, String> state = new HashMap<String, String>();
     boolean initWorking;
-    ComputerInterfaceImpl computerInterface;
 
     public ComputerImpl(boolean working) {
         initWorking = working;
@@ -24,11 +24,6 @@ public class ComputerImpl implements EquipmentImpl {
     @Override
     public void setup(RobotImpl robot) {
         this.robot = robot;
-        computerInterface = new ComputerInterfaceImpl(robot);
-    }
-
-    public ComputerInterfaceImpl getComputerInterface() {
-        return computerInterface;
     }
 
     protected Class compile() {
@@ -51,10 +46,6 @@ public class ComputerImpl implements EquipmentImpl {
         }
     }
 
-    public Map<String, String> getMemory() {
-        return memory;
-    }
-
     public void startProgram() {
         try {
             if (program == null) {
@@ -67,7 +58,7 @@ public class ComputerImpl implements EquipmentImpl {
                     public void run() {
                         try {
                             Program robotProgram = (Program) code.getConstructor().newInstance();
-                            robotProgram.run(robot);
+                            robotProgram.run(new Robot(new LocalConnection(robot.getUid())));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -108,13 +99,27 @@ public class ComputerImpl implements EquipmentImpl {
         return initWorking;
     }
 
-    @Override
     public void saveFile(String fileName, String content) {
-        memory.put(fileName, content);
+        if (content == null || content.isEmpty()) {
+            state.remove("computer/fs/" + fileName);
+        } else {
+            state.put("computer/fs/" + fileName, content);
+        }
     }
 
-    @Override
     public String loadFile(String fileName) {
-        return memory.get(fileName);
+        return state.get("computer/fs/" + fileName);
+    }
+
+    public String getStateString(String key) {
+        return state.get(key);
+    }
+
+    public double getStateDouble(String key) {
+        try {
+            return Double.parseDouble(state.get(key));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
