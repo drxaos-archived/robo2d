@@ -12,13 +12,10 @@ import org.jbox2d.dynamics.World;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
-import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Game {
     protected List<Physical> physicals = new ArrayList<Physical>();
@@ -106,7 +103,7 @@ public class Game {
 
         for (RobotImpl robot : robots) {
             ComputerImpl computer = robot.getComputer();
-            if (computer != null && computer.isInitWorking()) {
+            if (computer != null && computer.bootOnStartup()) {
                 computer.startProgram();
             }
         }

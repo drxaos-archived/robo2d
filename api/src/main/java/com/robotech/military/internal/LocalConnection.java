@@ -48,19 +48,28 @@ public class LocalConnection implements IO {
 
     @Override
     public synchronized void set(String key, String value) {
-        writer.println("set");
-        writer.println(escape(key));
-        writer.println(escape(value));
+        for (int i = 0; true; i++) {
+            try {
+                writer.println("set");
+                writer.println(escape(key));
+                writer.println(escape(value));
+            } catch (Exception e) {
+                if (i > 10) {
+                    throw new ConnectionError(e);
+                }
+                reset();
+            }
+        }
     }
 
     @Override
     public synchronized String get(String key) {
         for (int i = 0; true; i++) {
-            writer.println("get");
-            writer.println(escape(key));
             try {
+                writer.println("get");
+                writer.println(escape(key));
                 return unescape(reader.readLine());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 if (i > 10) {
                     throw new ConnectionError(e);
                 }

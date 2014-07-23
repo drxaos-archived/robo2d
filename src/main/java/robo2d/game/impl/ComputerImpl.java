@@ -12,13 +12,17 @@ import java.util.Map;
 
 public class ComputerImpl implements EquipmentImpl {
 
+    public static enum State {
+        ON, OFF
+    }
+
     RobotImpl robot;
     Thread program;
     Map<String, String> state = new HashMap<String, String>();
-    boolean initWorking;
+    State initState;
 
-    public ComputerImpl(boolean working) {
-        initWorking = working;
+    public ComputerImpl(State state) {
+        initState = state;
     }
 
     @Override
@@ -59,7 +63,7 @@ public class ComputerImpl implements EquipmentImpl {
                         try {
                             Program robotProgram = (Program) code.getConstructor().newInstance();
                             robotProgram.run(new Robot(new LocalConnection(robot.getUid())));
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             e.printStackTrace();
                         }
                     }
@@ -95,8 +99,8 @@ public class ComputerImpl implements EquipmentImpl {
         return program != null && program.isAlive();
     }
 
-    public boolean isInitWorking() {
-        return initWorking;
+    public boolean bootOnStartup() {
+        return initState == State.ON;
     }
 
     public void saveFile(String fileName, String content) {
@@ -105,6 +109,13 @@ public class ComputerImpl implements EquipmentImpl {
         } else {
             state.put("computer/fs/" + fileName, content);
         }
+        StringBuffer buffer = new StringBuffer();
+        for (Map.Entry<String, String> e : state.entrySet()) {
+            if (e.getKey().startsWith("computer/fs/")) {
+                buffer.append(e.getKey().replaceFirst("^computer/fs/", "")).append("\n");
+            }
+        }
+        state.put("computer/fs", buffer.toString());
     }
 
     public String loadFile(String fileName) {
@@ -115,11 +126,23 @@ public class ComputerImpl implements EquipmentImpl {
         return state.get(key);
     }
 
+    public void setStateString(String key, String value) {
+        if (key.startsWith("computer/fs")) {
+            saveFile(key, value);
+        } else {
+            state.put(key, value);
+        }
+    }
+
     public double getStateDouble(String key) {
         try {
             return Double.parseDouble(state.get(key));
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public String getUid() {
+        return robot.getUid();
     }
 }

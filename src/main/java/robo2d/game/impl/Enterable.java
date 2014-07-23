@@ -8,5 +8,7 @@ public interface Enterable {
 
     void enter(PlayerImpl player);
 
+    ComputerImpl getComputer();
+
     Point2D exit();
 }

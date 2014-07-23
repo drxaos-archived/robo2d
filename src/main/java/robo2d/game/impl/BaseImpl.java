@@ -20,7 +20,6 @@ public class BaseImpl implements Physical, Enterable {
     KPoint pos;
     float angle;
     String laptopName;
-    Map<String, String> memory = new HashMap<String, String>();
     PlayerImpl owner;
 
     PlayerImpl enteredPlayer;
@@ -59,16 +58,13 @@ public class BaseImpl implements Physical, Enterable {
         box = new StaticBox(polygon, pos, angle);
     }
 
-    public Map<String, String> getMemory() {
-        return memory;
-    }
-
     public void saveFile(String fileName, String content) {
-        memory.put(fileName, content);
+//        memory.put(fileName, content);
     }
 
     public String loadFile(String fileName) {
-        return memory.get(fileName);
+//        return memory.get(fileName);
+        return null;
     }
 
     @Override
@@ -87,6 +83,11 @@ public class BaseImpl implements Physical, Enterable {
             enteredPlayer = player;
             Terminal.open(this);
         }
+    }
+
+    @Override
+    public ComputerImpl getComputer() {
+        return null;
     }
 
     @Override

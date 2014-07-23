@@ -12,19 +12,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class ComputerHelper {
 
     public static synchronized void saveToDisk(ComputerImpl computer, File path) {
-        //saveToDisk(computer.getMemory(), path);
-    }
-
-    public static synchronized void saveToDisk(BaseImpl base, File path) {
-        //saveToDisk(base.getMemory(), path);
-    }
-
-    public static synchronized void saveToDisk(Map<String, String> memory, File path) {
         try {
             FileUtils.deleteDirectory(path);
         } catch (Exception e) {
@@ -38,10 +29,13 @@ public class ComputerHelper {
             e.printStackTrace();
         }
 
-        for (Map.Entry<String, String> e : memory.entrySet()) {
-            File file = new File(path, e.getKey());
+        String fs = computer.getStateString("computer/fs");
+        String[] files = fs.split("\n");
+        for (String fileName : files) {
+            fileName = fileName.trim();
+            File file = new File(path, fileName);
             try {
-                FileUtils.write(file, e.getValue());
+                FileUtils.write(file, computer.loadFile(fileName));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -49,18 +43,16 @@ public class ComputerHelper {
     }
 
     public static synchronized void loadFromDisk(ComputerImpl computer, File path, boolean cleanUp) {
-        //loadFromDisk(computer.getMemory(), path, cleanUp);
-    }
+        String fs = computer.getStateString("computer/fs");
+        String[] files = fs.split("\n");
+        for (String fileName : files) {
+            computer.saveFile(fileName, null);
+        }
 
-    public static synchronized void loadFromDisk(BaseImpl base, File path, boolean cleanUp) {
-        //loadFromDisk(base.getMemory(), path, cleanUp);
-    }
-
-    public static synchronized void loadFromDisk(Map<String, String> memory, File path, boolean cleanUp) {
         for (File file : FileUtils.listFiles(path, new String[]{"java", "txt"}, true)) {
             try {
                 String content = FileUtils.readFileToString(file);
-                memory.put(file.getName(), content);
+                computer.saveFile(file.getName(), content);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -75,7 +67,7 @@ public class ComputerHelper {
     }
 
     public static synchronized File compile(ComputerImpl computer) {
-        final File compileDir = new File("tmp/" + computer.robot.getUid());
+        final File compileDir = new File("tmp/" + computer.getUid());
         saveToDisk(computer, compileDir);
 
         CompilerAPICompiler compiler = new CompilerAPICompiler();

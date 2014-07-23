@@ -65,7 +65,7 @@ public class Terminal {
     public synchronized static void open(final BaseImpl base) {
         Terminal.base = base;
         final File dir = new File("computer");
-        ComputerHelper.saveToDisk(base, dir);
+        //ComputerHelper.saveToDisk(base, dir);
         Main.registerBluejListener(null);
         PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
     }
@@ -81,7 +81,7 @@ public class Terminal {
         Main.registerBluejListener(null);
         unbindDebug();
         Boot.exit();
-        ComputerHelper.loadFromDisk(base, new File("computer"), true);
+        //ComputerHelper.loadFromDisk(base, new File("computer"), true);
     }
 
     private static void bindDebug() {
