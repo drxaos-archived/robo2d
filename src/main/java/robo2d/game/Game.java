@@ -211,36 +211,36 @@ public class Game {
         }
     }
 
-    public Radar.LocatorScanData resolveDirection(double angle, double scanDistance, RobotImpl forRobot) {
-        RayCastClosestCallback callback = new RayCastClosestCallback(forRobot.getBox().body);
-        worldBox.raycast(callback,
-                forRobot.getBox().getPositionVec2(),
-                forRobot.getBox().getPositionVec2().add(
-                        new Vec2((float) (Math.cos(angle) * scanDistance),
-                                (float) (Math.sin(angle) * scanDistance))
-                ));
-        Body body = callback.getBody();
-        Vec2 point = callback.getPoint();
-        Physical physical = null;
-        for (Physical p : physicals) {
-            if (p.getBox().body == body) {
-                physical = p;
-                break;
-            }
-        }
-        if (physical == null || point == null) {
-            return new Radar.LocatorScanData(Radar.Type.EMPTY, scanDistance, angle);
-        }
-        Point2D forRobotPosition = forRobot.getBox().getPosition();
-        return new Radar.LocatorScanData(
-                recognizeType(physical, forRobot),
-                KPoint.distance(
-                        new KPoint(point.x, point.y),
-                        new KPoint(forRobotPosition.getX(), forRobotPosition.getY())
-                ),
-                angle
-        );
-    }
+//    public Radar.LocatorScanData resolveDirection(double angle, double scanDistance, RobotImpl forRobot) {
+//        RayCastClosestCallback callback = new RayCastClosestCallback(forRobot.getBox().body);
+//        worldBox.raycast(callback,
+//                forRobot.getBox().getPositionVec2(),
+//                forRobot.getBox().getPositionVec2().add(
+//                        new Vec2((float) (Math.cos(angle) * scanDistance),
+//                                (float) (Math.sin(angle) * scanDistance))
+//                ));
+//        Body body = callback.getBody();
+//        Vec2 point = callback.getPoint();
+//        Physical physical = null;
+//        for (Physical p : physicals) {
+//            if (p.getBox().body == body) {
+//                physical = p;
+//                break;
+//            }
+//        }
+//        if (physical == null || point == null) {
+//            return new Radar.LocatorScanData(Radar.Type.EMPTY, scanDistance, angle);
+//        }
+//        Point2D forRobotPosition = forRobot.getBox().getPosition();
+//        return new Radar.LocatorScanData(
+//                recognizeType(physical, forRobot),
+//                KPoint.distance(
+//                        new KPoint(point.x, point.y),
+//                        new KPoint(forRobotPosition.getX(), forRobotPosition.getY())
+//                ),
+//                angle
+//        );
+//    }
 
     public void sync() {
         for (RobotImpl robot : robots) {

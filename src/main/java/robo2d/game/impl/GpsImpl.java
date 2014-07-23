@@ -21,20 +21,6 @@ public class GpsImpl implements EquipmentImpl {
         this.robot = robot;
     }
 
-    @Override
-    public LocatorScanData locate(double angle) {
-        if (scanDistance == null) {
-            return null;
-        }
-        if (!robot.consumeEnergy(0.001)) {
-            return null;
-        }
-        synchronized (game.stepSync()) {
-            return game.resolveDirection(angle, scanDistance, robot);
-        }
-    }
-
-    @Override
     public Double getAngle() {
         if (!game.hasGps()) {
             return null;
@@ -42,7 +28,6 @@ public class GpsImpl implements EquipmentImpl {
         return robot.box.getAngle();
     }
 
-    @Override
     public Point getPosition() {
         if (!game.hasGps()) {
             return null;
@@ -51,13 +36,7 @@ public class GpsImpl implements EquipmentImpl {
         return new Point((float) position.getX(), (float) position.getY());
     }
 
-    @Override
     public RobotImpl getRobot() {
         return robot;
-    }
-
-    @Override
-    public void setSatResponse(SatelliteScanData response) {
-        satelliteScanData = response;
     }
 }
