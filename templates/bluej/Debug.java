@@ -1,12 +1,10 @@
-package com.robotech.military.internal;
+import com.robotech.military.internal.*;
+import com.robotech.military.api.*;
 
-import com.robotech.military.api.Program;
-import com.robotech.military.api.Robot;
+public class Debug {
 
-public class Launcher {
-
-    public static void main(String[] args) {
-        LocalConnection localConnection = new LocalConnection(args.length > 0 ? args[0] : "debug");
+    public static void debug() {
+        LocalConnection localConnection = new LocalConnection("debug");
         Robot robot = new Robot(localConnection);
         try {
             Program boot = (Program) Class.forName("Boot").newInstance();

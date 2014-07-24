@@ -48,8 +48,6 @@ public class WayTest extends RobotTest {
         robot.addEquipment(computer);
         robot.charge(4000);
         game.addRobot(robot);
-        game.addGps();
-        game.addSatellite(20, 2000);
 
         return game;
     }

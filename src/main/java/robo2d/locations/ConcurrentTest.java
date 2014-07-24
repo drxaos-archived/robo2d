@@ -27,8 +27,6 @@ public class ConcurrentTest extends RobotTest {
             game.addRobot(robot);
         }
 
-        game.addGps();
-
         return game;
     }
 

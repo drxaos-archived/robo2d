@@ -9,11 +9,9 @@ public class GpsImpl implements EquipmentImpl {
 
     Game game;
     RobotImpl robot;
-    Double scanDistance = null;
 
-    public GpsImpl(Game game, Double scanDistance) {
+    public GpsImpl(Game game) {
         this.game = game;
-        this.scanDistance = scanDistance;
     }
 
     @Override
@@ -21,17 +19,26 @@ public class GpsImpl implements EquipmentImpl {
         this.robot = robot;
     }
 
+    @Override
+    public void init() {
+        robot.getComputer().setStateString("gps/ready", "true");
+    }
+
+    @Override
+    public void update() {
+        Point position = getPosition();
+        Double angle = getAngle();
+        robot.getComputer().setStateString("gps/posx", "" + position.getX());
+        robot.getComputer().setStateString("gps/posy", "" + position.getY());
+        robot.getComputer().setStateString("gps/angle", "" + angle);
+        robot.getComputer().setStateString("gps/time", "" + System.currentTimeMillis());
+    }
+
     public Double getAngle() {
-        if (!game.hasGps()) {
-            return null;
-        }
         return robot.box.getAngle();
     }
 
     public Point getPosition() {
-        if (!game.hasGps()) {
-            return null;
-        }
         Point2D position = robot.box.getPosition();
         return new Point((float) position.getX(), (float) position.getY());
     }

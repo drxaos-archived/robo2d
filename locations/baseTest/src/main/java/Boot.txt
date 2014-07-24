@@ -12,12 +12,10 @@ public class Boot implements Program {
         chassis = robot.getDevice(Chassis.class);
         radar = robot.getDevice(Radar.class);
 
-        if (chassis == null || radar == null) {
-            robot.debug("fail");
-            return;
+        Driver driver = new Driver(robot);
+        while (true) {
+            driver.sleep(5000);
+            driver.move(new Point((float) (15 + (Math.random() * 20)), (float) (15 + (Math.random() * 20))), 50000);
         }
-
-        chassis.setLeftAcceleration(40d);
-        chassis.setRightAcceleration(10d);
     }
 }

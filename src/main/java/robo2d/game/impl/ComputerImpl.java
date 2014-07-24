@@ -4,7 +4,10 @@ import com.robotech.military.api.Program;
 import com.robotech.military.api.Robot;
 import com.robotech.military.internal.LocalConnection;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -16,10 +19,13 @@ public class ComputerImpl implements EquipmentImpl {
         ON, OFF
     }
 
+    String cid = "-" + (long) (Math.random() * 1000000000);
+
     RobotImpl robot;
     Thread program;
     Map<String, String> state = new HashMap<String, String>();
     State initState;
+    Socket handlingConnection;
 
     public ComputerImpl(State state) {
         initState = state;
@@ -28,6 +34,17 @@ public class ComputerImpl implements EquipmentImpl {
     @Override
     public void setup(RobotImpl robot) {
         this.robot = robot;
+        Terminal.registerComputer(this);
+    }
+
+    @Override
+    public void init() {
+        setStateString("computer/ready", "true");
+    }
+
+    @Override
+    public void update() {
+        setStateString("computer/working", program != null ? "true" : "false");
     }
 
     protected Class compile() {
@@ -62,7 +79,7 @@ public class ComputerImpl implements EquipmentImpl {
                     public void run() {
                         try {
                             Program robotProgram = (Program) code.getConstructor().newInstance();
-                            robotProgram.run(new Robot(new LocalConnection(robot.getUid())));
+                            robotProgram.run(new Robot(new LocalConnection(getUid())));
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
@@ -93,6 +110,15 @@ public class ComputerImpl implements EquipmentImpl {
             e.printStackTrace();
             program = null;
         }
+        try {
+            if (handlingConnection != null) {
+                handlingConnection.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            handlingConnection = null;
+        }
+
     }
 
     public boolean isRunning() {
@@ -143,6 +169,56 @@ public class ComputerImpl implements EquipmentImpl {
     }
 
     public String getUid() {
-        return robot.getUid();
+        return robot.getUid() + cid;
+    }
+
+    private String escape(String s) {
+        if (s == null) {
+            return "";
+        }
+        return s.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n");
+    }
+
+    private String unescape(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
+        return s.replace("\\r", "\r").replace("\\n", "\n").replace("\\\\", "\\");
+    }
+
+    public void handleConnection(String id, Socket socket, BufferedReader in, PrintWriter out) {
+        try {
+            if (id.equals(getUid()) || (id.equals(robot.getUid()) && robot.enteredPlayer != null)) {
+                if (handlingConnection != null) {
+                    try {
+                        handlingConnection.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                handlingConnection = socket;
+                out.println("connected");
+                out.flush();
+                while (true) {
+                    String method = in.readLine();
+                    if (method.equals("get")) {
+                        String key = unescape(in.readLine());
+                        String value = escape(state.get(key));
+                        System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
+                        out.println(value);
+                        out.flush();
+                    } else if (method.equals("set")) {
+                        String key = unescape(in.readLine());
+                        String value = unescape(in.readLine());
+                        System.out.println("SET [" + getUid() + "]" + key + " = " + value);
+                        state.put(key, value);
+                    }
+                }
+            } else {
+                out.println("cannot connect");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

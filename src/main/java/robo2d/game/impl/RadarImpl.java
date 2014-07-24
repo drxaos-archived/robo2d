@@ -18,6 +18,16 @@ public class RadarImpl implements EquipmentImpl {
         this.robot = robot;
     }
 
+    @Override
+    public void init() {
+        robot.getComputer().setStateString("radar/ready", "true");
+    }
+
+    @Override
+    public void update() {
+
+    }
+
 //    @Override
 //    public LocatorScanData locate(double angle) {
 //        if (scanDistance == null) {

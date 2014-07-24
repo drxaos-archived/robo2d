@@ -28,6 +28,7 @@ public class Robot {
             Method ready = type.getMethod("ready");
             return (ready != null && ready.invoke(dev) == Boolean.FALSE) ? null : dev;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

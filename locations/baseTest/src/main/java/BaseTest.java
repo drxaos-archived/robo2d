@@ -29,17 +29,17 @@ public class BaseTest extends RobotTest {
             RobotImpl robot = new RobotImpl("MR-BS-01", game, player1, new KPoint(15, 5), 0);
             ChassisImpl chassis = new ChassisImpl(300d);
             RadarImpl radar = new RadarImpl(game, 100d);
+            GpsImpl gps = new GpsImpl(game);
             ComputerImpl computer = new ComputerImpl(ComputerImpl.State.ON);
             computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
             computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
-            //computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
+            computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
             robot.addEquipment(chassis);
             robot.addEquipment(radar);
+            robot.addEquipment(gps);
             robot.addEquipment(computer);
             robot.charge(4000);
             game.addRobot(robot);
-            game.addGps();
-            game.addSatellite(20, 2000);
 
             return game;
         } catch (IOException e) {

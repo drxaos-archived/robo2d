@@ -28,8 +28,9 @@ public class LocalConnection implements IO {
                 writer = new PrintWriter(socket.getOutputStream());
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 writer.println(id);
+                writer.flush();
                 String answer = reader.readLine();
-                if (answer.equals("connected")) {
+                if (!answer.equals("connected")) {
                     throw new ConnectionError("handshake error: " + answer);
                 }
             } catch (IOException e) {
@@ -39,10 +40,16 @@ public class LocalConnection implements IO {
     }
 
     private String escape(String s) {
+        if (s == null) {
+            return "";
+        }
         return s.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n");
     }
 
     private String unescape(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
         return s.replace("\\r", "\r").replace("\\n", "\n").replace("\\\\", "\\");
     }
 
@@ -53,6 +60,8 @@ public class LocalConnection implements IO {
                 writer.println("set");
                 writer.println(escape(key));
                 writer.println(escape(value));
+                writer.flush();
+                return;
             } catch (Exception e) {
                 if (i > 10) {
                     throw new ConnectionError(e);
@@ -68,6 +77,7 @@ public class LocalConnection implements IO {
             try {
                 writer.println("get");
                 writer.println(escape(key));
+                writer.flush();
                 return unescape(reader.readLine());
             } catch (Exception e) {
                 if (i > 10) {
@@ -75,6 +85,14 @@ public class LocalConnection implements IO {
                 }
                 reset();
             }
+        }
+    }
+
+    public void close() {
+        try {
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

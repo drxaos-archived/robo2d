@@ -38,8 +38,6 @@ public class MoveTest extends RobotTest {
         robot.addEquipment(computer);
         robot.charge(400);
         game.addRobot(robot);
-        game.addSatellite(30, 1);
-        game.addGps();
 
         return game;
     }

@@ -170,4 +170,16 @@ public class RobotImpl implements Physical, Enterable {
             return null;
         }
     }
+
+    public void init() {
+        for (EquipmentImpl e : equipment) {
+            e.init();
+        }
+    }
+
+    public void update() {
+        for (EquipmentImpl e : equipment) {
+            e.update();
+        }
+    }
 }

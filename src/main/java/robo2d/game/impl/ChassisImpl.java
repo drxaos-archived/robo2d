@@ -55,4 +55,14 @@ public class ChassisImpl implements EquipmentImpl, HasEffects {
     public void setup(RobotImpl robot) {
         this.robot = robot;
     }
+
+    @Override
+    public void init() {
+        robot.getComputer().setStateString("chassis/ready", "true");
+    }
+
+    @Override
+    public void update() {
+        robot.getComputer().setStateString("chassis/working", isWorking() ? "true" : "false");
+    }
 }

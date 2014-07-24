@@ -5,7 +5,11 @@ import bluej.Main;
 import bluej.debugger.Debugger;
 import bluej.pkgmgr.PkgMgrFrame;
 
-import java.io.File;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Terminal {
 
@@ -88,6 +92,93 @@ public class Terminal {
     }
 
     private static void unbindDebug() {
+    }
+
+    static Map<String, ComputerImpl> computers = new HashMap<String, ComputerImpl>();
+
+    public synchronized static void registerComputer(ComputerImpl computer) {
+        computers.put(computer.getUid(), computer);
+        computers.put(computer.robot.getUid(), computer);
+    }
+
+    public synchronized static void unRegisterComputer(ComputerImpl computer) {
+        computers.remove(computer.getUid());
+    }
+
+    public synchronized static void bindInterface() {
+        try {
+            final ServerSocket servers = new ServerSocket(4455);
+            new Thread() {
+                @Override
+                public void run() {
+                    System.out.println("Starting computers interface");
+                    BufferedReader in = null;
+                    PrintWriter out = null;
+
+                    Socket socket = null;
+
+                    try {
+                        while (true) {
+                            socket = servers.accept();
+                            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                            out = new PrintWriter(socket.getOutputStream());
+                            String id = in.readLine();
+                            System.out.println("New computer connection: " + id);
+                            if (id.equals("debug")) {
+                                id = computer.robot.getUid();
+                            }
+                            final ComputerImpl computer = computers.get(id);
+                            if (computer == null) {
+                                out.println("not found");
+                                socket.close();
+                            } else {
+                                final Socket finalSocket = socket;
+                                final BufferedReader finalIn = in;
+                                final PrintWriter finalOut = out;
+                                final String finalId = id;
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            System.out.println("Handling connection: " + finalId);
+                                            computer.handleConnection(finalId, finalSocket, finalIn, finalOut);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            finalIn.close();
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                        try {
+                                            finalOut.close();
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                        try {
+                                            finalSocket.close();
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+                                }.start();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        try {
+                            if (socket != null) {
+                                socket.close();
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

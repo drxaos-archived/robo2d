@@ -29,10 +29,6 @@ public class Game {
     protected DebugDraw debugDraw;
     public static final Color3f GRAY = new Color3f(0.3f, 0.3f, 0.3f);
 
-    Integer satelliteResolution = null;
-    Integer satelliteLag = null;
-    boolean gps = false;
-
     public Game(World worldBox, DebugDraw debugDraw) {
         this.worldBox = worldBox;
         this.debugDraw = debugDraw;
@@ -65,23 +61,6 @@ public class Game {
         return physicals;
     }
 
-    public void addSatellite(int resolution, int lag) {
-        this.satelliteResolution = resolution;
-        this.satelliteLag = lag;
-    }
-
-    public Integer getSatelliteResolution() {
-        return satelliteResolution;
-    }
-
-    public void addGps() {
-        this.gps = true;
-    }
-
-    public boolean hasGps() {
-        return gps;
-    }
-
     public Object stepSync() {
         return stepSync;
     }
@@ -101,7 +80,10 @@ public class Game {
 
         // Start programs
 
+        Terminal.bindInterface();
         for (RobotImpl robot : robots) {
+            robot.init();
+            robot.update();
             ComputerImpl computer = robot.getComputer();
             if (computer != null && computer.bootOnStartup()) {
                 computer.startProgram();
@@ -123,6 +105,9 @@ public class Game {
     }
 
     public void beforeStep() {
+        for (RobotImpl robot : robots) {
+            robot.update();
+        }
         managePrograms();
         applyEffects();
         sync();
