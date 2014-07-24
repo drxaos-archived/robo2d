@@ -1,5 +1,6 @@
 package robo2d.game.impl;
 
+import com.robotech.military.api.Point;
 import robo2d.game.Game;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
@@ -10,7 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RobotImpl implements Physical, Enterable {
+public class RobotImpl implements Physical, Enterable, Host {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
@@ -27,6 +28,7 @@ public class RobotImpl implements Physical, Enterable {
     Point2D debugPoint;
 
     PlayerImpl enteredPlayer;
+    private Point2D position;
 
     public RobotImpl(String uid, Game game, PlayerImpl owner, KPoint position, double angle) {
         this.uid = uid;
@@ -181,5 +183,15 @@ public class RobotImpl implements Physical, Enterable {
         for (EquipmentImpl e : equipment) {
             e.update();
         }
+    }
+
+    public Point getPosition() {
+        Point2D p = box.getPosition();
+        return new Point((float) p.getX(), (float) p.getY());
+    }
+
+    @Override
+    public Double getAngle() {
+        return box.getAngle();
     }
 }

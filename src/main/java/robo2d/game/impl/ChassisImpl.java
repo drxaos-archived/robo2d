@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ChassisImpl implements EquipmentImpl, HasEffects {
 
-    RobotImpl robot;
+    Host robot;
 
     double leftAccel, rightAccel, maxAccel;
     private Map<KPoint, Vec2> effectsMap;
@@ -52,7 +52,7 @@ public class ChassisImpl implements EquipmentImpl, HasEffects {
     }
 
     @Override
-    public void setup(RobotImpl robot) {
+    public void setup(Host robot) {
         this.robot = robot;
     }
 

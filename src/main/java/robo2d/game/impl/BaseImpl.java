@@ -1,6 +1,7 @@
 package robo2d.game.impl;
 
 import com.jme3.math.FastMath;
+import com.robotech.military.api.Point;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.StaticBox;
@@ -10,10 +11,11 @@ import straightedge.geom.KPolygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class BaseImpl implements Physical, Enterable {
+public class BaseImpl implements Physical, Enterable, Host {
 
     public static final float SIZE = 6;
 
+    String name;
     StaticBox box;
     KPoint pos;
     float angle;
@@ -26,11 +28,12 @@ public class BaseImpl implements Physical, Enterable {
         return pos;
     }
 
-    public float getAngle() {
-        return angle;
+    public Double getAngle() {
+        return (double) angle;
     }
 
-    public BaseImpl(PlayerImpl owner, KPoint pos, float angle) {
+    public BaseImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
+        this.name = name;
         this.pos = pos;
         this.angle = angle;
         this.owner = owner;
@@ -93,6 +96,22 @@ public class BaseImpl implements Physical, Enterable {
     @Override
     public LaptopImpl getComputer() {
         return laptop;
+    }
+
+    @Override
+    public boolean consumeEnergy(double v) {
+        return true;
+    }
+
+    @Override
+    public String getUid() {
+        return name;
+    }
+
+    @Override
+    public Point getPosition() {
+        Point2D p = box.getPosition();
+        return new Point((float) p.getX(), (float) p.getY());
     }
 
     public void init() {

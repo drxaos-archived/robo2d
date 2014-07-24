@@ -6,7 +6,7 @@ public class ComputerImpl extends AbstractComputer implements EquipmentImpl {
         ON, OFF
     }
 
-    RobotImpl robot;
+    Host robot;
     State initState;
 
     public ComputerImpl(State state) {
@@ -14,7 +14,7 @@ public class ComputerImpl extends AbstractComputer implements EquipmentImpl {
     }
 
     @Override
-    public void setup(RobotImpl robot) {
+    public void setup(Host robot) {
         this.robot = robot;
         Terminal.registerComputer(this);
     }

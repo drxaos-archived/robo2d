@@ -7,7 +7,7 @@ public class Cams {
 
     public static void connectTopCamera() {
         LocalConnection localConnection = new LocalConnection("debug");
-        localConnection.set("computer/camera", "LP-501");
+        localConnection.set("computer/camera", "BP-501");
     }
 
     public static void reset() {

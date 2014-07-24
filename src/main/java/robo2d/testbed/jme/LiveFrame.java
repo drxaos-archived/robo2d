@@ -151,10 +151,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
         for (BaseImpl baseImpl : game.getBases()) {
             baseModel = new BaseModel(assetManager);
-            Node base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
+            Node base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle().floatValue());
             baseMap.put(baseImpl, (Node) base.getChild("laptop"));
             rootNode.attachChild(base);
-            setupStaticView(baseImpl.getComputer().getName(), baseMap.get(baseImpl).getParent());
+            setupStaticView(baseImpl.getUid(), baseMap.get(baseImpl).getParent());
         }
 
         ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));

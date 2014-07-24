@@ -5,7 +5,7 @@ import robo2d.game.Game;
 public class RadarImpl implements EquipmentImpl {
 
     Game game;
-    RobotImpl robot;
+    Host robot;
     Double scanDistance = null;
 
     public RadarImpl(Game game, Double scanDistance) {
@@ -14,7 +14,7 @@ public class RadarImpl implements EquipmentImpl {
     }
 
     @Override
-    public void setup(RobotImpl robot) {
+    public void setup(Host robot) {
         this.robot = robot;
     }
 
@@ -40,8 +40,4 @@ public class RadarImpl implements EquipmentImpl {
 //            return game.resolveDirection(angle, scanDistance, robot);
 //        }
 //    }
-
-    public RobotImpl getRobot() {
-        return robot;
-    }
 }

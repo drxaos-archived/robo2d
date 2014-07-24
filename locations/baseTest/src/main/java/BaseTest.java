@@ -18,11 +18,11 @@ public class BaseTest extends RobotTest {
             PlayerImpl player1 = new PlayerImpl("player1", new KPoint(5, 5), FastMath.PI / 4 * 5);
             game.addPlayer(player1);
 
-            BaseImpl base = new BaseImpl(player1, new KPoint(5, 5), FastMath.PI / 4);
+            BaseImpl base = new BaseImpl(player1, new KPoint(5, 5), FastMath.PI / 4, "BP-501");
             LaptopImpl laptop = new LaptopImpl("LP-501");
             laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
             laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
-            laptop.addCamera("LP-501");
+            laptop.addCamera("BP-501");
             base.addLaptop(laptop);
             game.addBase(base);
 

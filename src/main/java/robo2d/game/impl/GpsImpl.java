@@ -3,19 +3,17 @@ package robo2d.game.impl;
 import com.robotech.military.api.Point;
 import robo2d.game.Game;
 
-import java.awt.geom.Point2D;
-
 public class GpsImpl implements EquipmentImpl {
 
     Game game;
-    RobotImpl robot;
+    Host robot;
 
     public GpsImpl(Game game) {
         this.game = game;
     }
 
     @Override
-    public void setup(RobotImpl robot) {
+    public void setup(Host robot) {
         this.robot = robot;
     }
 
@@ -35,15 +33,11 @@ public class GpsImpl implements EquipmentImpl {
     }
 
     public Double getAngle() {
-        return robot.box.getAngle();
+        return robot.getAngle();
     }
 
     public Point getPosition() {
-        Point2D position = robot.box.getPosition();
-        return new Point((float) position.getX(), (float) position.getY());
-    }
-
-    public RobotImpl getRobot() {
-        return robot;
+        Point position = robot.getPosition();
+        return position;
     }
 }
