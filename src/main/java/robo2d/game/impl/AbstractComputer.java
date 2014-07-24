@@ -165,34 +165,30 @@ public class AbstractComputer {
 
     public void handleConnection(String id, Socket socket, BufferedReader in, PrintWriter out) {
         try {
-            if (id.equals(getUid())) {
-                if (handlingConnection != null) {
-                    try {
-                        handlingConnection.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            if (handlingConnection != null) {
+                try {
+                    handlingConnection.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                handlingConnection = socket;
-                out.println("connected");
-                out.flush();
-                while (true) {
-                    String method = in.readLine();
-                    if (method.equals("get")) {
-                        String key = unescape(in.readLine());
-                        String value = escape(state.get(key));
-                        System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
-                        out.println(value);
-                        out.flush();
-                    } else if (method.equals("set")) {
-                        String key = unescape(in.readLine());
-                        String value = unescape(in.readLine());
-                        System.out.println("SET [" + getUid() + "]" + key + " = " + value);
-                        state.put(key, value);
-                    }
+            }
+            handlingConnection = socket;
+            out.println("connected");
+            out.flush();
+            while (true) {
+                String method = in.readLine();
+                if (method.equals("get")) {
+                    String key = unescape(in.readLine());
+                    String value = escape(state.get(key));
+                    System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
+                    out.println(value);
+                    out.flush();
+                } else if (method.equals("set")) {
+                    String key = unescape(in.readLine());
+                    String value = unescape(in.readLine());
+                    System.out.println("SET [" + getUid() + "]" + key + " = " + value);
+                    state.put(key, value);
                 }
-            } else {
-                out.println("cannot connect");
             }
         } catch (Exception e) {
             e.printStackTrace();

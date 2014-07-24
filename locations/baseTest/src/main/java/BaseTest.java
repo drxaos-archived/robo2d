@@ -21,9 +21,8 @@ public class BaseTest extends RobotTest {
             BaseImpl base = new BaseImpl(player1, new KPoint(5, 5), FastMath.PI / 4);
             LaptopImpl laptop = new LaptopImpl("LP-501");
             laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
-            laptop.saveFile("Help.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Help.txt")));
-            laptop.saveFile("CommLink.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/CommLink.txt")));
-            laptop.saveFile("messages.txt", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/messages.txt")));
+            laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
+            laptop.addCamera("LP-501");
             base.addLaptop(laptop);
             game.addBase(base);
 
@@ -35,6 +34,7 @@ public class BaseTest extends RobotTest {
             computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
             computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
             computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
+            computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Debug.txt")));
             robot.addEquipment(chassis);
             robot.addEquipment(radar);
             robot.addEquipment(gps);

@@ -1,0 +1,18 @@
+import com.robotech.military.internal.*;
+import com.robotech.military.api.*;
+
+public class Cams {
+
+    private Cams() {}
+
+    public static void connectTopCamera() {
+        LocalConnection localConnection = new LocalConnection("debug");
+        localConnection.set("computer/camera", "LP-501");
+    }
+
+    public static void reset() {
+        LocalConnection localConnection = new LocalConnection("debug");
+        localConnection.set("computer/camera", "");
+    }
+
+}

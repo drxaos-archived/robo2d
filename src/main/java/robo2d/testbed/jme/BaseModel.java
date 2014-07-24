@@ -127,6 +127,13 @@ public class BaseModel {
             node.attachChild(player);
         }
 
+        {
+            Node camera = new Node("camera");
+            camera.setLocalTranslation(0, 5f, 0);
+            camera.lookAt(new Vector3f(0, 0, 25), Vector3f.UNIT_Y);
+            node.attachChild(camera);
+        }
+
         node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
 

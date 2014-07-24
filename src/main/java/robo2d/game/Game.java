@@ -108,6 +108,9 @@ public class Game {
         for (RobotImpl robot : robots) {
             robot.update();
         }
+        for (BaseImpl base : bases) {
+            base.update();
+        }
         managePrograms();
         applyEffects();
         sync();

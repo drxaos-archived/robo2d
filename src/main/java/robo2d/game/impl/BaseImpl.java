@@ -80,11 +80,6 @@ public class BaseImpl implements Physical, Enterable {
     }
 
     @Override
-    public AbstractComputer getComputer() {
-        return laptop;
-    }
-
-    @Override
     public Point2D exit() {
         if (enteredPlayer != null) {
             Terminal.close(laptop);
@@ -93,5 +88,18 @@ public class BaseImpl implements Physical, Enterable {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public LaptopImpl getComputer() {
+        return laptop;
+    }
+
+    public void init() {
+        laptop.init();
+    }
+
+    public void update() {
+        laptop.update();
     }
 }

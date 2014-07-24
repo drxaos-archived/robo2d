@@ -84,8 +84,8 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     Game game;
 
+    DirectionalLight sun;
     Node terrain;
-    Node base;
     RobotModel robotModel;
     GroundModel groundModel;
     RockModel rockModel;
@@ -98,6 +98,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
     HashMap<BaseImpl, Node> baseMap = new HashMap<BaseImpl, Node>();
+    HashMap<String, StaticCamera> baseViewMap = new HashMap<String, StaticCamera>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -109,6 +110,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         assetManager.registerLocator("./", FileLocator.class);
 
         rootNode.detachAllChildren();
+        cam.setViewPort(0f, 1f, 0f, 1f);
         flyCam.setMoveSpeed(10);
         flyCam.setDragToRotate(true);
         getCamera().setLocation(new Vector3f(-15, 25, -15));
@@ -121,7 +123,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.addLight(createAmbient());
-        DirectionalLight sun = createSun();
+        sun = createSun();
         rootNode.addLight(sun);
 
         rockModel = new RockModel(assetManager);
@@ -149,9 +151,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
         for (BaseImpl baseImpl : game.getBases()) {
             baseModel = new BaseModel(assetManager);
-            base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
+            Node base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
             baseMap.put(baseImpl, (Node) base.getChild("laptop"));
             rootNode.attachChild(base);
+            setupStaticView(baseImpl.getComputer().getName(), baseMap.get(baseImpl).getParent());
         }
 
         ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));
@@ -350,8 +353,16 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             lastEnteredRobotAngle = newRobotRotation;
         } else if (entered instanceof BaseImpl) {
             Node node = baseMap.get(entered);
-            getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
-            getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
+
+            LaptopImpl computer = (LaptopImpl) entered.getComputer();
+            String activeCamera = computer.getActiveCamera();
+            StaticCamera staticCamera = baseViewMap.get(activeCamera);
+            if (staticCamera != null) {
+                staticCamera.alignCam(getCamera());
+            } else {
+                getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
+                getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
+            }
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
@@ -362,6 +373,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                     targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
             );
         }
+    }
+
+    public void setupStaticView(String name, Node node) {
+        baseViewMap.put(name, new StaticCamera(node));
     }
 
     private void updateRobots() {
