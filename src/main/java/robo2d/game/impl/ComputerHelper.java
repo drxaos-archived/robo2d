@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ComputerHelper {
 
-    public static synchronized void saveToDisk(ComputerImpl computer, File path) {
+    public static synchronized void saveToDisk(AbstractComputer computer, File path) {
         try {
             FileUtils.deleteDirectory(path);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class ComputerHelper {
         }
     }
 
-    public static synchronized void loadFromDisk(ComputerImpl computer, File path, boolean cleanUp) {
+    public static synchronized void loadFromDisk(AbstractComputer computer, File path, boolean cleanUp) {
         String fs = computer.getStateString("computer/fs");
         String[] files = fs.split("\n");
         for (String fileName : files) {
@@ -66,7 +66,7 @@ public class ComputerHelper {
         }
     }
 
-    public static synchronized File compile(ComputerImpl computer) {
+    public static synchronized File compile(AbstractComputer computer) {
         final File compileDir = new File("tmp/" + computer.getUid());
         saveToDisk(computer, compileDir);
 

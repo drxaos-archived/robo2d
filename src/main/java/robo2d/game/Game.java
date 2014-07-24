@@ -20,8 +20,8 @@ import java.util.List;
 public class Game {
     protected List<Physical> physicals = new ArrayList<Physical>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
+    protected List<BaseImpl> bases = new ArrayList<BaseImpl>();
     protected PlayerImpl player;
-    protected BaseImpl base;
 
     Object stepSync = new Object();
 
@@ -46,7 +46,7 @@ public class Game {
 
     public void addBase(BaseImpl base) {
         physicals.add(base);
-        this.base = base;
+        this.bases.add(base);
     }
 
     public PlayerImpl getPlayer() {
@@ -159,8 +159,8 @@ public class Game {
         return Radar.EMPTY;
     }
 
-    public BaseImpl getBase() {
-        return base;
+    public List<BaseImpl> getBases() {
+        return bases;
     }
 
     private static class RayCastClosestCallback implements RayCastCallback {

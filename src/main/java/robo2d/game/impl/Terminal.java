@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class Terminal {
 
-    static ComputerImpl computer;
+    static AbstractComputer computer;
     static BaseImpl base;
 
-    public synchronized static void open(final ComputerImpl computer) {
+    public synchronized static void open(final AbstractComputer computer) {
         Terminal.computer = computer;
         if (computer != null) {
             final File dir = new File("computer");
@@ -66,26 +66,11 @@ public class Terminal {
         }
     }
 
-    public synchronized static void open(final BaseImpl base) {
-        Terminal.base = base;
-        final File dir = new File("computer");
-        //ComputerHelper.saveToDisk(base, dir);
-        Main.registerBluejListener(null);
-        PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
-    }
-
-    public synchronized static void close(ComputerImpl computer) {
+    public synchronized static void close(AbstractComputer computer) {
         Main.registerBluejListener(null);
         unbindDebug();
         Boot.exit();
         ComputerHelper.loadFromDisk(computer, new File("computer"), true);
-    }
-
-    public synchronized static void close(BaseImpl base) {
-        Main.registerBluejListener(null);
-        unbindDebug();
-        Boot.exit();
-        //ComputerHelper.loadFromDisk(base, new File("computer"), true);
     }
 
     private static void bindDebug() {
@@ -94,14 +79,13 @@ public class Terminal {
     private static void unbindDebug() {
     }
 
-    static Map<String, ComputerImpl> computers = new HashMap<String, ComputerImpl>();
+    static Map<String, AbstractComputer> computers = new HashMap<String, AbstractComputer>();
 
-    public synchronized static void registerComputer(ComputerImpl computer) {
+    public synchronized static void registerComputer(AbstractComputer computer) {
         computers.put(computer.getUid(), computer);
-        computers.put(computer.robot.getUid(), computer);
     }
 
-    public synchronized static void unRegisterComputer(ComputerImpl computer) {
+    public synchronized static void unRegisterComputer(AbstractComputer computer) {
         computers.remove(computer.getUid());
     }
 
@@ -124,14 +108,15 @@ public class Terminal {
                             out = new PrintWriter(socket.getOutputStream());
                             String id = in.readLine();
                             System.out.println("New computer connection: " + id);
+                            AbstractComputer computer = computers.get(id);
                             if (id.equals("debug")) {
-                                id = computer.robot.getUid();
+                                computer = Terminal.computer;
                             }
-                            final ComputerImpl computer = computers.get(id);
                             if (computer == null) {
                                 out.println("not found");
                                 socket.close();
                             } else {
+                                final AbstractComputer finalComputer = computer;
                                 final Socket finalSocket = socket;
                                 final BufferedReader finalIn = in;
                                 final PrintWriter finalOut = out;
@@ -141,7 +126,7 @@ public class Terminal {
                                     public void run() {
                                         try {
                                             System.out.println("Handling connection: " + finalId);
-                                            computer.handleConnection(finalId, finalSocket, finalIn, finalOut);
+                                            finalComputer.handleConnection(finalId, finalSocket, finalIn, finalOut);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }

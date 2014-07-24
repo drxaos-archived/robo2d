@@ -93,7 +93,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     Nifty nifty;
 
     RobotImpl targetRobot;
-    BaseImpl targetLaptop;
+    BaseImpl targetBase;
     float lastEnteredRobotAngle;
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
@@ -147,8 +147,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             }
         }
 
-        BaseImpl baseImpl = game.getBase();
-        if (baseImpl != null) {
+        for (BaseImpl baseImpl : game.getBases()) {
             baseModel = new BaseModel(assetManager);
             base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle());
             baseMap.put(baseImpl, (Node) base.getChild("laptop"));
@@ -206,8 +205,8 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                     if (targetRobot != null) {
                         game.getPlayer().enter(targetRobot);
                         lastEnteredRobotAngle = (float) targetRobot.getBox().getAngle();
-                    } else if (targetLaptop != null) {
-                        game.getPlayer().enter(targetLaptop);
+                    } else if (targetBase != null) {
+                        game.getPlayer().enter(targetBase);
                     }
                 }
             }
@@ -274,7 +273,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         return null;
     }
 
-    private BaseImpl getTargetLaptop(Vector3f position, Vector3f direction) {
+    private BaseImpl getTargetBase(Vector3f position, Vector3f direction) {
         rootNode.updateGeometricState();
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray();
@@ -356,11 +355,11 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
-        targetLaptop = getTargetLaptop(cam, getCamera().getDirection());
+        targetBase = getTargetBase(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
-                    targetRobot != null ? targetRobot.getUid() : targetLaptop != null ? targetLaptop.getLaptopName() : ""
+                    targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
             );
         }
     }
