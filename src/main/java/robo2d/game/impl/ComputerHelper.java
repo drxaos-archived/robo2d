@@ -4,6 +4,10 @@ import bluej.compiler.CompileObserver;
 import bluej.compiler.CompilerAPICompiler;
 import bluej.compiler.Diagnostic;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import java.io.File;
 import java.net.URL;
@@ -11,6 +15,7 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class ComputerHelper {
@@ -49,7 +54,11 @@ public class ComputerHelper {
             computer.saveFile(fileName, null);
         }
 
-        for (File file : FileUtils.listFiles(path, new String[]{"java", "txt"}, true)) {
+        String[] extensions = new String[]{"java", "txt"};
+        IOFileFilter filter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
+        Iterator<File> fileIterator = FileUtils.iterateFiles(path, filter, DirectoryFileFilter.DIRECTORY);
+        while (fileIterator.hasNext()) {
+            File file = fileIterator.next();
             try {
                 String content = FileUtils.readFileToString(file);
                 computer.saveFile(file.getName(), content);

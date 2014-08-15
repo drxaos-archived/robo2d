@@ -33,7 +33,6 @@ import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
 import slick2d.NativeLoader;
-import straightedge.geom.KPoint;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -96,12 +95,11 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     Nifty nifty;
 
     RobotImpl targetRobot;
-    CampImpl targetBase;
+    ControllerImpl targetController;
     float lastEnteredRobotAngle;
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
-    //    HashMap<BaseImpl, Node> controllerMap = new HashMap<BaseImpl, Node>();
-    HashMap<String, StaticCamera> baseViewMap = new HashMap<String, StaticCamera>();
+    HashMap<ControllerImpl, Node> controllerMap = new HashMap<ControllerImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -159,16 +157,18 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             }
         }
 
+        campModel = new CampModel(assetManager);
         for (CampImpl baseImpl : game.getCamps()) {
-            campModel = new CampModel(assetManager);
             Node base = campModel.createCamp(baseImpl.getPos(), baseImpl.getAngle().floatValue());
             rootNode.attachChild(base);
         }
 
         controllerModel = new ControllerModel(assetManager);
-        Node cube = controllerModel.createCube(new KPoint(0, 0), 0);
-        rootNode.attachChild(cube);
-
+        for (ControllerImpl controller : game.getControllers()) {
+            Node cube = controllerModel.createCube(controller);
+            controllerMap.put(controller, cube);
+            rootNode.attachChild(cube);
+        }
 
         ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));
 
@@ -221,8 +221,8 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                     if (targetRobot != null) {
                         game.getPlayer().enter(targetRobot);
                         lastEnteredRobotAngle = (float) targetRobot.getBox().getAngle();
-//                    } else if (targetBase != null) {
-//                        game.getPlayer().enter(targetBase);
+                    } else if (targetController != null) {
+                        game.getPlayer().enter(targetController);
                     }
                 }
             }
@@ -289,24 +289,24 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         return null;
     }
 
-//    private BaseImpl getTargetController(Vector3f position, Vector3f direction) {
-//        rootNode.updateGeometricState();
-//        CollisionResults results = new CollisionResults();
-//        Ray ray = new Ray();
-//        ray.setOrigin(position);
-//        ray.setDirection(direction);
-//        rootNode.collideWith(ray, results);
-//        CollisionResult result = results.getClosestCollision();
-//        if (result == null || result.getDistance() > 3) {
-//            return null;
-//        }
-//        for (Map.Entry<BaseImpl, Node> e : baseMap.entrySet()) {
-//            if (e.getValue().hasChild(result.getGeometry())) {
-//                return e.getKey();
-//            }
-//        }
-//        return null;
-//    }
+    private ControllerImpl getTargetController(Vector3f position, Vector3f direction) {
+        rootNode.updateGeometricState();
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray();
+        ray.setOrigin(position);
+        ray.setDirection(direction);
+        rootNode.collideWith(ray, results);
+        CollisionResult result = results.getClosestCollision();
+        if (result == null || result.getDistance() > 3) {
+            return null;
+        }
+        for (Map.Entry<ControllerImpl, Node> e : controllerMap.entrySet()) {
+            if (e.getValue().hasChild(result.getGeometry())) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
 
     @Override
     public void simpleUpdate(float tpf) {
@@ -381,33 +381,22 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             float newRobotRotation = (float) ((RobotImpl) entered).getBox().getAngle();
             getCamera().setRotation(new Quaternion().fromAngleAxis(newRobotRotation - lastEnteredRobotAngle, Vector3f.UNIT_Y).mult(getCamera().getRotation()));
             lastEnteredRobotAngle = newRobotRotation;
-//        } else if (entered instanceof BaseImpl) {
-//            Node node = baseMap.get(entered);
-//
-//            LaptopImpl computer = (LaptopImpl) entered.getComputer();
-//            String activeCamera = computer.getActiveCamera();
-//            StaticCamera staticCamera = baseViewMap.get(activeCamera);
-//            if (staticCamera != null) {
-//                staticCamera.alignCam(getCamera());
-//            } else {
-//                getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
-//                getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
-//            }
+        } else if (entered instanceof ControllerImpl) {
+            Node node = controllerMap.get(entered);
+            getCamera().setLocation(node.getChild("player").getWorldTranslation());
+            getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
-//        targetBase = getTargetBase(cam, getCamera().getDirection());
+        targetController = getTargetController(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
-//                    targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
-                    targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") : ""
+                    game.getPlayer().getEntered() != null ? "You can connect to this device with your console" :
+                            targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") :
+                                    targetController != null ? (targetController.getUid() + "\n\nPress \"E\" to open") : ""
             );
         }
-    }
-
-    public void setupStaticView(String name, Node node) {
-        baseViewMap.put(name, new StaticCamera(node));
     }
 
     private void updateRobots() {

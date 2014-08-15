@@ -1,20 +1,26 @@
 package robo2d.game.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CpuImpl extends AbstractComputer {
+    public static enum State {
+        ON, OFF
+    }
 
     ControllerImpl controller;
     String name;
+    State initState;
 
-    public CpuImpl(String name) {
+    public CpuImpl(String name, State state) {
         this.name = name;
+        initState = state;
     }
 
     public void setup(ControllerImpl controller) {
         this.controller = controller;
         Terminal.registerComputer(this);
+    }
+
+    public boolean bootOnStartup() {
+        return initState == State.ON;
     }
 
     @Override

@@ -22,6 +22,7 @@
 package bluej.pkgmgr.actions;
 
 
+import bluej.Main;
 import bluej.pkgmgr.PkgMgrFrame;
 
 /**
@@ -53,7 +54,6 @@ final public class OpenProjectAction extends PkgMgrAction {
     
     public void actionPerformed(PkgMgrFrame pmf)
     {
-        pmf.menuCall();
-        pmf.doOpen();
+        Main.bluejListener.connect();
     }
 }

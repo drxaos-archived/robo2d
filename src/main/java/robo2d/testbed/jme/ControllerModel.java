@@ -9,6 +9,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import robo2d.game.impl.ControllerImpl;
 import straightedge.geom.KPoint;
 
 public class ControllerModel {
@@ -20,7 +21,10 @@ public class ControllerModel {
 
     Spatial cubeModel1;
 
-    public Node createCube(KPoint pos, float angle) {
+    public Node createCube(ControllerImpl controller) {
+        KPoint pos = controller.getPos();
+        double angle = controller.getAngle();
+
         if (cubeModel1 == null) {
 
             Box box1 = new Box(0.5f, 0.5f, 0.5f);
@@ -43,11 +47,11 @@ public class ControllerModel {
 
         {
             Node player = new Node("player");
-            player.setLocalTranslation(-2f, 0.8f, 0f);
+            player.setLocalTranslation(-1.5f, 1.0f, 0f);
             node.attachChild(player);
         }
 
-        node.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+        node.setLocalRotation(new Quaternion().fromAngleAxis((float) angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
 
         node.setUserData("centerZ", node.getWorldTranslation().getZ());

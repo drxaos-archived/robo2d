@@ -180,13 +180,13 @@ public class AbstractComputer {
                 if (method.equals("get")) {
                     String key = unescape(in.readLine());
                     String value = escape(state.get(key));
-                    System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
+//                    System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
                     out.println(value);
                     out.flush();
                 } else if (method.equals("set")) {
                     String key = unescape(in.readLine());
                     String value = unescape(in.readLine());
-                    System.out.println("SET [" + getUid() + "]" + key + " = " + value);
+//                    System.out.println("SET [" + getUid() + "]" + key + " = " + value);
                     state.put(key, value);
                 }
             }

@@ -21,7 +21,6 @@
  */
 package bluej;
 
-import bluej.collect.DataCollector;
 import bluej.debugger.Debugger;
 import bluej.extensions.event.ApplicationEvent;
 import bluej.extmgr.ExtensionsManager;
@@ -427,25 +426,7 @@ public class Main {
         bluejListener.onExit();
     }
 
-
-    public static BluejListener defaultBluejListener = new BluejListener() {
-        @Override
-        public void onExit() {
-        }
-
-        @Override
-        public void deploy() {
-        }
-
-        @Override
-        public void halt() {
-        }
-
-        @Override
-        public void debuggerReady(Debugger debugger) {
-        }
-    };
-    public static BluejListener bluejListener = defaultBluejListener;
+    public static BluejListener bluejListener;
 
     public static interface BluejListener {
         void onExit();
@@ -455,13 +436,15 @@ public class Main {
         void halt();
 
         void debuggerReady(Debugger debugger);
+
+        void connect();
+
+        void disconnect();
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {
         if (bluejListener != null) {
             Main.bluejListener = bluejListener;
-        } else {
-            Main.bluejListener = defaultBluejListener;
         }
     }
 }

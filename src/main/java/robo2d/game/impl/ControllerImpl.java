@@ -1,6 +1,5 @@
 package robo2d.game.impl;
 
-import com.jme3.math.FastMath;
 import com.robotech.military.api.Point;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
@@ -44,24 +43,15 @@ public class ControllerImpl implements Physical, Enterable, Host {
         kPoints.add(new KPoint(1f, -1f));
         kPoints.add(new KPoint(-1f, -1f));
         kPoints.add(new KPoint(-1f, 1f));
-        kPoints.add(new KPoint(-1f / 4f, 1f));
-        kPoints.add(new KPoint(-1f / 4f, 7f / 9f));
-        kPoints.add(new KPoint(-8f / 9f, 7f / 9f));
-        kPoints.add(new KPoint(-8f / 9f, -8f / 9f));
-        kPoints.add(new KPoint(8f / 9f, -8f / 9f));
-        kPoints.add(new KPoint(8f / 9f, 7f / 9f));
-        kPoints.add(new KPoint(1f / 4f, 7f / 9f));
-        kPoints.add(new KPoint(1f / 4f, 1f));
         KPolygon polygon = new KPolygon(kPoints);
-        polygon.scale(SIZE * 0.7);
-        polygon.rotate(-FastMath.PI / 2);
+        polygon.scale(SIZE * 0.05);
 
         box = new StaticBox(polygon, pos, angle);
     }
 
-    public void addLaptop(CpuImpl laptop) {
-        this.cpu = laptop;
-        laptop.setup(this);
+    public void addCpu(CpuImpl cpu) {
+        this.cpu = cpu;
+        cpu.setup(this);
     }
 
     @Override

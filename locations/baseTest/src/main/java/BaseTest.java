@@ -28,6 +28,12 @@ public class BaseTest extends RobotTest {
 //            base.addLaptop(laptop);
             game.addCamp(base);
 
+            ControllerImpl controller = new ControllerImpl(player1, new KPoint(0, 0), 0, "TEST-CONTROL-1");
+            CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
+            cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+            controller.addCpu(cpu);
+            game.addController(controller);
+
             ArrayList<Point2D> points = new ArrayList<Point2D>();
             points.clear();
             points.add(new Point2D.Double(-2, -2));

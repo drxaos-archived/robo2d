@@ -51,6 +51,11 @@ public class Game {
         camps.add(camp);
     }
 
+    public void addController(ControllerImpl controller) {
+        physicals.add(controller);
+        controllers.add(controller);
+    }
+
     public PlayerImpl getPlayer() {
         return player;
     }
@@ -95,6 +100,12 @@ public class Game {
             robot.init();
             robot.update();
             ComputerImpl computer = robot.getComputer();
+            if (computer != null && computer.bootOnStartup()) {
+                computer.startProgram();
+            }
+        }
+        for (ControllerImpl controller : controllers) {
+            CpuImpl computer = controller.getComputer();
             if (computer != null && computer.bootOnStartup()) {
                 computer.startProgram();
             }

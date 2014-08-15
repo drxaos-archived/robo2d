@@ -2737,11 +2737,11 @@ public class PkgMgrFrame extends JFrame
         {
 //            createMenuItem(NewProjectAction.getInstance(), menu);
 //            javaMEnewProjMenuItem = createMenuItem(NewMEprojectAction.getInstance(), menu);
-//            createMenuItem(OpenProjectAction.getInstance(), menu);
+            createMenuItem(OpenProjectAction.getInstance(), menu);
             recentProjectsMenu = new JMenu(Config.getString("menu.package.openRecent"));
 //            menu.add(recentProjectsMenu);
 //            createMenuItem(OpenNonBlueJAction.getInstance(), menu);
-//            createMenuItem(closeProjectAction, menu);
+            createMenuItem(closeProjectAction, menu);
             createMenuItem(saveProjectAction, menu);
 //            createMenuItem(saveProjectAsAction, menu);
 //            menu.addSeparator();

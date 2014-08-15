@@ -13,11 +13,19 @@ import java.util.Map;
 
 public class Terminal {
 
+    static boolean connected = false;
     static AbstractComputer computer;
     static CampImpl base;
 
+
     public synchronized static void open(final AbstractComputer computer) {
         Terminal.computer = computer;
+    }
+
+    public synchronized static void connect() {
+        if (connected) {
+            disconnect();
+        }
         if (computer != null) {
             final File dir = new File("computer");
             ComputerHelper.saveToDisk(computer, dir);
@@ -43,12 +51,23 @@ public class Terminal {
                 @Override
                 public void debuggerReady(Debugger dbg) {
                 }
+
+                @Override
+                public void connect() {
+                    Terminal.connect();
+                }
+
+                @Override
+                public void disconnect() {
+                    Terminal.disconnect();
+                }
             });
 
             bindDebug();
 
             try {
                 PkgMgrFrame.doOpen(new File("computer"), PkgMgrFrame.getAllFrames()[0]);
+                connected = true;
             } catch (Throwable e) {
                 e.printStackTrace();
                 try {
@@ -66,11 +85,51 @@ public class Terminal {
         }
     }
 
+    public static Main.BluejListener defaultListener = new Main.BluejListener() {
+        @Override
+        public void onExit() {
+        }
+
+        @Override
+        public void deploy() {
+        }
+
+        @Override
+        public void halt() {
+        }
+
+        @Override
+        public void debuggerReady(Debugger debugger) {
+        }
+
+        @Override
+        public void connect() {
+            Terminal.connect();
+        }
+
+        @Override
+        public void disconnect() {
+            Terminal.disconnect();
+        }
+    };
+
+    static {
+        Main.registerBluejListener(defaultListener);
+    }
+
     public synchronized static void close(AbstractComputer computer) {
-        Main.registerBluejListener(null);
-        unbindDebug();
-        Boot.exit();
-        ComputerHelper.loadFromDisk(computer, new File("computer"), true);
+        disconnect();
+        Terminal.computer = null;
+    }
+
+    public synchronized static void disconnect() {
+        if (connected) {
+            Main.registerBluejListener(defaultListener);
+            unbindDebug();
+            Boot.exit();
+            ComputerHelper.loadFromDisk(computer, new File("computer"), true);
+            connected = false;
+        }
     }
 
     private static void bindDebug() {
