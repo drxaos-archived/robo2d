@@ -19,8 +19,10 @@ import java.util.List;
 
 public class Game {
     protected List<Physical> physicals = new ArrayList<Physical>();
+    protected List<PlatformImpl> platforms = new ArrayList<PlatformImpl>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
-    protected List<BaseImpl> bases = new ArrayList<BaseImpl>();
+    protected List<CampImpl> camps = new ArrayList<CampImpl>();
+    protected List<ControllerImpl> controllers = new ArrayList<ControllerImpl>();
     protected PlayerImpl player;
 
     Object stepSync = new Object();
@@ -44,9 +46,9 @@ public class Game {
         this.player = player;
     }
 
-    public void addBase(BaseImpl base) {
-        physicals.add(base);
-        this.bases.add(base);
+    public void addCamp(CampImpl camp) {
+        physicals.add(camp);
+        camps.add(camp);
     }
 
     public PlayerImpl getPlayer() {
@@ -61,12 +63,20 @@ public class Game {
         return physicals;
     }
 
+    public List<PlatformImpl> getPlatforms() {
+        return platforms;
+    }
+
     public Object stepSync() {
         return stepSync;
     }
 
     public void addWall(WallImpl wall) {
         physicals.add(wall);
+    }
+
+    public void addPlatform(PlatformImpl platform) {
+        platforms.add(platform);
     }
 
     public void start() {
@@ -108,8 +118,8 @@ public class Game {
         for (RobotImpl robot : robots) {
             robot.update();
         }
-        for (BaseImpl base : bases) {
-            base.update();
+        for (ControllerImpl controller : controllers) {
+            controller.update();
         }
         managePrograms();
         applyEffects();
@@ -162,8 +172,12 @@ public class Game {
         return Radar.EMPTY;
     }
 
-    public List<BaseImpl> getBases() {
-        return bases;
+    public List<ControllerImpl> getControllers() {
+        return controllers;
+    }
+
+    public List<CampImpl> getCamps() {
+        return camps;
     }
 
     private static class RayCastClosestCallback implements RayCastCallback {

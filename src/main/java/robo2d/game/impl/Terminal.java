@@ -14,7 +14,7 @@ import java.util.Map;
 public class Terminal {
 
     static AbstractComputer computer;
-    static BaseImpl base;
+    static CampImpl base;
 
     public synchronized static void open(final AbstractComputer computer) {
         Terminal.computer = computer;

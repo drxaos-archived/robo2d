@@ -95,7 +95,7 @@ class GroundTileLoader implements TerrainGridTileLoader {
     private final AssetManager assetManager;
     private int patchSize;
     private int quadSize;
-    private float heightScale = 0.1f;
+    private float heightScale = 0.06f;
     Material mat;
     Texture alphaDefault;
     Game game;

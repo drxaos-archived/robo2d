@@ -33,6 +33,7 @@ import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
 import slick2d.NativeLoader;
+import straightedge.geom.KPoint;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -89,15 +90,17 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     RobotModel robotModel;
     GroundModel groundModel;
     RockModel rockModel;
-    BaseModel baseModel;
+    PlatformModel platformModel;
+    CampModel campModel;
+    ControllerModel controllerModel;
     Nifty nifty;
 
     RobotImpl targetRobot;
-    BaseImpl targetBase;
+    CampImpl targetBase;
     float lastEnteredRobotAngle;
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
-    HashMap<BaseImpl, Node> baseMap = new HashMap<BaseImpl, Node>();
+    //    HashMap<BaseImpl, Node> controllerMap = new HashMap<BaseImpl, Node>();
     HashMap<String, StaticCamera> baseViewMap = new HashMap<String, StaticCamera>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
@@ -138,6 +141,13 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         terrain = groundModel.createGround();
         rootNode.attachChild(terrain);
 
+        Node platforms = new Node("platforms");
+        platformModel = new PlatformModel(assetManager);
+        for (PlatformImpl platform : game.getPlatforms()) {
+            platforms.attachChild(platformModel.createPlatform(platform));
+        }
+        rootNode.attachChild(platforms);
+
         robotModel = new RobotModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
             if (physical instanceof RobotImpl) {
@@ -149,13 +159,16 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             }
         }
 
-        for (BaseImpl baseImpl : game.getBases()) {
-            baseModel = new BaseModel(assetManager);
-            Node base = baseModel.createBase(baseImpl.getPos(), baseImpl.getAngle().floatValue());
-            baseMap.put(baseImpl, (Node) base.getChild("laptop"));
+        for (CampImpl baseImpl : game.getCamps()) {
+            campModel = new CampModel(assetManager);
+            Node base = campModel.createCamp(baseImpl.getPos(), baseImpl.getAngle().floatValue());
             rootNode.attachChild(base);
-            setupStaticView(baseImpl.getUid(), baseMap.get(baseImpl).getParent());
         }
+
+        controllerModel = new ControllerModel(assetManager);
+        Node cube = controllerModel.createCube(new KPoint(0, 0), 0);
+        rootNode.attachChild(cube);
+
 
         ModelUtils.attachCoordinateAxes(assetManager, rootNode, new Vector3f(0, 30, 0));
 
@@ -208,8 +221,8 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                     if (targetRobot != null) {
                         game.getPlayer().enter(targetRobot);
                         lastEnteredRobotAngle = (float) targetRobot.getBox().getAngle();
-                    } else if (targetBase != null) {
-                        game.getPlayer().enter(targetBase);
+//                    } else if (targetBase != null) {
+//                        game.getPlayer().enter(targetBase);
                     }
                 }
             }
@@ -276,24 +289,24 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         return null;
     }
 
-    private BaseImpl getTargetBase(Vector3f position, Vector3f direction) {
-        rootNode.updateGeometricState();
-        CollisionResults results = new CollisionResults();
-        Ray ray = new Ray();
-        ray.setOrigin(position);
-        ray.setDirection(direction);
-        rootNode.collideWith(ray, results);
-        CollisionResult result = results.getClosestCollision();
-        if (result == null || result.getDistance() > 3) {
-            return null;
-        }
-        for (Map.Entry<BaseImpl, Node> e : baseMap.entrySet()) {
-            if (e.getValue().hasChild(result.getGeometry())) {
-                return e.getKey();
-            }
-        }
-        return null;
-    }
+//    private BaseImpl getTargetController(Vector3f position, Vector3f direction) {
+//        rootNode.updateGeometricState();
+//        CollisionResults results = new CollisionResults();
+//        Ray ray = new Ray();
+//        ray.setOrigin(position);
+//        ray.setDirection(direction);
+//        rootNode.collideWith(ray, results);
+//        CollisionResult result = results.getClosestCollision();
+//        if (result == null || result.getDistance() > 3) {
+//            return null;
+//        }
+//        for (Map.Entry<BaseImpl, Node> e : baseMap.entrySet()) {
+//            if (e.getValue().hasChild(result.getGeometry())) {
+//                return e.getKey();
+//            }
+//        }
+//        return null;
+//    }
 
     @Override
     public void simpleUpdate(float tpf) {
@@ -307,21 +320,37 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     private void updateStatics() {
         ArrayList<String> statics = new ArrayList<String>();
         statics.add("rock");
-        statics.add("base");
+        statics.add("camp");
+        statics.add("controller");
 
-        for (Spatial spatial : rootNode.getChildren()) {
-            if (statics.contains(spatial.getName()) && spatial.getUserData("centerY") == null) {
-                float z = spatial.getUserData("centerZ");
-                float x = spatial.getUserData("centerX");
-                try {
-                    Vector3f terrainPoint = getTerrainPoint(x, z, true);
-                    spatial.setLocalTranslation(spatial.getLocalTranslation().getX(), terrainPoint.getY(), spatial.getLocalTranslation().getZ());
-                    spatial.setUserData("centerY", terrainPoint.getY());
-                } catch (TerrainNotFoundException e) {
-                    // wait more
+        for (Spatial platform : ((Node) ((Node) rootNode).getChild("platforms")).getChildren()) {
+            if (platform.getUserData("centerY") == null) {
+                if (land(platform)) {
+                    platform.removeFromParent();
+                    terrain.attachChild(platform);
                 }
             }
         }
+
+        for (Spatial spatial : rootNode.getChildren()) {
+            if (statics.contains(spatial.getName()) && spatial.getUserData("centerY") == null) {
+                land(spatial);
+            }
+        }
+    }
+
+    private boolean land(Spatial spatial) {
+        float z = spatial.getUserData("centerZ");
+        float x = spatial.getUserData("centerX");
+        try {
+            Vector3f terrainPoint = getTerrainPoint(x, z, true);
+            spatial.setLocalTranslation(spatial.getLocalTranslation().getX(), terrainPoint.getY(), spatial.getLocalTranslation().getZ());
+            spatial.setUserData("centerY", terrainPoint.getY());
+            return true;
+        } catch (TerrainNotFoundException e) {
+            // wait more
+        }
+        return false;
     }
 
     private boolean isSceneRendered() {
@@ -351,26 +380,27 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             float newRobotRotation = (float) ((RobotImpl) entered).getBox().getAngle();
             getCamera().setRotation(new Quaternion().fromAngleAxis(newRobotRotation - lastEnteredRobotAngle, Vector3f.UNIT_Y).mult(getCamera().getRotation()));
             lastEnteredRobotAngle = newRobotRotation;
-        } else if (entered instanceof BaseImpl) {
-            Node node = baseMap.get(entered);
-
-            LaptopImpl computer = (LaptopImpl) entered.getComputer();
-            String activeCamera = computer.getActiveCamera();
-            StaticCamera staticCamera = baseViewMap.get(activeCamera);
-            if (staticCamera != null) {
-                staticCamera.alignCam(getCamera());
-            } else {
-                getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
-                getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
-            }
+//        } else if (entered instanceof BaseImpl) {
+//            Node node = baseMap.get(entered);
+//
+//            LaptopImpl computer = (LaptopImpl) entered.getComputer();
+//            String activeCamera = computer.getActiveCamera();
+//            StaticCamera staticCamera = baseViewMap.get(activeCamera);
+//            if (staticCamera != null) {
+//                staticCamera.alignCam(getCamera());
+//            } else {
+//                getCamera().setLocation(node.getParent().getChild("player").getWorldTranslation());
+//                getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
+//            }
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
-        targetBase = getTargetBase(cam, getCamera().getDirection());
+//        targetBase = getTargetBase(cam, getCamera().getDirection());
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
-                    targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
+//                    targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
+                    targetRobot != null ? targetRobot.getUid() : ""
             );
         }
     }

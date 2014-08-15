@@ -11,7 +11,7 @@ import straightedge.geom.KPolygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class BaseImpl implements Physical, Enterable, Host {
+public class ControllerImpl implements Physical, Enterable, Host {
 
     public static final float SIZE = 6;
 
@@ -19,7 +19,7 @@ public class BaseImpl implements Physical, Enterable, Host {
     StaticBox box;
     KPoint pos;
     float angle;
-    LaptopImpl laptop;
+    CpuImpl cpu;
     PlayerImpl owner;
 
     PlayerImpl enteredPlayer;
@@ -32,7 +32,7 @@ public class BaseImpl implements Physical, Enterable, Host {
         return (double) angle;
     }
 
-    public BaseImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
+    public ControllerImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
         this.name = name;
         this.pos = pos;
         this.angle = angle;
@@ -59,8 +59,8 @@ public class BaseImpl implements Physical, Enterable, Host {
         box = new StaticBox(polygon, pos, angle);
     }
 
-    public void addLaptop(LaptopImpl laptop) {
-        this.laptop = laptop;
+    public void addLaptop(CpuImpl laptop) {
+        this.cpu = laptop;
         laptop.setup(this);
     }
 
@@ -78,14 +78,14 @@ public class BaseImpl implements Physical, Enterable, Host {
     public void enter(PlayerImpl player) {
         if (enteredPlayer == null) {
             enteredPlayer = player;
-            Terminal.open(laptop);
+            Terminal.open(cpu);
         }
     }
 
     @Override
     public Point2D exit() {
         if (enteredPlayer != null) {
-            Terminal.close(laptop);
+            Terminal.close(cpu);
             enteredPlayer = null;
             return getBox().getPosition();
         } else {
@@ -94,8 +94,8 @@ public class BaseImpl implements Physical, Enterable, Host {
     }
 
     @Override
-    public LaptopImpl getComputer() {
-        return laptop;
+    public CpuImpl getComputer() {
+        return cpu;
     }
 
     @Override
@@ -115,10 +115,10 @@ public class BaseImpl implements Physical, Enterable, Host {
     }
 
     public void init() {
-        laptop.init();
+        cpu.init();
     }
 
     public void update() {
-        laptop.update();
+        cpu.update();
     }
 }

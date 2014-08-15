@@ -5,8 +5,11 @@ import robo2d.game.impl.*;
 import robo2d.testbed.RobotTest;
 import straightedge.geom.KPoint;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class BaseTest extends RobotTest {
 
@@ -18,13 +21,29 @@ public class BaseTest extends RobotTest {
             PlayerImpl player1 = new PlayerImpl("player1", new KPoint(5, 5), FastMath.PI / 4 * 5);
             game.addPlayer(player1);
 
-            BaseImpl base = new BaseImpl(player1, new KPoint(5, 5), FastMath.PI / 4, "BP-501");
-            LaptopImpl laptop = new LaptopImpl("LP-501");
-            laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
-            laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
-            laptop.addCamera("BP-501");
-            base.addLaptop(laptop);
-            game.addBase(base);
+            CampImpl base = new CampImpl(player1, new KPoint(5, 5), FastMath.PI / 4, "BP-501");
+//            LaptopImpl laptop = new LaptopImpl("LP-501");
+//            laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
+//            laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
+//            laptop.addCamera("BP-501");
+//            base.addLaptop(laptop);
+            game.addCamp(base);
+
+            ArrayList<Point2D> points = new ArrayList<Point2D>();
+            points.clear();
+            points.add(new Point2D.Double(-2, -2));
+            points.add(new Point2D.Double(-2, 2));
+            points.add(new Point2D.Double(0, 4));
+            points.add(new Point2D.Double(2, 2));
+            points.add(new Point2D.Double(2, -2));
+//            Collections.reverse(points);
+            game.addPlatform(new PlatformImpl(points, 0));
+
+            points.clear();
+            points.add(new Point2D.Double(-5, -5));
+            points.add(new Point2D.Double(-5, -8));
+            points.add(new Point2D.Double(-10, -9));
+            game.addWall(new WallImpl(points, 0));
 
             RobotImpl robot = new RobotImpl("MR-BS-01", game, player1, new KPoint(15, 5), 0);
             ChassisImpl chassis = new ChassisImpl(300d);
