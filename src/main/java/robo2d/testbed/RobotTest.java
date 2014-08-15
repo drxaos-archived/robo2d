@@ -21,8 +21,8 @@ public abstract class RobotTest extends TestbedTest {
         getWorld().setGravity(new Vec2());
         game = createGame();
         game.start();
-        LiveFrame.create(game).getCanvas();
         Boot.start(null);
+        LiveFrame.create(game).getCanvas();
     }
 
     abstract public Game createGame();

@@ -17,18 +17,18 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RockModel {
+public class WallModel {
     AssetManager assetManager;
 
-    public RockModel(AssetManager assetManager) {
+    public WallModel(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 
-    public Spatial createRock(WallImpl wall) {
+    public Spatial createWall(WallImpl wall) {
         List<Point2D> vert = wall.getVertices();
         List<KPolygon> triangulation = wall.getTriangulation();
 
-        Node node = new Node("rock");
+        Node node = new Node("wall");
 
         final float H = 10;
 
@@ -118,7 +118,7 @@ public class RockModel {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         mat.setFloat("Shininess", 10000);
-        Texture tex = assetManager.loadTexture("models/ground/road.jpg");
+        Texture tex = assetManager.loadTexture("models/wall/" + wall.getType() + ".jpg");
         tex.setWrap(Texture.WrapMode.Repeat);
         mat.setTexture("DiffuseMap", tex);
         mat.setTexture("SpecularMap", tex);

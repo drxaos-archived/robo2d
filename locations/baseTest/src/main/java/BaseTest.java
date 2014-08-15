@@ -9,7 +9,6 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class BaseTest extends RobotTest {
 
@@ -44,6 +43,12 @@ public class BaseTest extends RobotTest {
             points.add(new Point2D.Double(-5, -8));
             points.add(new Point2D.Double(-10, -9));
             game.addWall(new WallImpl(points, 0));
+
+            points.clear();
+            points.add(new Point2D.Double(-15, -15));
+            points.add(new Point2D.Double(-15, -18));
+            points.add(new Point2D.Double(-20, -19));
+            game.addWall(new WallImpl(points, 0, "metal"));
 
             RobotImpl robot = new RobotImpl("MR-BS-01", game, player1, new KPoint(15, 5), 0);
             ChassisImpl chassis = new ChassisImpl(300d);

@@ -89,7 +89,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     Node terrain;
     RobotModel robotModel;
     GroundModel groundModel;
-    RockModel rockModel;
+    WallModel wallModel;
     PlatformModel platformModel;
     CampModel campModel;
     ControllerModel controllerModel;
@@ -129,11 +129,11 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         sun = createSun();
         rootNode.addLight(sun);
 
-        rockModel = new RockModel(assetManager);
+        wallModel = new WallModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
             if (physical instanceof WallImpl) {
-                Spatial rock = rockModel.createRock((WallImpl) physical);
-                rootNode.attachChild(rock);
+                Spatial wall = wallModel.createWall((WallImpl) physical);
+                rootNode.attachChild(wall);
             }
         }
 
@@ -319,11 +319,12 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     private void updateStatics() {
         ArrayList<String> statics = new ArrayList<String>();
-        statics.add("rock");
+        statics.add("wall");
         statics.add("camp");
         statics.add("controller");
 
-        for (Spatial platform : ((Node) ((Node) rootNode).getChild("platforms")).getChildren()) {
+        // attach platforms to ground
+        for (Spatial platform : ((Node) rootNode.getChild("platforms")).getChildren()) {
             if (platform.getUserData("centerY") == null) {
                 if (land(platform)) {
                     platform.removeFromParent();
