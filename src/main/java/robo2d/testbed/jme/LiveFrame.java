@@ -401,7 +401,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
 //                    targetRobot != null ? targetRobot.getUid() : targetBase != null ? targetBase.getComputer().getName() : ""
-                    targetRobot != null ? targetRobot.getUid() : ""
+                    targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") : ""
             );
         }
     }
