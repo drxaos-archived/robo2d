@@ -3,10 +3,13 @@ package robo2d.game.box2d;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 import mxb.jts.triangulate.EarClipper;
+import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 import straightedge.geom.PolygonConverter;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PolygonUtil {
@@ -26,5 +29,16 @@ public class PolygonUtil {
             result.add(kPolygonTriangle);
         }
         return result;
+    }
+
+    public static void clockwise(List<Point2D> vertices) {
+        ArrayList<KPoint> kPoints = new ArrayList<KPoint>();
+        for (Point2D vertice : vertices) {
+            kPoints.add(new KPoint(vertice.getX(), vertice.getY()));
+        }
+        KPolygon polygon = new KPolygon(kPoints);
+        if (polygon.isCounterClockWise()) {
+            Collections.reverse(vertices);
+        }
     }
 }

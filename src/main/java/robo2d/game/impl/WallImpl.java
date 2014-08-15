@@ -2,6 +2,7 @@ package robo2d.game.impl;
 
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
+import robo2d.game.box2d.PolygonUtil;
 import robo2d.game.box2d.StaticBox;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -23,6 +24,7 @@ public class WallImpl implements Physical {
 
     public WallImpl(List<Point2D> vertices, double angle, String type) {
         this.type = type == null ? "rock" : type;
+        PolygonUtil.clockwise(vertices);
         this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
 
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();

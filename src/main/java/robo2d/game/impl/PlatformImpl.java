@@ -2,6 +2,7 @@ package robo2d.game.impl;
 
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
+import robo2d.game.box2d.PolygonUtil;
 import robo2d.game.box2d.StaticBox;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
@@ -17,6 +18,7 @@ public class PlatformImpl implements Physical {
     List<Point2D> vertices;
 
     public PlatformImpl(List<Point2D> vertices, double angle) {
+        PolygonUtil.clockwise(vertices);
         this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
 
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();

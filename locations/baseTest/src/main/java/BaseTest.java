@@ -35,7 +35,6 @@ public class BaseTest extends RobotTest {
             points.add(new Point2D.Double(0, 4));
             points.add(new Point2D.Double(2, 2));
             points.add(new Point2D.Double(2, -2));
-//            Collections.reverse(points);
             game.addPlatform(new PlatformImpl(points, 0));
 
             points.clear();
