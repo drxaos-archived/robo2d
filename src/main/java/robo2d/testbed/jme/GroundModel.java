@@ -36,7 +36,7 @@ public class GroundModel {
     }
 
     public Node createGround() {
-        TerrainGrid terrain = new TerrainGrid("grid", 65, 257, new GroundTileLoader(assetManager, game));
+        TerrainGrid terrain = new TerrainGrid("grid", 257, 257, new GroundTileLoader(assetManager, game));
         terrain.addListener(new TerrainGridListener() {
             @Override
             public void gridMoved(Vector3f vector3f) {

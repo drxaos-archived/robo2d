@@ -22,6 +22,7 @@ public class Game {
     protected List<PlatformImpl> platforms = new ArrayList<PlatformImpl>();
     protected List<RobotImpl> robots = new ArrayList<RobotImpl>();
     protected List<CampImpl> camps = new ArrayList<CampImpl>();
+    protected List<HelicopterImpl> helicopters = new ArrayList<HelicopterImpl>();
     protected List<ControllerImpl> controllers = new ArrayList<ControllerImpl>();
     protected PlayerImpl player;
 
@@ -49,6 +50,11 @@ public class Game {
     public void addCamp(CampImpl camp) {
         physicals.add(camp);
         camps.add(camp);
+    }
+
+    public void addHelicopter(HelicopterImpl helicopter) {
+        physicals.add(helicopter);
+        helicopters.add(helicopter);
     }
 
     public void addController(ControllerImpl controller) {
@@ -189,6 +195,10 @@ public class Game {
 
     public List<CampImpl> getCamps() {
         return camps;
+    }
+
+    public List<HelicopterImpl> getHelicopters() {
+        return helicopters;
     }
 
     private static class RayCastClosestCallback implements RayCastCallback {

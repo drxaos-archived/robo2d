@@ -28,6 +28,9 @@ public class BaseTest extends RobotTest {
 //            base.addLaptop(laptop);
             game.addCamp(base);
 
+            HelicopterImpl helicopter = new HelicopterImpl(player1, new KPoint(-10, 10), 0, "HC-33");
+            game.addHelicopter(helicopter);
+
             ControllerImpl controller = new ControllerImpl(player1, new KPoint(0, 0), 0, "TEST-CONTROL-1");
             CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
             cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");

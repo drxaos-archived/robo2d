@@ -83,6 +83,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     }
 
     Game game;
+    String startMessage = "Click and drag to look around";
 
     DirectionalLight sun;
     Node terrain;
@@ -91,6 +92,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     WallModel wallModel;
     PlatformModel platformModel;
     CampModel campModel;
+    HelicopterModel helicopterModel;
     ControllerModel controllerModel;
     Nifty nifty;
 
@@ -163,6 +165,12 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             rootNode.attachChild(base);
         }
 
+        helicopterModel = new HelicopterModel(assetManager);
+        for (HelicopterImpl helicopterImpl : game.getHelicopters()) {
+            Node helicopter = helicopterModel.createHelicopter(helicopterImpl.getPos(), helicopterImpl.getAngle().floatValue());
+            rootNode.attachChild(helicopter);
+        }
+
         controllerModel = new ControllerModel(assetManager);
         for (ControllerImpl controller : game.getControllers()) {
             Node cube = controllerModel.createCube(controller);
@@ -227,6 +235,12 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
                 }
             }
         }, "use");
+        inputManager.addListener(new ActionListener() {
+            @Override
+            public void onAction(String name, boolean keyPressed, float tpf) {
+                startMessage = null;
+            }
+        }, "FLYCAM_RotateDrag");
 
         /* Drop shadows */
         final int SHADOWMAP_SIZE = 2048;
@@ -392,9 +406,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         Element label = nifty.getCurrentScreen().findElementByName("label");
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
-                    game.getPlayer().getEntered() != null ? "You can connect to this device with your console" :
-                            targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") :
-                                    targetController != null ? (targetController.getUid() + "\n\nPress \"E\" to open") : ""
+                    startMessage != null ? startMessage :
+                            game.getPlayer().getEntered() != null ? "You can connect to this device with your console" :
+                                    targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") :
+                                            targetController != null ? (targetController.getUid() + "\n\nPress \"E\" to open") : ""
             );
         }
     }
