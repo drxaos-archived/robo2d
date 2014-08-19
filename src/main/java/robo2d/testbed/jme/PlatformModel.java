@@ -146,10 +146,6 @@ public class PlatformModel {
         mat.setTexture("ParallaxMap", tex);
         spatial.setMaterial(mat);
 
-        center = center.mul(1f / pointsCounter);
-        spatial.setUserData("centerZ", center.x);
-        spatial.setUserData("centerX", center.y);
-
         return spatial;
     }
 

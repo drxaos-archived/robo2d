@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LiveFrame extends SimpleApplication implements GroundObjectsControl {
+public class LiveFrame extends SimpleApplication {
 
     static {
         NativeLoader.load("build/natives");
@@ -135,16 +135,14 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             }
         }
 
-        groundModel = new GroundModel(this, assetManager, cam, game);
+        groundModel = new GroundModel(assetManager, cam, game);
         terrain = groundModel.createGround();
         rootNode.attachChild(terrain);
 
-        Node platforms = new Node("platforms");
         platformModel = new PlatformModel(assetManager);
         for (PlatformImpl platform : game.getPlatforms()) {
-            platforms.attachChild(platformModel.createPlatform(platform));
+            terrain.attachChild(platformModel.createPlatform(platform));
         }
-        rootNode.attachChild(platforms);
 
         robotModel = new RobotModel(assetManager);
         for (Physical physical : game.getPhysicals()) {
@@ -317,43 +315,6 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         updatePlayer();
     }
 
-    private void updateStatics() {
-        ArrayList<String> statics = new ArrayList<String>();
-        statics.add("wall");
-        statics.add("camp");
-        statics.add("controller");
-
-        // attach platforms to ground
-        for (Spatial platform : ((Node) rootNode.getChild("platforms")).getChildren()) {
-            if (platform.getUserData("centerY") == null) {
-                if (land(platform)) {
-                    platform.removeFromParent();
-                    terrain.attachChild(platform);
-                }
-            }
-        }
-
-        for (Spatial spatial : rootNode.getChildren()) {
-            if (statics.contains(spatial.getName()) && spatial.getUserData("centerY") == null) {
-                land(spatial);
-            }
-        }
-    }
-
-    private boolean land(Spatial spatial) {
-        float z = spatial.getUserData("centerZ");
-        float x = spatial.getUserData("centerX");
-        try {
-            Vector3f terrainPoint = getTerrainPoint(x, z, true);
-            spatial.setLocalTranslation(spatial.getLocalTranslation().getX(), terrainPoint.getY(), spatial.getLocalTranslation().getZ());
-            spatial.setUserData("centerY", terrainPoint.getY());
-            return true;
-        } catch (TerrainNotFoundException e) {
-            // wait more
-        }
-        return false;
-    }
-
     private boolean isSceneRendered() {
         try {
             getTerrainPoint(cam.getLocation().getX(), cam.getLocation().getZ());
@@ -457,10 +418,5 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(1f));
         return al;
-    }
-
-    @Override
-    public void onTerrainLoaded() {
-        updateStatics();
     }
 }

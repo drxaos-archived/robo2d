@@ -54,9 +54,6 @@ public class ControllerModel {
         node.setLocalRotation(new Quaternion().fromAngleAxis((float) angle, Vector3f.UNIT_Y));
         node.setLocalTranslation((float) pos.getY(), 0, (float) pos.getX());
 
-        node.setUserData("centerZ", node.getWorldTranslation().getZ());
-        node.setUserData("centerX", node.getWorldTranslation().getX());
-
         return node;
     }
 
