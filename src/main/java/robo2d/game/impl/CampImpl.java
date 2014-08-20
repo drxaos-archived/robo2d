@@ -13,7 +13,6 @@ public class CampImpl implements Physical {
 
     public static final float SIZE = 6;
 
-    String name;
     StaticBox box;
     KPoint pos;
     float angle;
@@ -26,8 +25,7 @@ public class CampImpl implements Physical {
         return (double) angle;
     }
 
-    public CampImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
-        this.name = name;
+    public CampImpl(KPoint pos, float angle) {
         this.pos = pos;
         this.angle = angle;
 

@@ -18,11 +18,11 @@ public class WallImpl implements Physical {
     List<Point2D> vertices;
     String type;
 
-    public WallImpl(List<Point2D> vertices, double angle) {
-        this(vertices, angle, null);
+    public WallImpl(List<Point2D> vertices) {
+        this(vertices, null);
     }
 
-    public WallImpl(List<Point2D> vertices, double angle, String type) {
+    public WallImpl(List<Point2D> vertices, String type) {
         this.type = type == null ? "rock" : type;
         PolygonUtil.clockwise(vertices);
         this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
@@ -32,7 +32,7 @@ public class WallImpl implements Physical {
             kPoints.add(new KPoint(vertice.getX(), vertice.getY()));
         }
 
-        box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), angle);
+        box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), 0);
     }
 
     public String getType() {

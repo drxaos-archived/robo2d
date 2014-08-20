@@ -24,7 +24,7 @@ public class MoveTest extends RobotTest {
         points.add(new Point2D.Double(17, 13));
         points.add(new Point2D.Double(10, 0));
 
-        game.addWall(new WallImpl(points, Math.PI * 0.01));
+        game.addWall(new WallImpl(points));
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(-15, 15), 0);
         game.addPlayer(player1);

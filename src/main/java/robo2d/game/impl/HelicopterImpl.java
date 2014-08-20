@@ -13,7 +13,6 @@ public class HelicopterImpl implements Physical {
 
     public static final float SIZE = 6;
 
-    String name;
     StaticBox box;
     KPoint pos;
     float angle;
@@ -26,8 +25,7 @@ public class HelicopterImpl implements Physical {
         return (double) angle - FastMath.PI / 2;
     }
 
-    public HelicopterImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
-        this.name = name;
+    public HelicopterImpl(KPoint pos, float angle) {
         this.pos = pos;
         this.angle = angle + FastMath.PI / 2;
 

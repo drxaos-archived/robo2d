@@ -27,14 +27,14 @@ public class WayTest extends RobotTest {
         points.add(new Point2D.Double(w / 2, -(h * 2 + sp) / 2 + h));
         points.add(new Point2D.Double(-w / 2, -(h * 2 + sp) / 2 + h));
         Collections.reverse(points);
-        game.addWall(new WallImpl(points, 0));
+        game.addWall(new WallImpl(points));
 
         points.clear();
         points.add(new Point2D.Double(-w / 2, (h * 2 + sp) / 2));
         points.add(new Point2D.Double(w / 2, (h * 2 + sp) / 2));
         points.add(new Point2D.Double(w / 2, (h * 2 + sp) / 2 - h));
         points.add(new Point2D.Double(-w / 2, (h * 2 + sp) / 2 - h));
-        game.addWall(new WallImpl(points, 0));
+        game.addWall(new WallImpl(points));
 
         PlayerImpl player1 = new PlayerImpl("player1", new KPoint(0, 0), 0);
         game.addPlayer(player1);

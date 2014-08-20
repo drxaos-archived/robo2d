@@ -20,7 +20,7 @@ public class BaseTest extends RobotTest {
             PlayerImpl player1 = new PlayerImpl("player1", new KPoint(5, 5), FastMath.PI / 4 * 5);
             game.addPlayer(player1);
 
-            CampImpl base = new CampImpl(player1, new KPoint(5, 5), FastMath.PI / 4, "BP-501");
+            CampImpl base = new CampImpl(new KPoint(5, 5), FastMath.PI / 4, "BP-501");
 //            LaptopImpl laptop = new LaptopImpl("LP-501");
 //            laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
 //            laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
@@ -28,7 +28,7 @@ public class BaseTest extends RobotTest {
 //            base.addLaptop(laptop);
             game.addCamp(base);
 
-            HelicopterImpl helicopter = new HelicopterImpl(player1, new KPoint(-10, 10), 0, "HC-33");
+            HelicopterImpl helicopter = new HelicopterImpl(new KPoint(-10, 10), 0, "HC-33");
             game.addHelicopter(helicopter);
 
             ControllerImpl controller = new ControllerImpl(player1, new KPoint(0, 0), 0, "TEST-CONTROL-1");

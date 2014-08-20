@@ -17,7 +17,7 @@ public class PlatformImpl implements Physical {
     StaticBox box;
     List<Point2D> vertices;
 
-    public PlatformImpl(List<Point2D> vertices, double angle) {
+    public PlatformImpl(List<Point2D> vertices) {
         PolygonUtil.clockwise(vertices);
         this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
 
@@ -26,7 +26,7 @@ public class PlatformImpl implements Physical {
             kPoints.add(new KPoint(vertice.getX(), vertice.getY()));
         }
 
-        box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), angle);
+        box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), 0);
     }
 
     public List<Point2D> getVertices() {
