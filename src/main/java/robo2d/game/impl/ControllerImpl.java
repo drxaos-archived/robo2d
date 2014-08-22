@@ -10,7 +10,7 @@ import straightedge.geom.KPolygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class ControllerImpl implements Physical, Enterable, Host {
+public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
 
     public static final float SIZE = 6;
 

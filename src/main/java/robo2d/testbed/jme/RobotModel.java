@@ -23,11 +23,13 @@ public class RobotModel {
     float scaleW, scaleL, scaleH;
 
     protected Node createRobot(RobotImpl robot) {
+        Node node;
         if (robot.getUid().startsWith("AGR")) {
-            return createRobotAgr();
+            node = createRobotAgr();
         } else {
-            return createRobot();
+            node = createRobot();
         }
+        return node;
     }
 
     protected Node createRobot() {

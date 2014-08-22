@@ -20,6 +20,7 @@ public class Robot {
 
     public void debug(String msg) {
         io.set("debug", msg);
+        System.out.println(msg);
     }
 
     public <T> T getDevice(Class<T> type) {

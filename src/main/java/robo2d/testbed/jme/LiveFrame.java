@@ -32,6 +32,8 @@ import robo2d.game.Game;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
+import robo2d.game.impl.dynamics.DoorImpl;
+import robo2d.testbed.jme.dynamics.DoorModel;
 import slick2d.NativeLoader;
 
 import java.awt.*;
@@ -90,6 +92,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
     RobotModel robotModel;
     GroundModel groundModel;
     WallModel wallModel;
+    DoorModel doorModel;
     PlatformModel platformModel;
     CampModel campModel;
     HelicopterModel helicopterModel;
@@ -102,6 +105,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     HashMap<RobotImpl, Node> robotMap = new HashMap<RobotImpl, Node>();
     HashMap<ControllerImpl, Node> controllerMap = new HashMap<ControllerImpl, Node>();
+    HashMap<DoorImpl, Node> doorMap = new HashMap<DoorImpl, Node>();
     java.util.List<WallImpl> walls = new ArrayList<WallImpl>();
 
     public LiveFrame(Game game) {
@@ -134,6 +138,15 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             if (physical instanceof WallImpl) {
                 Spatial wall = wallModel.createWall((WallImpl) physical);
                 rootNode.attachChild(wall);
+            }
+        }
+
+        doorModel = new DoorModel(assetManager);
+        for (Physical physical : game.getPhysicals()) {
+            if (physical instanceof DoorImpl) {
+                Node door = doorModel.createDoor((DoorImpl) physical);
+                doorMap.put((DoorImpl) physical, door);
+                rootNode.attachChild(door);
             }
         }
 
@@ -329,11 +342,13 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         }
         updateRobots();
         updatePlayer();
+        updateDoors();
     }
 
     private void updateStatics() {
         ArrayList<String> statics = new ArrayList<String>();
         statics.add("wall");
+        statics.add("door");
         statics.add("camp");
         statics.add("controller");
         statics.add("helicopter");
@@ -399,7 +414,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         } else if (entered instanceof ControllerImpl) {
             Node node = controllerMap.get(entered);
             getCamera().setLocation(node.getChild("player").getWorldTranslation());
-            getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(0.4f)), Vector3f.UNIT_Y);
+            getCamera().lookAt(node.getWorldTranslation().add(Vector3f.UNIT_Y.mult(1.1f)), Vector3f.UNIT_Y);
         }
 
         targetRobot = getTargetRobot(cam, getCamera().getDirection());
@@ -423,10 +438,17 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
             float angle = (float) e.getKey().getBox().getAngle() + FastMath.PI;
             Node node = e.getValue();
             moveRobot(e.getKey().getUid(), x, z, angle, node);
-            ChassisImpl chassis = (ChassisImpl) e.getKey().getChassis();
+            ChassisImpl chassis = e.getKey().getChassis();
             if (chassis != null && chassis.isWorking()) {
                 robotModel.animateChassis(node);
             }
+        }
+    }
+
+    private void updateDoors() {
+        for (Map.Entry<DoorImpl, Node> e : doorMap.entrySet()) {
+            int elevation = e.getKey().getElevation();
+            e.getValue().getChild("door").setLocalTranslation(0, -1.0f * (100 - elevation) / 100 * 2.9f, 0);
         }
     }
 

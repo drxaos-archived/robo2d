@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RobotImpl implements Physical, Enterable, Host {
+public class RobotImpl implements Physical, Enterable, Host, Dynamic {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();

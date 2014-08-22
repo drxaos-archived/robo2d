@@ -27,7 +27,7 @@ public class ControllerModel {
 
         if (cubeModel1 == null) {
 
-            Box box1 = new Box(0.5f, 0.5f, 0.5f);
+            Box box1 = new Box(0.5f, 1.2f, 0.5f);
             cubeModel1 = new Geometry("Box", box1);
             cubeModel1.setLocalTranslation(new Vector3f(0, 0.5f - 0.01f, 0));
 //            Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -47,7 +47,7 @@ public class ControllerModel {
 
         {
             Node player = new Node("player");
-            player.setLocalTranslation(-1.5f, 1.0f, 0f);
+            player.setLocalTranslation(0f, 1.3f, 1.5f);
             node.attachChild(player);
         }
 

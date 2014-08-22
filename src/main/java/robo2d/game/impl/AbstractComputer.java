@@ -13,7 +13,7 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractComputer {
+public class AbstractComputer implements Dynamic {
 
     String cid = "" + (long) (Math.random() * 1000000000);
 

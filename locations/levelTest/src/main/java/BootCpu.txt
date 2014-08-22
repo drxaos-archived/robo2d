@@ -1,0 +1,14 @@
+import com.robotech.military.api.*;
+
+public class Boot implements Program {
+
+    Robot robot;
+
+    @Override
+    public void run(Robot robot) {
+        this.robot = robot;
+        Direct d = robot.getDevice(Direct.class);
+
+        d.set("door-helipad/control", "open");
+    }
+}

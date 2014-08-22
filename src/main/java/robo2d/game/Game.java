@@ -12,6 +12,7 @@ import org.jbox2d.dynamics.World;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
+import robo2d.game.impl.dynamics.DoorImpl;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Game {
     protected List<CampImpl> camps = new ArrayList<CampImpl>();
     protected List<HelicopterImpl> helicopters = new ArrayList<HelicopterImpl>();
     protected List<ControllerImpl> controllers = new ArrayList<ControllerImpl>();
+    protected List<Dynamic> dynamics = new ArrayList<Dynamic>();
     protected PlayerImpl player;
 
     Object stepSync = new Object();
@@ -90,6 +92,11 @@ public class Game {
         platforms.add(platform);
     }
 
+    public void addDoor(DoorImpl door) {
+        physicals.add(door);
+        dynamics.add(door);
+    }
+
     public void start() {
         for (Physical physical : physicals) {
             Body body = worldBox.createBody(physical.getBox().bodyDef);
@@ -97,6 +104,11 @@ public class Game {
                 body.createFixture(fixtureDef);
             }
             physical.getBox().body = body;
+        }
+
+        for (Dynamic dynamic : dynamics) {
+            dynamic.init();
+            dynamic.update();
         }
 
         // Start programs
@@ -137,6 +149,9 @@ public class Game {
         }
         for (ControllerImpl controller : controllers) {
             controller.update();
+        }
+        for (Dynamic dynamic : dynamics) {
+            dynamic.update();
         }
         managePrograms();
         applyEffects();
