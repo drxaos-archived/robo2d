@@ -336,6 +336,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         statics.add("wall");
         statics.add("camp");
         statics.add("controller");
+        statics.add("helicopter");
 
         // attach platforms to ground
         for (Spatial platform : ((Node) rootNode.getChild("platforms")).getChildren()) {

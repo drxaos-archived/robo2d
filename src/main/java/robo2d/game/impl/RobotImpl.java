@@ -1,5 +1,6 @@
 package robo2d.game.impl;
 
+import com.jme3.math.FastMath;
 import com.robotech.military.api.Point;
 import robo2d.game.Game;
 import robo2d.game.box2d.Box;
@@ -34,7 +35,7 @@ public class RobotImpl implements Physical, Enterable, Host {
         this.uid = uid;
         this.owner = owner;
         this.game = game;
-        box = new RobotBox(uid, position, angle);
+        box = new RobotBox(uid, position, angle - FastMath.PI / 2);
     }
 
     public <T extends EquipmentImpl> T getEquipment(Class<T> type) {

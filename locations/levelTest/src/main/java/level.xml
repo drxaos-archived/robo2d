@@ -1,0 +1,12 @@
+<map name="map">
+    <area shape="poly" coords="211, 230, 216, 279, 227, 277, 222, 227" title="door" />
+    <area shape="poly" coords="210, 280, 236, 276, 249, 400, 394, 388, 399, 410, 72, 439, 71, 423, 222, 404" title="wall2" />
+    <area shape="poly" coords="37, 94, 366, 68, 367, 84, 215, 102, 231, 227, 204, 232, 191, 108, 40, 117" title="wall1" />
+    <area shape="poly" coords="24, 225, 152, 206, 173, 381, 45, 400" title="platform" />
+    <area shape="vector" coords="135, 167, 120, 185" title="camp" />
+    <area shape="vector" coords="47, 245, 63, 242" title="robot" />
+    <area shape="vector" coords="314, 365, 356, 359" title="truck" />
+    <area shape="vector" coords="237, 218, 253, 217" title="cpu" />
+    <area shape="vector" coords="426, 211, 443, 242" title="helicopter" />
+    <area shape="vector" coords="398, 221, 381, 225" title="player" />
+</map>

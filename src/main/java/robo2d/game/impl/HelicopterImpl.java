@@ -27,30 +27,18 @@ public class HelicopterImpl implements Physical {
 
     public HelicopterImpl(KPoint pos, float angle) {
         this.pos = pos;
-        this.angle = angle + FastMath.PI / 2;
+        this.angle = angle + FastMath.PI;
 
         ArrayList<KPoint> kPoints = new ArrayList<KPoint>();
 
-        kPoints.add(new KPoint(2f, 3f));
-
-        kPoints.add(new KPoint(2f, 0.8f));
-        kPoints.add(new KPoint(3.4f, 0.8f));
-        kPoints.add(new KPoint(3.4f, -0.8f));
-        kPoints.add(new KPoint(2f, -0.8f));
-
-        kPoints.add(new KPoint(2f, -3f));
+        kPoints.add(new KPoint(1.5f, 3f));
+        kPoints.add(new KPoint(1.5f, -3f));
         kPoints.add(new KPoint(-2f, -3f));
-
-        kPoints.add(new KPoint(-2f, -0.8f));
-        kPoints.add(new KPoint(-3.4f, -0.8f));
-        kPoints.add(new KPoint(-3.4f, 0.8f));
-        kPoints.add(new KPoint(-2f, 0.8f));
-
         kPoints.add(new KPoint(-2f, 3f));
         KPolygon polygon = new KPolygon(kPoints);
         //polygon.scale(SIZE * 0.05);
 
-        box = new StaticBox(polygon, pos, angle);
+        box = new StaticBox(polygon, pos, angle + FastMath.PI / 2);
     }
 
     @Override

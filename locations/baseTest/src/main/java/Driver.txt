@@ -33,6 +33,10 @@ public class Driver {
         }
     }
 
+    public boolean move(double x, double y) {
+        return move(new Point((float)x, (float)y), 100000);
+    }
+
     public boolean move(Point to, int maxMs) {
         long end = System.currentTimeMillis() + maxMs;
         while (System.currentTimeMillis() < end) {

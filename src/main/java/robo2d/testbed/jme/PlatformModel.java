@@ -31,16 +31,17 @@ public class PlatformModel {
 
         Node node = new Node("platform");
 
-        final float H = 2.0f;
+        final float H = 1.0f;
+        final float BW = 4.0f;
 
         for (int i = 0; i < triangulation.size(); i++) {
             ArrayList<KPoint> points = triangulation.get(i).getPoints();
 
             Mesh mesh = new Mesh();
             Vector3f[] vertices = new Vector3f[3];
-            vertices[0] = new Vector3f((float) points.get(0).getY(), H / 10, (float) points.get(0).getX());
-            vertices[1] = new Vector3f((float) points.get(1).getY(), H / 10, (float) points.get(1).getX());
-            vertices[2] = new Vector3f((float) points.get(2).getY(), H / 10, (float) points.get(2).getX());
+            vertices[0] = new Vector3f((float) points.get(0).getY(), H * 3 / 10, (float) points.get(0).getX());
+            vertices[1] = new Vector3f((float) points.get(1).getY(), H * 3 / 10, (float) points.get(1).getX());
+            vertices[2] = new Vector3f((float) points.get(2).getY(), H * 3 / 10, (float) points.get(2).getX());
 
             Vector2f[] texCoord = new Vector2f[3];
             texCoord[0] = new Vector2f((float) points.get(0).getY(), (float) points.get(0).getX());
@@ -103,10 +104,10 @@ public class PlatformModel {
             // a0 > a1 > a2
             double a01 = (a0 + a1) / 2;
             double a12 = (a1 + a2) / 2;
-            vertices[0] = new Vector3f((float) v1.getY() + FastMath.sin((float) a01) * 2, -H * 9 / 10, (float) v1.getX() + FastMath.cos((float) a01) * 2);
-            vertices[1] = new Vector3f((float) v2.getY() + FastMath.sin((float) a12) * 2, -H * 9 / 10, (float) v2.getX() + FastMath.cos((float) a12) * 2);
-            vertices[2] = new Vector3f((float) v2.getY(), H * 1 / 10, (float) v2.getX());
-            vertices[3] = new Vector3f((float) v1.getY(), H * 1 / 10, (float) v1.getX());
+            vertices[0] = new Vector3f((float) v1.getY() + FastMath.sin((float) a01) * BW, -H * 7 / 10, (float) v1.getX() + FastMath.cos((float) a01) * BW);
+            vertices[1] = new Vector3f((float) v2.getY() + FastMath.sin((float) a12) * BW, -H * 7 / 10, (float) v2.getX() + FastMath.cos((float) a12) * BW);
+            vertices[2] = new Vector3f((float) v2.getY(), H * 3 / 10, (float) v2.getX());
+            vertices[3] = new Vector3f((float) v1.getY(), H * 3 / 10, (float) v1.getX());
 
             Vector2f[] texCoord = new Vector2f[4];
             texCoord[0] = new Vector2f(0, 0);

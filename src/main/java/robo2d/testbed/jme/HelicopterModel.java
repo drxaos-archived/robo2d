@@ -44,10 +44,10 @@ public class HelicopterModel {
                 }
             }
             scaleW = 6.2f / Math.max(left, Math.abs(right));
-            scaleL = 9.7f / Math.max(front, Math.abs(back));
+            scaleL = 4.7f / Math.max(front, Math.abs(back));
             scaleH = 4.2f / Math.max(top, Math.abs(bottom));
             heliModel1.setLocalScale(scaleW, scaleH, scaleL);
-            heliModel1.setLocalTranslation((right + left) / -2 * scaleW + 0.8f, bottom / -2 * scaleH + 3.8f, (front + back) / -2 * scaleL - 0.8f);
+            heliModel1.setLocalTranslation((right + left) / -2 * scaleW + 0.8f, bottom / -2 * scaleH, (front + back) / -2 * scaleL - 0.8f);
             heliModel1.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         }
         Node node = new Node("helicopter");
