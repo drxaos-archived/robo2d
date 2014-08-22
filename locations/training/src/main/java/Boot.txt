@@ -1,0 +1,21 @@
+import com.robotech.military.api.*;
+
+public class Boot implements Program {
+
+    Robot robot;
+    Chassis chassis;
+    Radar radar;
+
+    @Override
+    public void run(Robot robot) {
+        this.robot = robot;
+        chassis = robot.getDevice(Chassis.class);
+        radar = robot.getDevice(Radar.class);
+
+        Driver driver = new Driver(robot);
+        while (true) {
+            driver.sleep(5000);
+            driver.move(new Point((float) (15 + (Math.random() * 20)), (float) (15 + (Math.random() * 20))), 50000);
+        }
+    }
+}

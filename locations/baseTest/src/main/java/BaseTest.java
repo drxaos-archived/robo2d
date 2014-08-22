@@ -20,7 +20,7 @@ public class BaseTest extends RobotTest {
             PlayerImpl player1 = new PlayerImpl("player1", new KPoint(5, 5), FastMath.PI / 4 * 5);
             game.addPlayer(player1);
 
-            CampImpl base = new CampImpl(new KPoint(5, 5), FastMath.PI / 4, "BP-501");
+            CampImpl base = new CampImpl(new KPoint(5, 5), FastMath.PI / 4);
 //            LaptopImpl laptop = new LaptopImpl("LP-501");
 //            laptop.saveFile("README.TXT", "RoboTech Inc. Personal Laptop #LP-501");
 //            laptop.saveFile("Cams.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Cams.txt")));
@@ -28,7 +28,7 @@ public class BaseTest extends RobotTest {
 //            base.addLaptop(laptop);
             game.addCamp(base);
 
-            HelicopterImpl helicopter = new HelicopterImpl(new KPoint(-10, 10), 0, "HC-33");
+            HelicopterImpl helicopter = new HelicopterImpl(new KPoint(-10, 10), 0);
             game.addHelicopter(helicopter);
 
             ControllerImpl controller = new ControllerImpl(player1, new KPoint(0, 0), 0, "TEST-CONTROL-1");
@@ -44,19 +44,19 @@ public class BaseTest extends RobotTest {
             points.add(new Point2D.Double(0, 4));
             points.add(new Point2D.Double(2, 2));
             points.add(new Point2D.Double(2, -2));
-            game.addPlatform(new PlatformImpl(points, 0));
+            game.addPlatform(new PlatformImpl(points));
 
             points.clear();
             points.add(new Point2D.Double(-5, -5));
             points.add(new Point2D.Double(-5, -8));
             points.add(new Point2D.Double(-10, -9));
-            game.addWall(new WallImpl(points, 0));
+            game.addWall(new WallImpl(points));
 
             points.clear();
             points.add(new Point2D.Double(-15, -15));
             points.add(new Point2D.Double(-15, -18));
             points.add(new Point2D.Double(-20, -19));
-            game.addWall(new WallImpl(points, 0, "metal"));
+            game.addWall(new WallImpl(points, "metal"));
 
             RobotImpl robot = new RobotImpl("MR-BS-01", game, player1, new KPoint(15, 5), 0);
             ChassisImpl chassis = new ChassisImpl(300d);

@@ -16,17 +16,19 @@ import java.util.Map;
 
 public class MapParser {
     public static class MapDesc {
-        public Map<String, MapObject> objects = new HashMap<String, MapObject>();
+        public Map<String, MapVector> vectors = new HashMap<String, MapVector>();
         public Map<String, MapPolygon> polygons = new HashMap<String, MapPolygon>();
     }
 
-    public static class MapObject {
-        public float x, y, r;
+    public static class MapVector {
+        public float x1, y1, x2, y2, r;
 
-        MapObject(float x, float y, float r) {
-            this.x = x;
-            this.y = y;
-            this.r = r;
+        MapVector(float x1, float y1, float x2, float y2) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+            this.r = (float) KPoint.findAngle(x1, y1, x2, y2);
         }
     }
 
@@ -74,11 +76,10 @@ public class MapParser {
                         float y = Float.parseFloat(split[1].trim());
                         float x2 = Float.parseFloat(split[2].trim());
                         float y2 = Float.parseFloat(split[3].trim());
-                        double angle = KPoint.findAngle(x, -y, x2, -y2);
-                        if (mapDesc.objects.containsKey(name)) {
+                        if (mapDesc.vectors.containsKey(name)) {
                             System.out.println("Duplicate " + type + ": " + name);
                         }
-                        mapDesc.objects.put(name, new MapObject(x * scale, -y * scale, (float) angle));
+                        mapDesc.vectors.put(name, new MapVector(x * scale, -y * scale, x2 * scale, -y2 * scale));
                     } else {
                         System.out.println("Unknown type: " + type);
                     }

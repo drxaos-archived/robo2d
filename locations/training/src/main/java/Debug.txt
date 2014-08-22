@@ -1,0 +1,26 @@
+import com.robotech.military.api.Program;
+import com.robotech.military.api.Robot;
+import com.robotech.military.internal.LocalConnection;
+
+public class Debug {
+
+    private Debug() {
+    }
+
+    public static void debug() {
+        LocalConnection localConnection = new LocalConnection("debug");
+        Robot robot = new Robot(localConnection);
+        try {
+            Program boot = (Program) Class.forName("Boot").newInstance();
+            boot.run(robot);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        try {
+            localConnection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}

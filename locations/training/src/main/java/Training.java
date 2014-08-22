@@ -10,53 +10,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-class GraphingData extends JPanel {
-
-    MapParser.MapDesc mapDesc;
-
-    GraphingData(MapParser.MapDesc mapDesc) {
-        this.mapDesc = mapDesc;
-    }
-
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        int w = getWidth();
-        int h = getHeight();
-
-        g2.setPaint(Color.BLACK);
-        for (MapParser.MapPolygon polygon : mapDesc.polygons.values()) {
-            int[] x = new int[polygon.points.size()], y = new int[polygon.points.size()];
-            for (int i = 0; i < polygon.points.size(); i++) {
-                x[i] = (int) (polygon.points.get(i).getX() * 10 + 100);
-                y[i] = (int) (polygon.points.get(i).getY() * -10 + 100);
-            }
-            g2.drawPolygon(x, y, x.length);
-        }
-        for (MapParser.MapObject mapObject : mapDesc.objects.values()) {
-            g2.drawLine((int) (mapObject.x * 10 + 100), (int) (mapObject.y * -10 + 100), (int) (mapObject.x * 10 + 100 + Math.cos(mapObject.r) * 20), (int) (mapObject.y * -10 + 100 - Math.sin(mapObject.r) * 20));
-            g2.drawOval((int) (mapObject.x * 10 + 100 - 10), (int) (mapObject.y * -10 + 100 - 10), 20, 20);
-        }
-    }
-
-}
-
 public class LevelTest extends RobotTest {
 
     @Override
     public Game createGame() {
         try {
             Game game = new Game(getWorld(), getDebugDraw());
-            MapParser.MapDesc mapDesc = MapParser.parseXml("locations/levelTest/src/main/java/level.xml", 0.1f);
-
-//            JFrame f = new JFrame();
-//            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//            f.add(new GraphingData(mapDesc));
-//            f.setSize(1000, 1000);
-//            f.setLocation(5, 5);
-//            f.setVisible(true);
+            MapParser.MapDesc mapDesc = MapParser.parseXml("locations/levelTest/src/main/java/arrival.xml", 0.1f);
 
             MapParser.MapObject player = mapDesc.objects.get("player");
             PlayerImpl playerImpl = new PlayerImpl("player1", new KPoint(player.x, player.y), player.r);

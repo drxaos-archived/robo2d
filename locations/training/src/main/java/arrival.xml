@@ -1,0 +1,47 @@
+<map name="map">
+    <area shape="poly" coords="439, 412, 434, 258, 459, 256, 461, 416" title="gate2"/>
+    <area shape="poly" coords="431, 117, 434, 256, 459, 256, 455, 115" title="gate1"/>
+    <area shape="poly" coords="47, 266, 50, 435, 241, 434, 237, 262" title="platform"/>
+    <area shape="poly" coords="128, 171, 129, 176, 179, 173, 179, 169" title="door-training"/>
+    <area shape="poly" coords="279, 431, 280, 465, 286, 465, 285, 431" title="door-helipad"/>
+    <area shape="poly"
+          coords="462, 323, 476, 324, 476, 532, 26, 533, 22, 29, 472, 23, 474, 211, 460, 213, 456, 34, 427, 35, 431, 217, 419, 217, 416, 40, 37, 43, 37, 170, 127, 168, 130, 181, 37, 187, 43, 521, 277, 517, 275, 466, 296, 467, 295, 520, 429, 516, 423, 334, 288, 339, 294, 430, 276, 431, 269, 173, 178, 177, 179, 165, 284, 163, 289, 325, 434, 322, 440, 516, 466, 516"
+          title="wall"/>
+    <area shape="circle" coords="370, 259, 18" title="base2"/>
+    <area shape="circle" coords="331, 113, 19" title="base1"/>
+    <area shape="circle" coords="237, 209, 16" title="base3"/>
+    <area shape="vector" coords="72, 210, 72, 215" title="cpu-training"/>
+    <area shape="vector" coords="592, 45, 592, 48" title="agr2-wp1"/>
+    <area shape="vector" coords="640, 462, 642, 455" title="agr2-wp2"/>
+    <area shape="vector" coords="691, 503, 687, 503" title="agr6-wp2"/>
+    <area shape="vector" coords="710, 257, 710, 265" title="agr6-wp1"/>
+    <area shape="vector" coords="154, 307, 159, 309" title="agr4-wp4"/>
+    <area shape="vector" coords="130, 339, 131, 350" title="agr3-wp4"/>
+    <area shape="vector" coords="170, 94, 170, 100" title="agr4-wp3"/>
+    <area shape="vector" coords="154, 60, 153, 65" title="agr3-wp3"/>
+    <area shape="vector" coords="372, 72, 365, 71" title="agr3-wp2"/>
+    <area shape="vector" coords="276, 84, 270, 85" title="agr4-wp2"/>
+    <area shape="vector" coords="345, 292, 343, 288" title="agr4-wp1"/>
+    <area shape="vector" coords="400, 233, 398, 227" title="agr3-wp1"/>
+    <area shape="vector" coords="517, 461, 521, 450" title="agr6"/>
+    <area shape="vector" coords="593, 416, 598, 422" title="agr5"/>
+    <area shape="vector" coords="663, 159, 663, 150" title="agr2"/>
+    <area shape="vector" coords="556, 99, 555, 106" title="agr1"/>
+    <area shape="vector" coords="552, 288, 540, 286" title="agr4"/>
+    <area shape="vector" coords="522, 218, 513, 221" title="agr3"/>
+    <area shape="vector" coords="312, 305, 311, 290" title="robot"/>
+    <area shape="vector" coords="355, 231, 365, 249" title="cpu2"/>
+    <area shape="vector" coords="336, 143, 332, 122" title="cpu1"/>
+    <area shape="vector" coords="352, 184, 363, 206" title="truck4"/>
+    <area shape="vector" coords="237, 128, 265, 132" title="truck3"/>
+    <area shape="vector" coords="81, 131, 113, 131" title="truck2"/>
+    <area shape="vector" coords="81, 73, 112, 73" title="truck1"/>
+    <area shape="vector" coords="259, 184, 242, 201" title="cpu3"/>
+    <area shape="vector" coords="85, 224, 103, 230" title="camp4"/>
+    <area shape="vector" coords="80, 481, 82, 461" title="camp3"/>
+    <area shape="vector" coords="146, 477, 146, 463" title="camp2"/>
+    <area shape="vector" coords="209, 478, 209, 462" title="camp1"/>
+    <area shape="vector" coords="306, 473, 313, 473" title="cpu-helipad"/>
+    <area shape="vector" coords="354, 375, 385, 375" title="helicopter"/>
+    <area shape="vector" coords="404, 472, 392, 450" title="player"/>
+</map>
