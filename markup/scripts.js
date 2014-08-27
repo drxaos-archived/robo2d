@@ -2307,12 +2307,13 @@ function SummerHtmlImageMapCreator() {
                 str += ', ';
             }
         }
-        return '<area shape="poly" coords="'
+        return '<area shape="poly"'
+            + (this.title ? ' title="' + this.title + '"' : '')
+            + ' coords="'
             + str
             + '"'
             + (this.href ? ' href="' + this.href + '"' : '')
             + (this.alt ? ' alt="' + this.alt + '"' : '')
-            + (this.title ? ' title="' + this.title + '"' : '')
             + ' />';
     };
 
@@ -2534,7 +2535,9 @@ function SummerHtmlImageMapCreator() {
     }
 
     Vector.prototype.toString = function () { //to html map area code
-        return '<area shape="vector" coords="'
+        return '<area shape="vector"'
+            + (this.title ? ' title="' + this.title + '"' : '')
+            + ' coords="'
             + this.params.x1 + ', '
             + this.params.y1 + ', '
             + this.params.x2 + ', '
@@ -2542,7 +2545,6 @@ function SummerHtmlImageMapCreator() {
             + '"'
             + (this.href ? ' href="' + this.href + '"' : '')
             + (this.alt ? ' alt="' + this.alt + '"' : '')
-            + (this.title ? ' title="' + this.title + '"' : '')
             + ' />';
     };
 

@@ -1,10 +1,11 @@
+import org.apache.commons.io.FileUtils;
 import robo2d.game.Game;
-import robo2d.game.impl.PlatformImpl;
-import robo2d.game.impl.PlayerImpl;
-import robo2d.game.impl.WallImpl;
+import robo2d.game.impl.*;
 import robo2d.game.impl.dynamics.DoorImpl;
 import robo2d.game.levels.MapParser;
 import robo2d.testbed.RobotTest;
+
+import java.io.File;
 
 public class Training extends RobotTest {
 
@@ -18,54 +19,86 @@ public class Training extends RobotTest {
             PlayerImpl playerImpl = new PlayerImpl("player1", player.point(), player.angle());
             game.addPlayer(playerImpl);
 
-//            MapParser.MapObject camp = mapDesc.objects.get("camp");
-//            KPoint center = CampImpl.polygon.getCenter();
-//            CampImpl campImpl = new CampImpl(new KPoint(camp.x, camp.y), camp.r);
-//            game.addCamp(campImpl);
-//
-//            MapParser.MapObject helicopter = mapDesc.objects.get("helicopter");
-//            HelicopterImpl helicopterImpl = new HelicopterImpl(new KPoint(helicopter.x, helicopter.y), helicopter.r);
-//            game.addHelicopter(helicopterImpl);
-//
-//            MapParser.MapObject controller = mapDesc.objects.get("cpu");
-//            ControllerImpl controllerImpl = new ControllerImpl(playerImpl, new KPoint(controller.x, controller.y), controller.r, "TEST-CONTROL-1");
-//            CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
-//            cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
-//            controllerImpl.addCpu(cpu);
-//            game.addController(controllerImpl);
-//
-            MapParser.MapPolygon platform = mapDesc.polygons.get("platform");
-            game.addPlatform(new PlatformImpl(platform.points));
+            {
+                MapParser.MapVector helicopter = mapDesc.vectors.get("helicopter");
+                HelicopterImpl helicopterImpl = new HelicopterImpl(helicopter.point(), helicopter.angle());
+                game.addHelicopter(helicopterImpl);
+            }
+            {
+                MapParser.MapVector cpuHelipad = mapDesc.vectors.get("cpuHelipad");
+                ControllerImpl cpuHelipadImpl = new ControllerImpl(playerImpl, cpuHelipad.point(), cpuHelipad.angle(), "HELIPAD-CONTROL-1");
+                CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
+                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpuHelipadImpl.addCpu(cpu);
+                game.addController(cpuHelipadImpl);
 
-            MapParser.MapPolygon wall = mapDesc.polygons.get("wall");
-            game.addWall(new WallImpl(wall.points, "metal"));
+                MapParser.MapPolygon doorHelipad = mapDesc.polygons.get("doorHelipad");
+                DoorImpl doorHelipadImpl = new DoorImpl(doorHelipad.points, null, 2);
+                doorHelipadImpl.setController(cpuHelipadImpl, "door-helipad/control", "open", "close");
+                game.addDoor(doorHelipadImpl);
+            }
+            {
+                MapParser.MapPolygon wall = mapDesc.polygons.get("wall");
+                game.addWall(new WallImpl(wall.points, "metal"));
 
-            MapParser.MapPolygon doorTraining = mapDesc.polygons.get("door-training");
-            DoorImpl doorTrainingImpl = new DoorImpl(doorTraining.points, null, 2);
-            //doorImpl.setController(controllerImpl, "door-helipad/control", "open", "close");
-            game.addDoor(doorTrainingImpl);
+                MapParser.MapPolygon platform = mapDesc.polygons.get("platform");
+                game.addPlatform(new PlatformImpl(platform.points));
 
-            MapParser.MapPolygon doorHelipad = mapDesc.polygons.get("door-helipad");
-            DoorImpl doorHelipadImpl = new DoorImpl(doorHelipad.points, null, 2);
-            //doorImpl.setController(controllerImpl, "door-helipad/control", "open", "close");
-            game.addDoor(doorHelipadImpl);
+                String[] camps = {"camp1", "camp2", "camp3", "camp4"};
+                for (String camp : camps) {
+                    MapParser.MapVector campVector = mapDesc.vectors.get(camp);
+                    game.addCamp(new CampImpl(campVector.point(), campVector.angle()));
+                }
+            }
 
-//            MapParser.MapObject robot = mapDesc.objects.get("robot");
-//            RobotImpl robotImpl = new RobotImpl("MR-BS-01", game, playerImpl, new KPoint(robot.x, robot.y), robot.r);
-//            ChassisImpl chassis = new ChassisImpl(300d);
-//            RadarImpl radar = new RadarImpl(game, 100d);
-//            GpsImpl gps = new GpsImpl(game);
-//            ComputerImpl computer = new ComputerImpl(ComputerImpl.State.OFF);
-//            computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
-//            computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
-//            computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
-//            computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Debug.txt")));
-//            robotImpl.addEquipment(chassis);
-//            robotImpl.addEquipment(radar);
-//            robotImpl.addEquipment(gps);
-//            robotImpl.addEquipment(computer);
-//            robotImpl.charge(4000);
-//            game.addRobot(robotImpl);
+            {
+                MapParser.MapVector cpuTraining = mapDesc.vectors.get("cpuTraining");
+                ControllerImpl cpuTrainingImpl = new ControllerImpl(playerImpl, cpuTraining.point(), cpuTraining.angle(), "TRAINING-CONTROL-1");
+                CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
+                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpuTrainingImpl.addCpu(cpu);
+                game.addController(cpuTrainingImpl);
+
+                MapParser.MapPolygon doorTraining = mapDesc.polygons.get("doorTraining");
+                DoorImpl doorTrainingImpl = new DoorImpl(doorTraining.points, null, 2);
+                doorTrainingImpl.setController(cpuTrainingImpl, "door-training/control", "open", "close");
+                game.addDoor(doorTrainingImpl);
+            }
+
+            {
+                MapParser.MapPolygon wallDepot = mapDesc.polygons.get("wallDepot");
+                game.addWall(new WallImpl(wallDepot.points, "metal"));
+
+                MapParser.MapPolygon doorDepot = mapDesc.polygons.get("doorDepot");
+                DoorImpl doorDepotImpl = new DoorImpl(doorDepot.points, null, 2);
+                //doorImpl.setController(controllerImpl, "door-helipad/control", "open", "close");
+                game.addDoor(doorDepotImpl);
+            }
+            {
+                String[] rocks = {"rock1", "rock2", "rock3", "rockSouth", "rockNorth", "rockEast", "rockWest"};
+                for (String rock : rocks) {
+                    MapParser.MapPolygon rockPolygon = mapDesc.polygons.get(rock);
+                    game.addWall(new WallImpl(rockPolygon.points, "rock"));
+                }
+            }
+            {
+                MapParser.MapVector robot = mapDesc.vectors.get("robot");
+                RobotImpl robotImpl = new RobotImpl("MR-BS-01", game, playerImpl, robot.point(), robot.angle());
+                ChassisImpl chassis = new ChassisImpl(300d);
+                RadarImpl radar = new RadarImpl(game, 100d);
+                GpsImpl gps = new GpsImpl(game);
+                ComputerImpl computer = new ComputerImpl(ComputerImpl.State.OFF);
+                computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
+                computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
+                computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
+                computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Debug.txt")));
+                robotImpl.addEquipment(chassis);
+                robotImpl.addEquipment(radar);
+                robotImpl.addEquipment(gps);
+                robotImpl.addEquipment(computer);
+                robotImpl.charge(4000);
+                game.addRobot(robotImpl);
+            }
 
             return game;
         } catch (Throwable e) {
