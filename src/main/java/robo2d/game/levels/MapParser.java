@@ -21,14 +21,21 @@ public class MapParser {
     }
 
     public static class MapVector {
-        public float x1, y1, x2, y2, r;
+        public float x1, y1, x2, y2;
 
         MapVector(float x1, float y1, float x2, float y2) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
             this.y2 = y2;
-            this.r = (float) KPoint.findAngle(x1, y1, x2, y2);
+        }
+
+        public float angle() {
+            return (float) KPoint.findAngle(x1, y1, x2, y2);
+        }
+
+        public KPoint point() {
+            return new KPoint(x1, y1);
         }
     }
 

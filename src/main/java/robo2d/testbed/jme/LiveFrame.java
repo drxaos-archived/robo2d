@@ -4,6 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -60,7 +61,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         appSettings.setSamples(4);
         app.setSettings(appSettings);
         app.setShowSettings(false);
-        app.setPauseOnLostFocus(false);
+        app.setPauseOnLostFocus(true);
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -263,6 +264,13 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         dlsr.setShadowIntensity(0.5f);
         dlsr.setLight(sun);
         viewPort.addProcessor(dlsr);
+
+        BitmapText hudText = new BitmapText(guiFont, false);
+        hudText.setSize(guiFont.getCharSet().getRenderedSize());      // font size
+        hudText.setColor(ColorRGBA.Blue);                             // font color
+        hudText.setText("You can write any string here");             // the text
+        hudText.setLocalTranslation(300, hudText.getLineHeight(), 0); // position
+        guiNode.attachChild(hudText);
     }
 
     @Override
@@ -423,7 +431,7 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         if (label != null) {
             label.getRenderer(TextRenderer.class).setText(
                     startMessage != null ? startMessage :
-                            game.getPlayer().getEntered() != null ? "You can connect to this device with your console" :
+                            game.getPlayer().getEntered() != null ? (Terminal.canConnect() ? "\n\n\n\nYou can connect to this device with your console" : "") :
                                     targetRobot != null ? (targetRobot.getUid() + "\n\nPress \"E\" to climb up") :
                                             targetController != null ? (targetController.getUid() + "\n\nPress \"E\" to open") : ""
             );

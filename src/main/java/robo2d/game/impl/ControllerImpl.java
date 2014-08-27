@@ -61,14 +61,16 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
 
     @Override
     public boolean canEnter(PlayerImpl player) {
-        return owner == player;
+        return true;
     }
 
     @Override
     public void enter(PlayerImpl player) {
         if (enteredPlayer == null) {
             enteredPlayer = player;
-            Terminal.open(cpu);
+            if (owner == player) {
+                Terminal.open(cpu);
+            }
         }
     }
 

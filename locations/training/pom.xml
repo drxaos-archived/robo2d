@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.robotech.military</groupId>
-    <artifactId>levelTest</artifactId>
+    <artifactId>training</artifactId>
     <version>1.0</version>
 
     <dependencies>

@@ -6,8 +6,6 @@ import robo2d.game.levels.MapParser;
 import robo2d.testbed.RobotTest;
 import straightedge.geom.KPoint;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 //
@@ -60,19 +58,19 @@ public class LevelTest extends RobotTest {
 //            f.setVisible(true);
 
             MapParser.MapVector player = mapDesc.vectors.get("player");
-            PlayerImpl playerImpl = new PlayerImpl("player1", new KPoint(player.x1, player.y1), player.r);
+            PlayerImpl playerImpl = new PlayerImpl("player1", player.point(), player.angle());
             game.addPlayer(playerImpl);
 
             MapParser.MapVector camp = mapDesc.vectors.get("camp");
-            CampImpl campImpl = new CampImpl(new KPoint(camp.x1, camp.y1), camp.r);
+            CampImpl campImpl = new CampImpl(camp.point(), camp.angle());
             game.addCamp(campImpl);
 
             MapParser.MapVector helicopter = mapDesc.vectors.get("helicopter");
-            HelicopterImpl helicopterImpl = new HelicopterImpl(new KPoint(helicopter.x1, helicopter.y1), helicopter.r);
+            HelicopterImpl helicopterImpl = new HelicopterImpl(helicopter.point(), helicopter.angle());
             game.addHelicopter(helicopterImpl);
 
             MapParser.MapVector controller = mapDesc.vectors.get("cpu");
-            ControllerImpl controllerImpl = new ControllerImpl(playerImpl, new KPoint(controller.x1, controller.y1), controller.r, "TEST-CONTROL-1");
+            ControllerImpl controllerImpl = new ControllerImpl(null, controller.point(), controller.angle(), "TEST-CONTROL-1");
             CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
             cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
             cpu.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Debug.txt")));
@@ -82,7 +80,7 @@ public class LevelTest extends RobotTest {
 
             MapParser.MapPolygon door = mapDesc.polygons.get("door");
             DoorImpl doorImpl = new DoorImpl(door.points);
-            doorImpl.setController(controllerImpl,"door-helipad/control", "open", "close");
+            doorImpl.setController(controllerImpl, "door-helipad/control", "open", "close");
             game.addDoor(doorImpl);
 
             MapParser.MapPolygon platform = mapDesc.polygons.get("platform");
@@ -95,7 +93,7 @@ public class LevelTest extends RobotTest {
             game.addWall(new WallImpl(wall1.points, "metal"));
 
             MapParser.MapVector robot = mapDesc.vectors.get("robot");
-            RobotImpl robotImpl = new RobotImpl("MR-BS-01", game, playerImpl, new KPoint(robot.x1, robot.y1), robot.r);
+            RobotImpl robotImpl = new RobotImpl("MR-BS-01", game, playerImpl, robot.point(), robot.angle());
             ChassisImpl chassis = new ChassisImpl(300d);
             RadarImpl radar = new RadarImpl(game, 100d);
             GpsImpl gps = new GpsImpl(game);

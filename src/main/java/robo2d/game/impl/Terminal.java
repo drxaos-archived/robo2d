@@ -17,6 +17,9 @@ public class Terminal {
     static AbstractComputer computer;
     static CampImpl base;
 
+    public static boolean canConnect() {
+        return computer != null;
+    }
 
     public synchronized static void open(final AbstractComputer computer) {
         Terminal.computer = computer;
