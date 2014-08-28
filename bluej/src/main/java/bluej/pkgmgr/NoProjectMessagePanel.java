@@ -21,7 +21,6 @@
  */
 package bluej.pkgmgr;
 
-import bluej.Config;
 import bluej.utility.CenterLayout;
 
 import javax.swing.*;
@@ -38,22 +37,31 @@ public class NoProjectMessagePanel extends JPanel {
 
     private JLabel noProjectMessageLabel;
     private static final Color TRANSPARANT = new Color(0f, 0f, 0f, 0.0f);
-    public BufferedImage img = new BufferedImage(80 * 9, 25 * 16, BufferedImage.TYPE_INT_RGB);
+    public BufferedImage img;
     public boolean display = false;
 
     public NoProjectMessagePanel() {
         super(new CenterLayout());
         setBackground(TRANSPARANT);
-        noProjectMessageLabel = new JLabel(Config.getString("pkgmgr.noProjectOpened.message"));
+        noProjectMessageLabel = new JLabel(" ");
         noProjectMessageLabel.setEnabled(false);
         add(noProjectMessageLabel);
     }
 
     public void paintComponent(Graphics g) {
-        if (display) {
-            g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), null);
-        } else {
-            super.paintComponent(g);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        if (display && img != null) {
+            int w = img.getWidth(), h = img.getHeight();
+            h = (int) (1.0f * this.getWidth() * h / w);
+            w = this.getWidth();
+            if (h > this.getHeight()) {
+                w = (int) (1.0f * this.getHeight() * w / h);
+                h = this.getHeight();
+            }
+            g.drawImage(img,
+                    (this.getWidth() - w) / 2, (this.getHeight() - h) / 2,
+                    w, h, null);
         }
     }
 }

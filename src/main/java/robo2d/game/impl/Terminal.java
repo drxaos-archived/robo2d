@@ -5,7 +5,12 @@ import bluej.Main;
 import bluej.debugger.Debugger;
 import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.PkgMgrFrame;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,6 +23,10 @@ public class Terminal {
     static boolean connected = false;
     static AbstractComputer computer;
 
+    private static Font font = new Font("Monospaced", Font.BOLD, 12);
+    private static int fontWidth;
+    private static int fontHeight;
+
     static {
         Thread displayUpdater = new Thread() {
             @Override
@@ -26,8 +35,36 @@ public class Terminal {
                     NoProjectMessagePanel d = display;
                     AbstractComputer c = computer;
                     if (d != null && c != null) {
+                        if (d.img == null) {
+                            String text = "X";
+                            AffineTransform affinetransform = new AffineTransform();
+                            FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+                            fontWidth = (int) (font.getStringBounds(text, frc).getWidth());
+                            fontHeight = (int) (font.getStringBounds(text, frc).getHeight());
+                            d.img = new BufferedImage(80 * fontWidth, 25 * fontHeight, BufferedImage.TYPE_INT_RGB);
+                        }
                         d.display = true;
-                        // TODO update
+                        Graphics2D g = (Graphics2D) d.img.getGraphics();
+                        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g.setColor(Color.BLUE);
+                        g.fillRect(0, 0, d.img.getWidth(), d.img.getHeight());
+                        g.setColor(Color.WHITE);
+                        g.setFont(font);
+                        String text = computer.getStateString("console/text");
+                        if (text != null && !text.isEmpty()) {
+                            int y = fontHeight;
+                            for (String line : text.split("\n")) {
+                                g.drawString(line, 0, y += fontHeight);
+                            }
+                        }
+                        d.repaint();
+                    } else if (d != null) {
+                        d.display = false;
+                        d.repaint();
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
                     }
                 }
             }
