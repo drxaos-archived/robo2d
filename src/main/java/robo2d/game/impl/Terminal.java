@@ -3,6 +3,7 @@ package robo2d.game.impl;
 import bluej.Boot;
 import bluej.Main;
 import bluej.debugger.Debugger;
+import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.PkgMgrFrame;
 
 import java.io.*;
@@ -13,12 +14,30 @@ import java.util.Map;
 
 public class Terminal {
 
+    static NoProjectMessagePanel display;
     static boolean connected = false;
     static AbstractComputer computer;
-    static CampImpl base;
+
+    static {
+        Thread displayUpdater = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    NoProjectMessagePanel d = display;
+                    AbstractComputer c = computer;
+                    if (d != null && c != null) {
+                        d.display = true;
+                        // TODO update
+                    }
+                }
+            }
+        };
+        displayUpdater.setDaemon(true);
+        displayUpdater.start();
+    }
 
     public static boolean canConnect() {
-        return computer != null;
+        return computer != null && computer.canDebug();
     }
 
     public synchronized static void open(final AbstractComputer computer) {
@@ -29,7 +48,7 @@ public class Terminal {
         if (connected) {
             disconnect();
         }
-        if (computer != null) {
+        if (computer != null && computer.canDebug()) {
             final File dir = new File("computer");
             ComputerHelper.saveToDisk(computer, dir);
             Main.registerBluejListener(new Main.BluejListener() {
@@ -63,6 +82,11 @@ public class Terminal {
                 @Override
                 public void disconnect() {
                     Terminal.disconnect();
+                }
+
+                @Override
+                public void display(NoProjectMessagePanel panel) {
+                    display = panel;
                 }
             });
 
@@ -113,6 +137,11 @@ public class Terminal {
         @Override
         public void disconnect() {
             Terminal.disconnect();
+        }
+
+        @Override
+        public void display(NoProjectMessagePanel panel) {
+            display = panel;
         }
     };
 

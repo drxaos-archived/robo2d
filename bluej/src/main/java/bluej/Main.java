@@ -24,6 +24,7 @@ package bluej;
 import bluej.debugger.Debugger;
 import bluej.extensions.event.ApplicationEvent;
 import bluej.extmgr.ExtensionsManager;
+import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.Package;
 import bluej.pkgmgr.PkgMgrFrame;
 import bluej.pkgmgr.Project;
@@ -440,6 +441,8 @@ public class Main {
         void connect();
 
         void disconnect();
+
+        void display(NoProjectMessagePanel panel);
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {

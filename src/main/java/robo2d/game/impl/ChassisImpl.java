@@ -48,6 +48,11 @@ public class ChassisImpl implements EquipmentImpl, HasEffects {
         }
         LEFT_ENGINE.set(0, (float) leftAccel);
         RIGHT_ENGINE.set(0, (float) rightAccel);
+
+        // slow if no refresh
+        leftAccel *= 0.999;
+        rightAccel *= 0.999;
+
         return effectsMap;
     }
 

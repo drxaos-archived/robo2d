@@ -23,6 +23,11 @@ public class ComputerImpl extends AbstractComputer implements EquipmentImpl {
         return initState == State.ON;
     }
 
+    @Override
+    public boolean canDebug() {
+        return robot.hasAccessToComputer();
+    }
+
     public String getUid() {
         return robot.getUid() + "-" + cid;
     }

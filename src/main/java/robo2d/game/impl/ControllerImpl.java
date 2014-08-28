@@ -31,6 +31,11 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
         return (double) angle;
     }
 
+    @Override
+    public boolean hasAccessToComputer() {
+        return owner == enteredPlayer;
+    }
+
     public ControllerImpl(PlayerImpl owner, KPoint pos, float angle, String name) {
         this.name = name;
         this.pos = pos;
@@ -68,10 +73,13 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
     public void enter(PlayerImpl player) {
         if (enteredPlayer == null) {
             enteredPlayer = player;
-            if (owner == player) {
-                Terminal.open(cpu);
-            }
+            Terminal.open(cpu);
         }
+    }
+
+    @Override
+    public boolean canConnect() {
+        return owner == enteredPlayer;
     }
 
     @Override

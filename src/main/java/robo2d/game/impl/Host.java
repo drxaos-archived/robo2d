@@ -12,4 +12,6 @@ public interface Host {
     Point getPosition();
 
     Double getAngle();
+
+    boolean hasAccessToComputer();
 }

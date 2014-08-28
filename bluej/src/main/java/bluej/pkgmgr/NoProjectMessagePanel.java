@@ -21,24 +21,25 @@
  */
 package bluej.pkgmgr;
 
-import java.awt.Color;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import bluej.Config;
 import bluej.utility.CenterLayout;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 /**
- * This class is a container to show a message for the user 
+ * This class is a container to show a message for the user
  * when no project is opened
- * 
+ *
  * @author amjad
  */
 public class NoProjectMessagePanel extends JPanel {
 
     private JLabel noProjectMessageLabel;
     private static final Color TRANSPARANT = new Color(0f, 0f, 0f, 0.0f);
+    public BufferedImage img = new BufferedImage(80 * 9, 25 * 16, BufferedImage.TYPE_INT_RGB);
+    public boolean display = false;
 
     public NoProjectMessagePanel() {
         super(new CenterLayout());
@@ -46,5 +47,13 @@ public class NoProjectMessagePanel extends JPanel {
         noProjectMessageLabel = new JLabel(Config.getString("pkgmgr.noProjectOpened.message"));
         noProjectMessageLabel.setEnabled(false);
         add(noProjectMessageLabel);
+    }
+
+    public void paintComponent(Graphics g) {
+        if (display) {
+            g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), null);
+        } else {
+            super.paintComponent(g);
+        }
     }
 }

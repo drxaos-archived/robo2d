@@ -33,6 +33,11 @@ public class CpuImpl extends AbstractComputer {
         super.update();
     }
 
+    @Override
+    public boolean canDebug() {
+        return controller.hasAccessToComputer();
+    }
+
     public String getUid() {
         return name + "-" + cid;
     }

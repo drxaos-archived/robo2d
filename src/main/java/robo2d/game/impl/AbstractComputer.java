@@ -29,6 +29,10 @@ public class AbstractComputer implements Dynamic {
         setStateString("computer/working", program != null ? "true" : "false");
     }
 
+    public boolean canDebug() {
+        return true;
+    }
+
     protected Class compile() {
         File file = ComputerHelper.compile(this);
         if (file == null) {

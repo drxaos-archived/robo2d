@@ -164,6 +164,11 @@ public class RobotImpl implements Physical, Enterable, Host, Dynamic {
     }
 
     @Override
+    public boolean canConnect() {
+        return owner == enteredPlayer;
+    }
+
+    @Override
     public Point2D exit() {
         if (enteredPlayer != null) {
             Terminal.close(getComputer());
@@ -194,5 +199,10 @@ public class RobotImpl implements Physical, Enterable, Host, Dynamic {
     @Override
     public Double getAngle() {
         return box.getAngle();
+    }
+
+    @Override
+    public boolean hasAccessToComputer() {
+        return owner == enteredPlayer;
     }
 }

@@ -129,7 +129,7 @@ public class PkgMgrFrame extends JFrame
     private AbstractButton commitButton;
     private AbstractButton teamStatusButton;
     private List<JComponent> teamItems;
-//    private JMenuItem javaMEnewProjMenuItem;
+    //    private JMenuItem javaMEnewProjMenuItem;
     private JMenuItem javaMEdeployMenuItem;
 
     private TeamActionGroup teamActions;
@@ -819,6 +819,7 @@ public class PkgMgrFrame extends JFrame
 
         if (isEmptyFrame()) {
             classScroller.setViewportView(noProjectMessagePanel);
+            Main.bluejListener.display(noProjectMessagePanel);
             repaint();
         }
         updateWindowTitle();

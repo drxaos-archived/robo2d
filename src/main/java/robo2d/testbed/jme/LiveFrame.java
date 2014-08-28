@@ -20,6 +20,7 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import com.jme3.system.Natives;
+import com.jme3.ui.Picture;
 import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.LayerBuilder;
@@ -59,9 +60,10 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         appSettings.setDepthBits(24);
         appSettings.setBitsPerPixel(24);
         appSettings.setSamples(4);
+        appSettings.setFrameRate(25);
         app.setSettings(appSettings);
         app.setShowSettings(false);
-        app.setPauseOnLostFocus(true);
+        app.setPauseOnLostFocus(false);
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -265,12 +267,12 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
         dlsr.setLight(sun);
         viewPort.addProcessor(dlsr);
 
-        BitmapText hudText = new BitmapText(guiFont, false);
-        hudText.setSize(guiFont.getCharSet().getRenderedSize());      // font size
-        hudText.setColor(ColorRGBA.Blue);                             // font color
-        hudText.setText("You can write any string here");             // the text
-        hudText.setLocalTranslation(300, hudText.getLineHeight(), 0); // position
-        guiNode.attachChild(hudText);
+        Picture pic = new Picture("aim");
+        pic.setImage(assetManager, "models/ui/aim.png", true);
+        pic.setWidth(50);
+        pic.setHeight(50);
+        pic.setPosition(settings.getWidth() / 2 - 25, settings.getHeight() / 2 - 25);
+        guiNode.attachChild(pic);
     }
 
     @Override
