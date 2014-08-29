@@ -1,19 +1,4 @@
 <map name="map">
-    <area shape="vector" title="robot" coords="505, 882, 504, 867" />
-    <area shape="vector" title="truck5" coords="1096, 484, 1115, 505" />
-    <area shape="vector" title="truck4" coords="546, 768, 557, 790" />
-    <area shape="vector" title="truck3" coords="430, 712, 458, 716" />
-    <area shape="vector" title="truck2" coords="275, 713, 307, 713" />
-    <area shape="vector" title="truck1" coords="276, 654, 307, 654" />
-    <area shape="vector" title="camp4" coords="267, 803, 285, 809" />
-    <area shape="vector" title="camp3" coords="270, 1068, 272, 1048" />
-    <area shape="vector" title="camp2" coords="341, 1066, 341, 1052" />
-    <area shape="vector" title="camp1" coords="410, 1071, 410, 1055" />
-    <area shape="vector" title="helicopter" coords="552, 957, 583, 957" />
-    <area shape="vector" title="player" coords="582, 935, 564, 955" />
-    <area shape="vector" title="cpuGate" coords="556, 891, 565, 886" />
-    <area shape="vector" title="cpuHelipad" coords="501, 1054, 519, 1061" />
-    <area shape="vector" title="cpuTraining" coords="266, 789, 268, 795" />
     <area shape="poly" title="wallDepot" coords="1204, 552, 1218, 545, 1122, 406, 1186, 369, 1309, 552, 1249, 597, 1231, 570, 1222, 574, 1249, 615, 1321, 559, 1184, 353, 1103, 401" />
     <area shape="poly" title="doorDepot" coords="1209, 548, 1213, 546, 1228, 571, 1225, 574" />
     <area shape="poly" title="rock1" coords="524, 1546, 531, 1379, 701, 1366, 697, 1430, 666, 1493, 843, 1503, 977, 1487, 893, 1599, 725, 1712, 595, 1654" />
@@ -29,4 +14,21 @@
     <area shape="poly" title="doorTraining" coords="330, 750, 330, 757, 374, 757, 374, 750" />
     <area shape="poly" title="doorHelipad" coords="476, 1022, 477, 1046, 483, 1046, 483, 1022" />
     <area shape="poly" title="wall" coords="657, 903, 671, 904, 671, 1112, 221, 1113, 217, 609, 667, 603, 669, 791, 655, 793, 651, 614, 622, 615, 625, 796, 614, 797, 611, 620, 232, 623, 232, 750, 329, 745, 329, 761, 232, 767, 238, 1101, 472, 1097, 470, 1046, 491, 1047, 490, 1100, 624, 1096, 618, 914, 483, 919, 490, 1021, 470, 1021, 463, 759, 374, 761, 374, 745, 479, 743, 484, 905, 629, 902, 635, 1096, 661, 1096" />
+    <area shape="poly" title="heliPlatform2" coords="511, 938, 511, 994, 597, 994, 595, 938" />
+    <area shape="poly" title="heliPlatform1" coords="512, 1025, 511, 1077, 597, 1075, 596, 1023" />
+    <area shape="vector" title="robot" coords="505, 882, 504, 867" />
+    <area shape="vector" title="truck5" coords="1096, 484, 1115, 505" />
+    <area shape="vector" title="truck4" coords="546, 768, 557, 790" />
+    <area shape="vector" title="truck3" coords="430, 712, 458, 716" />
+    <area shape="vector" title="truck2" coords="275, 713, 307, 713" />
+    <area shape="vector" title="truck1" coords="276, 654, 307, 654" />
+    <area shape="vector" title="camp4" coords="267, 803, 285, 809" />
+    <area shape="vector" title="camp3" coords="270, 1068, 272, 1048" />
+    <area shape="vector" title="camp2" coords="341, 1066, 341, 1052" />
+    <area shape="vector" title="camp1" coords="410, 1071, 410, 1055" />
+    <area shape="vector" title="helicopter" coords="554, 968, 585, 968" />
+    <area shape="vector" title="player" coords="582, 986, 567, 972" />
+    <area shape="vector" title="cpuGate" coords="556, 891, 565, 886" />
+    <area shape="vector" title="cpuHelipad" coords="501, 1054, 519, 1061" />
+    <area shape="vector" title="cpuTraining" coords="266, 789, 268, 795" />
 </map>

@@ -5,17 +5,21 @@ public class Boot implements Program {
     Robot robot;
     Chassis chassis;
     Radar radar;
+    Gps gps;
 
     @Override
     public void run(Robot robot) {
         this.robot = robot;
         chassis = robot.getDevice(Chassis.class);
         radar = robot.getDevice(Radar.class);
+        gps = robot.getDevice(Gps.class);
 
         Driver driver = new Driver(robot);
+        float x = gps.getPosition().getX();
+        float y = gps.getPosition().getY();
         while (true) {
-            driver.sleep(5000);
-            driver.move(new Point((float) (15 + (Math.random() * 20)), (float) (15 + (Math.random() * 20))), 50000);
+            driver.sleep(15000);
+            driver.move((float)(x + Math.random() * 6 - 3), (float)(y + Math.random() * 6 - 3));
         }
     }
 }

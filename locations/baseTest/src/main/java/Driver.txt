@@ -4,12 +4,14 @@ import java.awt.geom.Point2D;
 
 public class Driver {
     protected Robot robot;
+    protected Console console;
     protected Chassis chassis;
     protected Radar radar;
     protected Gps gps;
 
     public Driver(Robot robot) {
         this.robot = robot;
+        console = robot.getDevice(Console.class);
         chassis = robot.getDevice(Chassis.class);
         radar = robot.getDevice(Radar.class);
         gps = robot.getDevice(Gps.class);
@@ -38,6 +40,7 @@ public class Driver {
     }
 
     public boolean move(Point to, int maxMs) {
+        console.println("Moving to " + to.getX() + " : " + to.getY());
         long end = System.currentTimeMillis() + maxMs;
         while (System.currentTimeMillis() < end) {
             int force = 80;

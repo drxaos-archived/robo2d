@@ -66,12 +66,12 @@ public class AbstractComputer implements Dynamic {
                     public void run() {
                         try {
                             Program robotProgram = (Program) code.getConstructor().newInstance();
-                            setStateString("console/text", "BOOT...");
+                            setStateString("console/text", getStateString("console/text") + "\nBOOT...");
                             robotProgram.run(new Robot(new LocalConnection(getUid())));
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
-                        setStateString("console/text", "SYSTEM HALTED");
+                        setStateString("console/text", getStateString("console/text") + "\nSYSTEM HALTED");
                     }
                 });
                 program.setDaemon(true);
@@ -102,7 +102,7 @@ public class AbstractComputer implements Dynamic {
             e.printStackTrace();
             handlingConnection = null;
         }
-        setStateString("console/text", "SYSTEM HALTED");
+        setStateString("console/text", getStateString("console/text") + "\nSYSTEM HALTED");
     }
 
     public boolean isRunning() {

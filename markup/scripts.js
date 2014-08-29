@@ -688,12 +688,12 @@ function SummerHtmlImageMapCreator() {
                     }
                     html_code += utils.encode('<img src="' + filename + '" alt="" usemap="#map" />') +
                         '<br />' + utils.encode('<map name="map">') + '<br />';
-                    utils.foreachReverse(objects, function (x) {
+                    utils.foreach(objects, function (x) {
                         html_code += '&nbsp;&nbsp;&nbsp;&nbsp;' + utils.encode(x.toString()) + '<br />';
                     });
                     html_code += utils.encode('</map>');
                 } else {
-                    utils.foreachReverse(objects, function (x) {
+                    utils.foreach(objects, function (x) {
                         html_code += x.toString();
                     });
                 }

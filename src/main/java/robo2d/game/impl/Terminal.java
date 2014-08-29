@@ -5,7 +5,6 @@ import bluej.Main;
 import bluej.debugger.Debugger;
 import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.PkgMgrFrame;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -26,6 +25,7 @@ public class Terminal {
     private static Font font = new Font("Monospaced", Font.BOLD, 12);
     private static int fontWidth;
     private static int fontHeight;
+    public static Map<String, BufferedImage> images = new HashMap<String, BufferedImage>();
 
     static {
         Thread displayUpdater = new Thread() {
@@ -52,9 +52,18 @@ public class Terminal {
                         g.setFont(font);
                         String text = computer.getStateString("console/text");
                         if (text != null && !text.isEmpty()) {
-                            int y = fontHeight;
+                            int y = 0;
                             for (String line : text.split("\n")) {
                                 g.drawString(line, 0, y += fontHeight);
+                            }
+                        }
+                        String video = computer.getStateString("console/video");
+                        if (video != null && !video.isEmpty()) {
+                            for (String line : video.split("\n")) {
+                                BufferedImage img = images.get(line);
+                                if (img != null) {
+                                    g.drawImage(img, 0, 0, 80 * fontWidth, 25 * fontHeight, null);
+                                }
                             }
                         }
                         d.repaint();

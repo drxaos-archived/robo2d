@@ -5,6 +5,7 @@ import robo2d.game.impl.dynamics.DoorImpl;
 import robo2d.game.levels.MapParser;
 import robo2d.testbed.RobotTest;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 
 public class Training extends RobotTest {
@@ -14,6 +15,9 @@ public class Training extends RobotTest {
         try {
             Game game = new Game(getWorld(), getDebugDraw());
             MapParser.MapDesc mapDesc = MapParser.parseXml("locations/training/src/main/java/arrival.xml", 0.2f);
+
+            Terminal.images.put("robotech", ImageIO.read(new File("models/ui/robotech.png")));
+            Terminal.images.put("agr", ImageIO.read(new File("models/ui/agr.png")));
 
             MapParser.MapVector player = mapDesc.vectors.get("player");
             PlayerImpl playerImpl = new PlayerImpl("player1", player.point(), player.angle());
@@ -25,10 +29,18 @@ public class Training extends RobotTest {
                 game.addHelicopter(helicopterImpl);
             }
             {
+                MapParser.MapPolygon heliPlatform1 = mapDesc.polygons.get("heliPlatform1");
+                game.addPlatform(new PlatformImpl(heliPlatform1.points));
+
+                MapParser.MapPolygon heliPlatform2 = mapDesc.polygons.get("heliPlatform2");
+                game.addPlatform(new PlatformImpl(heliPlatform2.points));
+
                 MapParser.MapVector cpuHelipad = mapDesc.vectors.get("cpuHelipad");
                 ControllerImpl cpuHelipadImpl = new ControllerImpl(playerImpl, cpuHelipad.point(), cpuHelipad.angle(), "HELIPAD-CONTROL-1");
                 CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
                 cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpu.setStateString("console/video", "robotech");
+                cpu.setStateString("console/text", "Initialization...");
                 cpuHelipadImpl.addCpu(cpu);
                 game.addController(cpuHelipadImpl);
 
@@ -89,9 +101,9 @@ public class Training extends RobotTest {
                 GpsImpl gps = new GpsImpl(game);
                 ComputerImpl computer = new ComputerImpl(ComputerImpl.State.OFF);
                 computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
-                computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Boot.txt")));
-                computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Driver.txt")));
-                computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/baseTest/src/main/java/Debug.txt")));
+                computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Boot.txt")));
+                computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Driver.txt")));
+                computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Debug.txt")));
                 robotImpl.addEquipment(chassis);
                 robotImpl.addEquipment(radar);
                 robotImpl.addEquipment(gps);
