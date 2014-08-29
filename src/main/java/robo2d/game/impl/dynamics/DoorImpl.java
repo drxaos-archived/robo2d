@@ -64,11 +64,11 @@ public class DoorImpl implements Physical, Dynamic {
         return box;
     }
 
-    public void setController(ControllerImpl controller, String key, String open, String close) {
+    public void setController(ControllerImpl controller, String key) {
         this.controller = controller;
         this.controllerKey = key;
-        this.controllerOpen = open;
-        this.controllerClose = close;
+        this.controllerOpen = "open";
+        this.controllerClose = "close";
     }
 
     @Override

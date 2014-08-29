@@ -1,7 +1,7 @@
 package robo2d.game.impl;
 
+import com.robotech.military.api.Host;
 import com.robotech.military.api.Program;
-import com.robotech.military.api.Robot;
 import com.robotech.military.internal.LocalConnection;
 
 import java.io.BufferedReader;
@@ -20,6 +20,7 @@ public class AbstractComputer implements Dynamic {
     Thread program;
     Map<String, String> state = new HashMap<String, String>();
     Socket handlingConnection;
+    final Object waitMon = new Object();
 
     public void init() {
         setStateString("computer/ready", "true");
@@ -67,7 +68,7 @@ public class AbstractComputer implements Dynamic {
                         try {
                             Program robotProgram = (Program) code.getConstructor().newInstance();
                             setStateString("console/text", getStateString("console/text") + "\nBOOT...");
-                            robotProgram.run(new Robot(new LocalConnection(getUid())));
+                            robotProgram.run(new Host(new LocalConnection(getUid())));
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }
@@ -136,7 +137,10 @@ public class AbstractComputer implements Dynamic {
         if (key.startsWith("computer/fs")) {
             saveFile(key, value);
         } else {
-            state.put(key, value);
+            synchronized (waitMon) {
+                state.put(key, value);
+                waitMon.notifyAll();
+            }
         }
     }
 
@@ -187,14 +191,26 @@ public class AbstractComputer implements Dynamic {
                 if (method.equals("get")) {
                     String key = unescape(in.readLine());
                     String value = escape(state.get(key));
-//                    System.out.println("GET [" + getUid() + "] " + key + " -> " + value);
                     out.println(value);
                     out.flush();
                 } else if (method.equals("set")) {
                     String key = unescape(in.readLine());
                     String value = unescape(in.readLine());
-//                    System.out.println("SET [" + getUid() + "]" + key + " = " + value);
                     state.put(key, value);
+                } else if (method.equals("wait")) {
+                    String key = unescape(in.readLine());
+                    String value = null;
+                    synchronized (waitMon) {
+                        value = escape(state.get(key));
+                        long timeout = System.currentTimeMillis() + 15000;
+                        while ((value == null || value.isEmpty()) && System.currentTimeMillis() < timeout) {
+                            waitMon.wait(3000);
+                            value = escape(state.get(key));
+                        }
+                        state.put(key, null);
+                    }
+                    out.println(value);
+                    out.flush();
                 }
             }
         } catch (Exception e) {

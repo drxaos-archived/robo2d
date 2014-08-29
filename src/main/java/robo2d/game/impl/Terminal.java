@@ -7,6 +7,9 @@ import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.PkgMgrFrame;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -26,6 +29,25 @@ public class Terminal {
     private static int fontWidth;
     private static int fontHeight;
     public static Map<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+
+    static KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            AbstractComputer c = computer;
+            if (c != null) {
+                c.setStateString("console/input", "" + e.getKeyChar());
+                String buf = c.getStateString("console/input/buffer");
+                if (buf == null) {
+                    buf = "";
+                }
+                buf += e.getKeyChar();
+                if (buf.length() > 10) {
+                    buf = buf.substring(buf.length() - 10);
+                }
+                c.setStateString("console/input/buffer", buf);
+            }
+        }
+    };
 
     static {
         Thread displayUpdater = new Thread() {
@@ -133,6 +155,8 @@ public class Terminal {
                 @Override
                 public void display(NoProjectMessagePanel panel) {
                     display = panel;
+                    display.removeKeyListener(keyListener);
+                    display.addKeyListener(keyListener);
                 }
             });
 
@@ -188,6 +212,8 @@ public class Terminal {
         @Override
         public void display(NoProjectMessagePanel panel) {
             display = panel;
+            display.removeKeyListener(keyListener);
+            display.addKeyListener(keyListener);
         }
     };
 

@@ -25,6 +25,8 @@ import bluej.utility.CenterLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 /**
@@ -46,6 +48,7 @@ public class NoProjectMessagePanel extends JPanel {
         noProjectMessageLabel = new JLabel(" ");
         noProjectMessageLabel.setEnabled(false);
         add(noProjectMessageLabel);
+        setFocusable(true);
     }
 
     public void paintComponent(Graphics g) {

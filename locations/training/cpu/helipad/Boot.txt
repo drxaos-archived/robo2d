@@ -1,0 +1,18 @@
+import com.robotech.military.api.*;
+
+public class Boot implements Program {
+
+    @Override
+    public void run(Host host) {
+        Console console = host.getDevice(Console.class);
+        Door door = host.getDevice(Door.class);
+
+        console.println("Initialization...");
+        console.println("Available commands: (\"open\", \"close\")");
+
+        while (true) {
+            String in = console.read("cmd> ");
+            console.println("Command: " + in);
+        }
+    }
+}

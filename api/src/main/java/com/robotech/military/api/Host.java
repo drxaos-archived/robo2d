@@ -2,20 +2,12 @@ package com.robotech.military.api;
 
 import java.lang.reflect.Method;
 
-public class Robot {
+public class Host {
 
     IO io;
 
-    public Robot(IO io) {
+    public Host(IO io) {
         this.io = io;
-    }
-
-    public Double getEnergy() {
-        return Double.valueOf(io.get("robot/energy"));
-    }
-
-    public String getUid() {
-        return io.get("robot/uid");
     }
 
     public void debug(String msg) {

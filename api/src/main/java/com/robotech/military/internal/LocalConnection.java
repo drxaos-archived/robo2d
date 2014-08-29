@@ -88,6 +88,23 @@ public class LocalConnection implements IO {
         }
     }
 
+    @Override
+    public synchronized String wait(String key) {
+        for (int i = 0; true; i++) {
+            try {
+                writer.println("wait");
+                writer.println(escape(key));
+                writer.flush();
+                return unescape(reader.readLine());
+            } catch (Exception e) {
+                if (i > 10) {
+                    throw new ConnectionError(e);
+                }
+                reset();
+            }
+        }
+    }
+
     public void close() {
         try {
             socket.close();

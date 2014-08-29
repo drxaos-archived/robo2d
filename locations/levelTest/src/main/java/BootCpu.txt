@@ -8,7 +8,6 @@ public class Boot implements Program {
     public void run(Robot robot) {
         this.robot = robot;
         Direct d = robot.getDevice(Direct.class);
-
         d.set("door-helipad/control", "open");
     }
 }

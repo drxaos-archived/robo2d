@@ -37,16 +37,17 @@ public class Training extends RobotTest {
 
                 MapParser.MapVector cpuHelipad = mapDesc.vectors.get("cpuHelipad");
                 ControllerImpl cpuHelipadImpl = new ControllerImpl(playerImpl, cpuHelipad.point(), cpuHelipad.angle(), "HELIPAD-CONTROL-1");
-                CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
+                CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.ON);
                 cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpu.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/training/cpu/helipad/Boot.txt")));
                 cpu.setStateString("console/video", "robotech");
-                cpu.setStateString("console/text", "Initialization...");
+                cpu.setStateString("console/text", "");
                 cpuHelipadImpl.addCpu(cpu);
                 game.addController(cpuHelipadImpl);
 
                 MapParser.MapPolygon doorHelipad = mapDesc.polygons.get("doorHelipad");
                 DoorImpl doorHelipadImpl = new DoorImpl(doorHelipad.points, null, 2);
-                doorHelipadImpl.setController(cpuHelipadImpl, "door-helipad/control", "open", "close");
+                doorHelipadImpl.setController(cpuHelipadImpl, "door/door1/control");
                 game.addDoor(doorHelipadImpl);
             }
             {
@@ -73,7 +74,7 @@ public class Training extends RobotTest {
 
                 MapParser.MapPolygon doorTraining = mapDesc.polygons.get("doorTraining");
                 DoorImpl doorTrainingImpl = new DoorImpl(doorTraining.points, null, 2);
-                doorTrainingImpl.setController(cpuTrainingImpl, "door-training/control", "open", "close");
+                doorTrainingImpl.setController(cpuTrainingImpl, "door/door2/control");
                 game.addDoor(doorTrainingImpl);
             }
 
