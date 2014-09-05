@@ -74,8 +74,8 @@ public final class FieldRef extends SymbolicRef<Field> {
         if (expectsStatic != Modifier.isStatic(f.getModifiers()))
             throw new IncompatibleClassChangeError(Types.getInternalName(cls));
 
-        if (expectsPuttable && Modifier.isFinal(f.getModifiers()))
-            throw new IllegalAccessError(Types.getInternalName(f));
+//        if (expectsPuttable && Modifier.isFinal(f.getModifiers())) // TODO check if in constructor
+//            throw new IllegalAccessError(Types.getInternalName(f));
 
         AccessControl.checkPermission(f, referrer.get());
         AccessControl.makeAccessible(f);

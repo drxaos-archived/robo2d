@@ -76,8 +76,8 @@ public final class CodeVisitor extends EmptyVisitor {
     }
 
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        if (version < 49 || "<init>".equals(name) || "<cinit>".equals(name)) return null;
-        this.interpretable = false;
+        if (version < 49 /*|| "<init>".equals(name) || "<cinit>".equals(name)*/) return null;
+        this.interpretable = true;
         this.name = name;
         this.desc = desc;
         return this;
@@ -85,7 +85,7 @@ public final class CodeVisitor extends EmptyVisitor {
 
 
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        interpretable |= interpretable.class == ClassRef.get(Types.getInternalName(desc), cls);
+        //interpretable |= interpretable.class == ClassRef.get(Types.getInternalName(desc), cls);
         return emptyVisitor;
     }
 

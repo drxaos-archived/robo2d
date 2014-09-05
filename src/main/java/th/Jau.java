@@ -1,11 +1,11 @@
 package th;
 
 import net.sf.jauvm.Interpreter;
-import net.sf.jauvm.interpretable;
+import net.sf.jauvm.SilentObjectCreator;
+import net.sf.jauvm.vm.VirtualMachine;
 
 class Test123 implements Runnable {
     @Override
-    @interpretable
     public void run() {
         long i = 0;
         while (true) {
@@ -19,11 +19,22 @@ class Test123 implements Runnable {
     }
 }
 
+
 public class Jau {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Throwable {
 
-        new Interpreter(new Test123()).run();
+        VirtualMachine vm = VirtualMachine.create(new Test123());
+        vm.run(100);
+        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
+        vm.run(100);
+        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
+        vm.run(100);
+        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
+        vm.run(100);
+        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
+        vm.run(100);
+        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
 
     }
 

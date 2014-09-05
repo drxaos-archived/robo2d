@@ -32,10 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
+
 import net.sf.jauvm.interpretable;
 import org.objectweb.asm.ClassReader;
 
@@ -64,9 +62,9 @@ public final class GlobalCodeCache {
         if (code == null) code = loadCode(cls.getSuperclass());
 
         for (Method m : cls.getDeclaredMethods()) {
-            if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers()) &&
-                    m.getAnnotation(interpretable.class) != null) {
-                code = new IdentityHashMap<String, MethodCode>(code);
+            if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers()) /*&&
+                    m.getAnnotation(interpretable.class) != null*/) {
+                code = new HashMap<String, MethodCode>(code);
                 readCode(cls, code);
                 break;
             }
@@ -80,6 +78,7 @@ public final class GlobalCodeCache {
         try {
             InputStream stream = cls.getClassLoader().getResourceAsStream(Types.getInternalName(cls) + ".class");
             new ClassReader(stream).accept(new CodeVisitor(cls, code), false);
+        } catch (RuntimeException e) {
         } catch (IOException e) {
             // intentionally empty
         }

@@ -32,6 +32,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import net.sf.jauvm.vm.AccessControl;
 import net.sf.jauvm.vm.Types;
@@ -56,6 +57,15 @@ public final class ConstructorRef extends SymbolicRef<Constructor<?>> {
         return constructor.get();
     }
 
+    public static Constructor get(Class<?> cls, String name, String descriptor) {
+        Constructor m = findConstructor(cls, descriptor);
+        AccessControl.makeAccessible(m);
+        return m;
+    }
+
+    public String getDescriptor() {
+        return descriptor;
+    }
 
     private synchronized void resolve() {
         if (constructor.get() != null) return;

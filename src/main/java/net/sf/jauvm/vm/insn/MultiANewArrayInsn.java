@@ -28,11 +28,12 @@
 
 package net.sf.jauvm.vm.insn;
 
-import java.lang.reflect.Array;
 import net.sf.jauvm.vm.Frame;
 import net.sf.jauvm.vm.Types;
 import net.sf.jauvm.vm.VirtualMachine;
 import net.sf.jauvm.vm.ref.ClassRef;
+
+import java.lang.reflect.Array;
 
 public final class MultiANewArrayInsn extends Insn {
     public static Insn getInsn(String desc, int dims, Class<?> cls) {
@@ -52,7 +53,7 @@ public final class MultiANewArrayInsn extends Insn {
     public void execute(VirtualMachine vm) {
         Frame frame = vm.getFrame();
         int[] dimensions = new int[dims];
-        for (int i = dims; i-- > 0;) dimensions[i] = frame.popInt();
+        for (int i = dims; i-- > 0; ) dimensions[i] = frame.popInt();
         frame.pushObject(Array.newInstance(c.get(), dimensions));
     }
 
@@ -97,7 +98,7 @@ public final class MultiANewArrayInsn extends Insn {
         public void execute(VirtualMachine vm) {
             Frame frame = vm.getFrame();
             int[] dimensions = new int[dims];
-            for (int i = dims; i-- > 0;) dimensions[i] = frame.popInt();
+            for (int i = dims; i-- > 0; ) dimensions[i] = frame.popInt();
             frame.pushObject(Array.newInstance(c, dimensions));
         }
     }

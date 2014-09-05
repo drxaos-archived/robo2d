@@ -43,6 +43,10 @@ public final class TypeInsn extends Insn {
     private final int opcode;
     private final ClassRef c;
 
+    public Class getClazz(){
+        return c.get();
+    }
+
     TypeInsn(int opcode, String name, Class<?> cls) {
         this.opcode = opcode;
         this.c = new ClassRef(name, cls);

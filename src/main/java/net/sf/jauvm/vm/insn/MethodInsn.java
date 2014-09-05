@@ -28,24 +28,19 @@
 
 package net.sf.jauvm.vm.insn;
 
+import net.sf.jauvm.vm.*;
+import net.sf.jauvm.vm.ref.ConstructorRef;
+import net.sf.jauvm.vm.ref.MethodRef;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import net.sf.jauvm.Continuation;
-import net.sf.jauvm.vm.*;
-import net.sf.jauvm.vm.ref.ClassRef;
-import net.sf.jauvm.vm.ref.ConstructorRef;
-import net.sf.jauvm.vm.ref.MethodRef;
+
 import static org.objectweb.asm.Opcodes.*;
 
 public abstract class MethodInsn extends Insn {
     public static Insn getInsn(int opcode, String owner, String name, String desc, Class<?> cls) {
-        if (Continuation.class.isAssignableFrom(ClassRef.get(owner, cls))) {
-            Insn insn = ContinuationInsn.getInsn(opcode, owner, name, desc, cls);
-            if (insn != null) return insn;
-        }
-
         switch (opcode) {
             case INVOKEVIRTUAL:
                 return new InvokeVirtualInsn(owner, name, desc, cls);
@@ -254,15 +249,25 @@ public abstract class MethodInsn extends Insn {
             Frame frame = vm.getFrame();
             Constructor<?> constructor = c.get();
 
-            try {
-                Object[] params = frame.popParameters(constructor.getParameterTypes());
-                frame.replaceObject(constructor.newInstance(params));
-            } catch (InstantiationException e) {
-                throw new InstantiationError(Types.getInternalName(constructor));
-            } catch (IllegalAccessException e) {
-                throw new InternalError().initCause(e);
-            } catch (InvocationTargetException e) {
-                throw new StackTracedException(e.getCause());
+
+            Class objClass = ((TypeInsn) frame.getTarget(c.get().getParameterTypes())).getClazz();
+            Class target = c.get().getDeclaringClass();
+            MethodCode code = null;//GlobalCodeCache.get(target, "<init>" + c.getDescriptor());
+            if (code != null) {
+//                Frame f = frame.newCallFrame(vm.getCp(), constructor, code);
+//                vm.setFrame(f);
+//                vm.setCp(0);
+            } else {
+                try {
+                    Object[] params = frame.popParameters(constructor.getParameterTypes());
+                    frame.replaceObject(constructor.newInstance(params));
+                } catch (InstantiationException e) {
+                    throw new InstantiationError(Types.getInternalName(constructor));
+                } catch (IllegalAccessException e) {
+                    throw new InternalError().initCause(e);
+                } catch (InvocationTargetException e) {
+                    throw new StackTracedException(e.getCause());
+                }
             }
         }
     }
