@@ -28,17 +28,31 @@
 
 package net.sf.jauvm.vm.ref;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.sf.jauvm.vm.AccessControl;
 
-public final class ClassRef extends SymbolicRef<Class<?>> {
+public final class ClassRef extends SymbolicRef<Class<?>> implements Serializable {
     private static final Reference<Class<?>> nil = new WeakReference<Class<?>>(null);
-    private volatile Reference<Class<?>> cls = nil;
+    private transient volatile Reference<Class<?>> cls = nil;
 
     private final String name;
-    private final Reference<Class<?>> referrer;
+    private transient Reference<Class<?>> referrer;
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        referrer = new WeakReference<Class<?>>((Class<?>) in.readObject());
+        in.defaultReadObject();
+        cls = nil;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(referrer.get());
+        out.defaultWriteObject();
+    }
 
     public ClassRef(String name, Class<?> referrer) {
         this.name = name;

@@ -28,13 +28,16 @@
 
 package net.sf.jauvm.vm.insn;
 
-import java.lang.reflect.Array;
 import net.sf.jauvm.Monitor;
 import net.sf.jauvm.vm.Frame;
 import net.sf.jauvm.vm.VirtualMachine;
+
+import java.io.Serializable;
+import java.lang.reflect.Array;
+
 import static org.objectweb.asm.Opcodes.*;
 
-public abstract class Insn {
+public abstract class Insn implements Serializable {
     public static final Insn[] arrayType = new Insn[0];
 
     public static Insn getInsn(int opcode) {

@@ -30,7 +30,7 @@ package net.sf.jauvm.vm;
 
 import net.sf.jauvm.vm.insn.Insn;
 
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -55,6 +55,16 @@ public final class VirtualMachine implements Serializable {
         return new VirtualMachine(new Throwable().getStackTrace(), method, code, run);
     }
 
+    public static VirtualMachine create(InputStream in) throws Throwable {
+        ObjectInputStream ois = new ObjectInputStream(in);
+        Object o = ois.readObject();
+        if (o instanceof VirtualMachine) {
+            return (VirtualMachine) o;
+        } else {
+            throw new IOException("object class is [" + o.getClass().getCanonicalName() + "]");
+        }
+    }
+
     public VirtualMachine(StackTraceElement[] trace, Method method, MethodCode code, Object... params) {
         this.setFrame(Frame.newBootstrapFrame(method, code, params));
         this.trace = trace;
@@ -66,8 +76,10 @@ public final class VirtualMachine implements Serializable {
 
     public void run(long cycles) throws Throwable {
         while (frame != null) try {
-            Insn insn = insns[cp++];
-            insn.execute(this);
+            synchronized (this) {
+                Insn insn = insns[cp++];
+                insn.execute(this);
+            }
             if (cycles > 0) {
                 cycles--;
             } else if (cycles == 0) {
@@ -80,6 +92,13 @@ public final class VirtualMachine implements Serializable {
         } catch (Throwable t) {
             fillInStackTrace(t);
             if (!findHandler(t)) throw t;
+        }
+    }
+
+    public void save(OutputStream out) throws IOException {
+        synchronized (this) {
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            oos.writeObject(this);
         }
     }
 
