@@ -247,16 +247,16 @@ public abstract class MethodInsn extends Insn {
 
         public void execute(VirtualMachine vm) throws Throwable {
             Frame frame = vm.getFrame();
+
+            Object targetObj = frame.popObject();
+            frame.pushObject(targetObj);
             Constructor<?> constructor = c.get();
+            MethodCode code = GlobalCodeCache.get(constructor.getDeclaringClass(), "<init>" + c.getDescriptor());
 
-
-            Class objClass = ((TypeInsn) frame.getTarget(c.get().getParameterTypes())).getClazz();
-            Class target = c.get().getDeclaringClass();
-            MethodCode code = null;//GlobalCodeCache.get(target, "<init>" + c.getDescriptor());
             if (code != null) {
-//                Frame f = frame.newCallFrame(vm.getCp(), constructor, code);
-//                vm.setFrame(f);
-//                vm.setCp(0);
+                Frame f = frame.newCallFrame(vm.getCp(), constructor, code);
+                vm.setFrame(f);
+                vm.setCp(0);
             } else {
                 try {
                     Object[] params = frame.popParameters(constructor.getParameterTypes());

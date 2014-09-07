@@ -7,18 +7,27 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 
+
+class A implements Serializable {
+    public A() {
+        Test123.out += "b";
+    }
+}
+
+class B extends A implements Serializable {
+    public B() {
+        Test123.out += "a";
+    }
+}
+
 class Test123 implements Runnable, Serializable {
+    public static String out = "S;";
+
     @Override
     public void run() {
-        long i = 0;
-        while (true) {
-            System.out.println("turn " + i++);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        A a = new A();
+        Test123.out += ";";
+        B b = new B();
     }
 }
 
@@ -37,12 +46,13 @@ public class Jau {
             vm = VirtualMachine.create(new Test123());
         }
 
-        vm.run(50);
-        System.out.println("$$$$$$$$$$$$$$$$$ 100 $$$$$$$$$$$$$$$$$");
-
-        FileOutputStream f = new FileOutputStream(file);
-        vm.save(f);
-        f.close();
+        for (int i = 0; i < 100; i++) {
+            vm.run(1);
+            FileOutputStream f = new FileOutputStream(file);
+            vm.save(f);
+            f.close();
+            System.out.println("saved " + i);
+        }
     }
 
 }

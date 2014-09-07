@@ -29,6 +29,7 @@
 package net.sf.jauvm;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Contains methods used to synchronize access to objects.
@@ -52,7 +53,7 @@ public class Monitor {
      */
     public static void enter(Object obj) {
         if (obj == null) throw new NullPointerException();
-        throw new UnsupportedOperationException("unstructured locks not supported");
+        //TODO//throw new UnsupportedOperationException("unstructured locks not supported");
     }
 
     /**
@@ -70,8 +71,8 @@ public class Monitor {
      * @see java.util.concurrent.locks
      */
     public static void exit(Object obj) {
-        if (!Thread.holdsLock(obj)) throw new IllegalMonitorStateException();
-        throw new UnsupportedOperationException("unstructured locks not supported");
+        //TODO//if (!Thread.holdsLock(obj)) throw new IllegalMonitorStateException();
+        //TODO//throw new UnsupportedOperationException("unstructured locks not supported");
     }
 
     /**

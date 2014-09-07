@@ -28,14 +28,14 @@
 
 package net.sf.jauvm.vm;
 
+import org.objectweb.asm.ClassReader;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
-import net.sf.jauvm.interpretable;
-import org.objectweb.asm.ClassReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public final class GlobalCodeCache {
     private static final GlobalCodeCache instance = new GlobalCodeCache();
@@ -61,14 +61,14 @@ public final class GlobalCodeCache {
         Map<String, MethodCode> code = cache.get(cls.getSuperclass());
         if (code == null) code = loadCode(cls.getSuperclass());
 
-        for (Method m : cls.getDeclaredMethods()) {
-            if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers()) /*&&
-                    m.getAnnotation(interpretable.class) != null*/) {
-                code = new HashMap<String, MethodCode>(code);
-                readCode(cls, code);
-                break;
-            }
-        }
+//        for (Method m : cls.getDeclaredMethods()) {
+//            if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers()) /*&&
+//                    m.getAnnotation(interpretable.class) != null*/) {
+        code = new HashMap<String, MethodCode>(code);
+        readCode(cls, code);
+//                break;
+//            }
+//        }
 
         cache.put(cls, code);
         return code;
@@ -76,11 +76,14 @@ public final class GlobalCodeCache {
 
     private static void readCode(Class<?> cls, Map<String, MethodCode> code) {
         try {
-            InputStream stream = cls.getClassLoader().getResourceAsStream(Types.getInternalName(cls) + ".class");
+            ClassLoader classLoader = cls.getClassLoader();
+            if (classLoader == null) {
+                classLoader = ClassLoader.getSystemClassLoader();
+            }
+            InputStream stream = classLoader.getResourceAsStream(Types.getInternalName(cls) + ".class");
             new ClassReader(stream).accept(new CodeVisitor(cls, code), false);
-        } catch (RuntimeException e) {
-        } catch (IOException e) {
-            // intentionally empty
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

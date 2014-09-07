@@ -29,6 +29,8 @@
 package net.sf.jauvm.vm.insn;
 
 import java.lang.reflect.Array;
+
+import net.sf.jauvm.SilentObjectCreator;
 import net.sf.jauvm.vm.Frame;
 import net.sf.jauvm.vm.VirtualMachine;
 import net.sf.jauvm.vm.ref.ClassRef;
@@ -57,7 +59,7 @@ public final class TypeInsn extends Insn {
         Class<?> cls = c.get();
         switch (opcode) {
             case NEW:
-                frame.pushObject(this);
+                frame.pushObject(SilentObjectCreator.create(this.getClazz()));
                 return;
             case CHECKCAST:
                 frame.pushObject(cls.cast(frame.popObject()));

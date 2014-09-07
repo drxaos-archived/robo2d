@@ -189,5 +189,10 @@ public abstract class FieldInsn extends Insn {
                 throw new InternalError().initCause(e);
             }
         }
+
+        @Override
+        public String toString() {
+            return getOpcodeName(PUTFIELD) + " " + f.get();
+        }
     }
 }

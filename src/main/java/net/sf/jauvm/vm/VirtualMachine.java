@@ -78,6 +78,8 @@ public final class VirtualMachine implements Serializable {
         while (frame != null) try {
             synchronized (this) {
                 Insn insn = insns[cp++];
+//                StackTraceElement pointer = getPointer();
+//                System.out.println(pointer);
                 insn.execute(this);
             }
             if (cycles > 0) {
