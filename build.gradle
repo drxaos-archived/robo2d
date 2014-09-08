@@ -15,6 +15,7 @@ dependencies {
     compile files("${System.getProperty('java.home')}/../lib/tools.jar")
 //    compile localGroovy()
     compile 'asm:asm-all:2.1'
+    compile 'javassist:javassist:3.12.1.GA'
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.3.2'
     compile 'com.robotech.military:api:1.0'

@@ -1,36 +1,11 @@
 package th;
 
+import javassist.*;
 import net.sf.jauvm.vm.GlobalCodeCache;
 import net.sf.jauvm.vm.VirtualMachine;
 
 import java.io.InputStream;
 import java.io.Serializable;
-
-
-class A implements Serializable {
-    public A() {
-        Test123.out += "b";
-    }
-}
-
-class B extends A implements Serializable {
-    public B() {
-        Test123.out += "a";
-    }
-}
-
-class Test123 implements Runnable, Serializable {
-    public static String out = "S;";
-    private String zzz = "";
-
-    @Override
-    public void run() {
-        zzz = "qwerty";
-        A a = new A();
-        Test123.out += ";";
-        B b = new B();
-    }
-}
 
 public class Jau {
 
@@ -45,6 +20,9 @@ public class Jau {
                 if (cls.getCanonicalName().startsWith("java.io.")) {
                     return null;
                 }
+                if (cls.getCanonicalName().equals(Api.class.getCanonicalName())) {
+                    return null;
+                }
                 return super.getBytecodeStream(cls);
             }
 
@@ -53,12 +31,34 @@ public class Jau {
                 if (cls.equals(System.class)) {
                     return false;
                 }
-                System.out.println("Using class: " + cls.getCanonicalName());
+                //System.out.println("Using class: " + cls.getCanonicalName());
                 return true;
             }
         });
+        Translator translator = new Translator() {
+            public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
+            }
 
-        VirtualMachine vm = VirtualMachine.create(new Test123());
+            public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
+                CtClass cc = pool.get(classname);
+                //System.out.println("Loading class: " + classname);
+                for (CtClass ic : cc.getInterfaces()) {
+                    if (ic.getName().equals(Serializable.class.getCanonicalName())) {
+                        return;
+                    }
+                }
+                cc.addInterface(pool.get(Serializable.class.getCanonicalName()));
+            }
+        };
+
+        ClassPool pool = ClassPool.getDefault();
+        Loader cl = new Loader();
+        cl.addTranslator(pool, translator);
+
+        Class<VirtualMachine> vmCls = VirtualMachine.class;//(Class<VirtualMachine>) cl.loadClass(VirtualMachine.class.getCanonicalName());
+        Class runCls = cl.loadClass(Test123.class.getCanonicalName());
+
+        VirtualMachine vm = (VirtualMachine) vmCls.getMethod("create", Class.class).invoke(null, runCls);
 
         for (int i = 0; i < 1000000; i++) {
             if (vm.run(1)) {

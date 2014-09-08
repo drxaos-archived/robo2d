@@ -29,6 +29,7 @@
 package net.sf.jauvm.vm;
 
 import net.sf.jauvm.vm.insn.Insn;
+import th.Runner;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -46,6 +47,13 @@ public final class VirtualMachine implements Serializable {
     private transient String fullState = "";
 
     VirtualMachine() {
+    }
+
+    public static VirtualMachine create(Class<? extends Runnable> cls) throws Throwable {
+        if (cls == null) throw new NullPointerException();
+        Method method = cls.getMethod("run");
+        MethodCode code = GlobalCodeCache.get(cls, "run()V");
+        return new VirtualMachine(new Throwable().getStackTrace(), method, code, cls.newInstance());
     }
 
     public static VirtualMachine create(final Runnable run) throws Throwable {
