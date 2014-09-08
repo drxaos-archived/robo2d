@@ -30,7 +30,6 @@ package net.sf.jauvm.vm;
 
 import org.objectweb.asm.ClassReader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public final class GlobalCodeCache {
     private static final GlobalCodeCache instance = new GlobalCodeCache();
 
     private final Map<Class<?>, Map<String, MethodCode>> cache;
-
+    private static CodeLoader codeLoader = new CodeLoader();
 
     private GlobalCodeCache() {
         this.cache = new WeakHashMap<Class<?>, Map<String, MethodCode>>();
@@ -74,16 +73,32 @@ public final class GlobalCodeCache {
         return code;
     }
 
+    public static void setCodeLoader(CodeLoader codeLoader) {
+        if (codeLoader == null) {
+            GlobalCodeCache.codeLoader = new CodeLoader();
+        } else {
+            GlobalCodeCache.codeLoader = codeLoader;
+        }
+    }
+
     private static void readCode(Class<?> cls, Map<String, MethodCode> code) {
         try {
+            InputStream stream = codeLoader.getBytecodeStream(cls);
+            if (stream != null) {
+                new ClassReader(stream).accept(new CodeVisitor(cls, code), false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static class CodeLoader {
+        public InputStream getBytecodeStream(Class<?> cls) {
             ClassLoader classLoader = cls.getClassLoader();
             if (classLoader == null) {
                 classLoader = ClassLoader.getSystemClassLoader();
             }
-            InputStream stream = classLoader.getResourceAsStream(Types.getInternalName(cls) + ".class");
-            new ClassReader(stream).accept(new CodeVisitor(cls, code), false);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return classLoader.getResourceAsStream(Types.getInternalName(cls) + ".class");
         }
     }
 }

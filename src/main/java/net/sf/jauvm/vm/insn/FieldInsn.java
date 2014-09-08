@@ -159,6 +159,7 @@ public abstract class FieldInsn extends Insn {
             try {
                 Field field = f.get();
 
+                // TODO check access
                 field.setAccessible(true);
                 Field modifiersField = Field.class.getDeclaredField("modifiers");
                 modifiersField.setAccessible(true);

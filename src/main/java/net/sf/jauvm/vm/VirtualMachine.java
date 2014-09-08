@@ -74,27 +74,31 @@ public final class VirtualMachine implements Serializable {
         run(-1);
     }
 
-    public void run(long cycles) throws Throwable {
-        while (frame != null) try {
-            synchronized (this) {
-                Insn insn = insns[cp++];
+    public boolean run(long cycles) throws Throwable {
+        while (frame != null) {
+            try {
+                synchronized (this) {
+                    Insn insn = insns[cp++];
 //                StackTraceElement pointer = getPointer();
 //                System.out.println(pointer);
-                insn.execute(this);
+                    insn.execute(this);
+                }
+                if (cycles > 0) {
+                    cycles--;
+                }
+                if (cycles == 0) {
+                    return false;
+                }
+            } catch (StackTracedException e) {
+                Throwable t = e.getCause();
+                fillInStackTrace(t, t.getStackTrace());
+                if (!findHandler(t)) throw t;
+            } catch (Throwable t) {
+                fillInStackTrace(t);
+                if (!findHandler(t)) throw t;
             }
-            if (cycles > 0) {
-                cycles--;
-            } else if (cycles == 0) {
-                return;
-            }
-        } catch (StackTracedException e) {
-            Throwable t = e.getCause();
-            fillInStackTrace(t, t.getStackTrace());
-            if (!findHandler(t)) throw t;
-        } catch (Throwable t) {
-            fillInStackTrace(t);
-            if (!findHandler(t)) throw t;
         }
+        return true;
     }
 
     public void save(OutputStream out) throws IOException {

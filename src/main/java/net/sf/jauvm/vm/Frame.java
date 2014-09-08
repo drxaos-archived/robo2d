@@ -539,4 +539,16 @@ public final class Frame implements Cloneable, Serializable {
     public String toString() {
         return Types.getInternalName(method != null ? method : constructor) + ' ' + Arrays.asList(stack).toString();
     }
+
+    public void replaceAllRecursive(Object from, Object to) {
+        Frame frame = this;
+        while (frame != null) {
+            for (int i = 0; i < frame.stack.length; i++) {
+                if (from.equals(frame.stack[i])) {
+                    frame.stack[i] = to;
+                }
+            }
+            frame = frame.getParent();
+        }
+    }
 }
