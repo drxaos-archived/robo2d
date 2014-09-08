@@ -128,6 +128,8 @@ public final class MethodRef extends SymbolicRef<Method> implements Serializable
         AccessControl.makeAccessible(m);
 
         method = new SoftReference<Method>(m);
+
+        GlobalCodeCache.checkAccess(m.getDeclaringClass());
     }
 
     private static Method findMethod(Class<?> cls, String name, String descriptor) {

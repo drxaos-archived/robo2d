@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.sf.jauvm.vm.AccessControl;
+import net.sf.jauvm.vm.GlobalCodeCache;
 
 public final class ClassRef extends SymbolicRef<Class<?>> implements Serializable {
     private static final Reference<Class<?>> nil = new WeakReference<Class<?>>(null);
@@ -75,6 +76,8 @@ public final class ClassRef extends SymbolicRef<Class<?>> implements Serializabl
         if (cls.get() != null) return;
         Class<?> c = get(name, referrer.get());
         cls = new WeakReference<Class<?>>(c);
+
+        GlobalCodeCache.checkAccess(c);
     }
 
     private static Class<?> findClass(String name, ClassLoader classLoader) {

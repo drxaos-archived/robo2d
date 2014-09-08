@@ -43,6 +43,7 @@ public final class VirtualMachine implements Serializable {
     private Insn[] insns;
     private ExcptHandler[] excpts;
     private StackTraceElement[] trace;
+    private transient String fullState = "";
 
     VirtualMachine() {
     }
@@ -70,6 +71,10 @@ public final class VirtualMachine implements Serializable {
         this.trace = trace;
     }
 
+    public String getFullState() {
+        return fullState;
+    }
+
     public void run() throws Throwable {
         run(-1);
     }
@@ -79,9 +84,13 @@ public final class VirtualMachine implements Serializable {
             try {
                 synchronized (this) {
                     Insn insn = insns[cp++];
-//                StackTraceElement pointer = getPointer();
-//                System.out.println(pointer);
+
                     insn.execute(this);
+
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    save(s);
+                    s.close();
+                    fullState = s.toString();
                 }
                 if (cycles > 0) {
                     cycles--;
@@ -103,8 +112,12 @@ public final class VirtualMachine implements Serializable {
 
     public void save(OutputStream out) throws IOException {
         synchronized (this) {
-            ObjectOutputStream oos = new ObjectOutputStream(out);
-            oos.writeObject(this);
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(out);
+                oos.writeObject(this);
+            } catch (NotSerializableException e) {
+                throw new VirtualMachineException("Instance of illegal class [" + e.getMessage() + "] at " + getPointer(), e);
+            }
         }
     }
 

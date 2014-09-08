@@ -100,5 +100,15 @@ public final class GlobalCodeCache {
             }
             return classLoader.getResourceAsStream(Types.getInternalName(cls) + ".class");
         }
+
+        public boolean checkAccess(Class cls) {
+            return true;
+        }
+    }
+
+    public static void checkAccess(Class cls) {
+        if (!codeLoader.checkAccess(cls)) {
+            throw new VirtualMachineException("Illegal class access: " + cls.getCanonicalName());
+        }
     }
 }

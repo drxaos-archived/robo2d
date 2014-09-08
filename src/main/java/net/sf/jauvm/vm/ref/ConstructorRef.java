@@ -39,6 +39,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import net.sf.jauvm.vm.AccessControl;
+import net.sf.jauvm.vm.GlobalCodeCache;
 import net.sf.jauvm.vm.Types;
 
 public final class ConstructorRef extends SymbolicRef<Constructor<?>> implements Serializable {
@@ -98,6 +99,8 @@ public final class ConstructorRef extends SymbolicRef<Constructor<?>> implements
         AccessControl.makeAccessible(c);
 
         constructor = new SoftReference<Constructor<?>>(c);
+
+        GlobalCodeCache.checkAccess(c.getDeclaringClass());
     }
 
     private static Constructor<?> findConstructor(Class<?> cls, String descriptor) {

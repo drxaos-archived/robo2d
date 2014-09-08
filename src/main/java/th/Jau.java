@@ -3,8 +3,6 @@ package th;
 import net.sf.jauvm.vm.GlobalCodeCache;
 import net.sf.jauvm.vm.VirtualMachine;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -31,10 +29,8 @@ class Test123 implements Runnable, Serializable {
         A a = new A();
         Test123.out += ";";
         B b = new B();
-        System.out.println(Test123.out);
     }
 }
-
 
 public class Jau {
 
@@ -51,30 +47,23 @@ public class Jau {
                 }
                 return super.getBytecodeStream(cls);
             }
+
+            @Override
+            public boolean checkAccess(Class cls) {
+                if (cls.equals(System.class)) {
+                    return false;
+                }
+                System.out.println("Using class: " + cls.getCanonicalName());
+                return true;
+            }
         });
 
-        File file = new File("Test123.jau");
-        VirtualMachine vm;
-        if (file.exists()) {
-            FileInputStream f = new FileInputStream(file);
-            vm = VirtualMachine.create(f);
-            f.close();
-        } else {
-            vm = VirtualMachine.create(new Test123());
-        }
+        VirtualMachine vm = VirtualMachine.create(new Test123());
 
         for (int i = 0; i < 1000000; i++) {
             if (vm.run(1)) {
                 break;
             }
-//            try {
-//                FileOutputStream f = new FileOutputStream(file);
-//                vm.save(f);
-//                f.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println("saved " + i);
         }
     }
 
