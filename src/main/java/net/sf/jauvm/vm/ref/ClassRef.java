@@ -28,14 +28,17 @@
 
 package net.sf.jauvm.vm.ref;
 
+import net.sf.jauvm.vm.AccessControl;
+import net.sf.jauvm.vm.GlobalCodeCache;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.sf.jauvm.vm.AccessControl;
-import net.sf.jauvm.vm.GlobalCodeCache;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class ClassRef extends SymbolicRef<Class<?>> implements Serializable {
     private static final Reference<Class<?>> nil = new WeakReference<Class<?>>(null);
@@ -80,8 +83,33 @@ public final class ClassRef extends SymbolicRef<Class<?>> implements Serializabl
         GlobalCodeCache.checkAccess(c);
     }
 
+    public static final Map<String, Class> primitives;
+
+    static {
+        primitives = new HashMap<>();
+
+        Class[] types = {
+                Boolean.TYPE,
+                Byte.TYPE,
+                Character.TYPE,
+                Double.TYPE,
+                Float.TYPE,
+                Integer.TYPE,
+                Long.TYPE,
+                Short.TYPE,
+                Void.TYPE
+        };
+
+        for (Class type : types) {
+            primitives.put(type.getName(), type);
+        }
+    }
+
     private static Class<?> findClass(String name, ClassLoader classLoader) {
         try {
+            if (primitives.keySet().contains(name)) {
+                return primitives.get(name);
+            }
             return Class.forName(name.replace('/', '.'), false, classLoader);
         } catch (ClassNotFoundException e) {
             throw new NoClassDefFoundError(name);

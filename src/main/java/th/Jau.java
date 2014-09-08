@@ -42,6 +42,9 @@ public class Jau {
             public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
                 CtClass cc = pool.get(classname);
                 //System.out.println("Loading class: " + classname);
+                if (cc.isFrozen()) {
+                    return;
+                }
                 for (CtClass ic : cc.getInterfaces()) {
                     if (ic.getName().equals(Serializable.class.getCanonicalName())) {
                         return;
@@ -54,15 +57,15 @@ public class Jau {
         ClassPool pool = ClassPool.getDefault();
         Loader cl = new Loader();
         cl.addTranslator(pool, translator);
-
-        Class<VirtualMachine> vmCls = VirtualMachine.class;//(Class<VirtualMachine>) cl.loadClass(VirtualMachine.class.getCanonicalName());
         Class runCls = cl.loadClass(Test123.class.getCanonicalName());
 
-        VirtualMachine vm = (VirtualMachine) vmCls.getMethod("create", Class.class).invoke(null, runCls);
+        VirtualMachine vm = VirtualMachine.create((Runnable) runCls.newInstance());
 
         for (int i = 0; i < 1000000; i++) {
             if (vm.run(1)) {
                 break;
+            } else {
+                System.out.println("VM step " + i + " snapshot size: " + vm.getFullState().length());
             }
         }
     }

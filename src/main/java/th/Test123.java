@@ -1,8 +1,12 @@
 package th;
 
 class A {
+    double[][] map;
+
     public A() {
         Test123.out += "b";
+        map = new double[100][100];
+        map[55][66] = 77;
     }
 }
 
@@ -34,6 +38,9 @@ public class Test123 implements Runnable {
         Test123.out += ";";
         B b = new B();
         Api.println(out);
+        a = null;
+        b = null;
+        Api.println("end");
     }
 
     public static void main(String[] a) {
