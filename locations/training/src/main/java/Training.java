@@ -38,7 +38,7 @@ public class Training extends RobotTest {
                 MapParser.MapVector cpuHelipad = mapDesc.vectors.get("cpuHelipad");
                 ControllerImpl cpuHelipadImpl = new ControllerImpl(playerImpl, cpuHelipad.point(), cpuHelipad.angle(), "HELIPAD-CONTROL-1");
                 CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.ON);
-                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-helipadDoor");
                 cpu.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/training/cpu/helipad/Boot.txt")));
                 cpu.setStateString("console/video", "robotech");
                 cpu.setStateString("console/text", "");
@@ -46,8 +46,8 @@ public class Training extends RobotTest {
                 game.addController(cpuHelipadImpl);
 
                 MapParser.MapPolygon doorHelipad = mapDesc.polygons.get("doorHelipad");
-                DoorImpl doorHelipadImpl = new DoorImpl(doorHelipad.points, null, 2);
-                doorHelipadImpl.setController(cpuHelipadImpl, "door/door1/control");
+                DoorImpl doorHelipadImpl = new DoorImpl(doorHelipad.points, null, 70);
+                doorHelipadImpl.setController(cpuHelipadImpl, "door/helipadDoor/control");
                 game.addDoor(doorHelipadImpl);
             }
             {
@@ -68,13 +68,15 @@ public class Training extends RobotTest {
                 MapParser.MapVector cpuTraining = mapDesc.vectors.get("cpuTraining");
                 ControllerImpl cpuTrainingImpl = new ControllerImpl(playerImpl, cpuTraining.point(), cpuTraining.angle(), "TRAINING-CONTROL-1");
                 CpuImpl cpu = new CpuImpl("CPU1", CpuImpl.State.OFF);
-                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 01-test");
+                cpu.saveFile("README.TXT", "RoboTech Inc. Controller unit 02-trainingDoor");
+                cpu.setStateString("console/video", "robotech");
+                cpu.setStateString("console/text", "MEMORY RESET...DONE\n");
                 cpuTrainingImpl.addCpu(cpu);
                 game.addController(cpuTrainingImpl);
 
                 MapParser.MapPolygon doorTraining = mapDesc.polygons.get("doorTraining");
-                DoorImpl doorTrainingImpl = new DoorImpl(doorTraining.points, null, 2);
-                doorTrainingImpl.setController(cpuTrainingImpl, "door/door2/control");
+                DoorImpl doorTrainingImpl = new DoorImpl(doorTraining.points, null, 90);
+                doorTrainingImpl.setController(cpuTrainingImpl, "door/trainingDoor/control");
                 game.addDoor(doorTrainingImpl);
             }
 
@@ -102,14 +104,14 @@ public class Training extends RobotTest {
                 GpsImpl gps = new GpsImpl(game);
                 ComputerImpl computer = new ComputerImpl(ComputerImpl.State.OFF);
                 computer.saveFile("README.TXT", "RoboTech Inc. Military Robot #MR-BS-01");
-                computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Boot.txt")));
-                computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Driver.txt")));
-                computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/training/src/main/java/Debug.txt")));
+                computer.saveFile("Boot.java", FileUtils.readFileToString(new File("locations/training/cpu/robot/Boot.txt")));
+                computer.saveFile("Driver.java", FileUtils.readFileToString(new File("locations/training/cpu/robot/Driver.txt")));
+                computer.saveFile("Debug.java", FileUtils.readFileToString(new File("locations/training/cpu/robot/Debug.txt")));
                 robotImpl.addEquipment(chassis);
                 robotImpl.addEquipment(radar);
                 robotImpl.addEquipment(gps);
                 robotImpl.addEquipment(computer);
-                robotImpl.charge(4000);
+                robotImpl.charge(469221);
                 game.addRobot(robotImpl);
             }
 

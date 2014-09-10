@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Chassis {
+import java.io.Serializable;
+
+public class Chassis implements Serializable {
     IO io;
 
     public Chassis(IO io) {

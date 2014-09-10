@@ -86,7 +86,7 @@ public final class ClassRef extends SymbolicRef<Class<?>> implements Serializabl
     public static final Map<String, Class> primitives;
 
     static {
-        primitives = new HashMap<>();
+        primitives = new HashMap<String, Class>();
 
         Class[] types = {
                 Boolean.TYPE,

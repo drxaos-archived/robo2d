@@ -5,6 +5,8 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
 import robo2d.game.Game;
+import robo2d.testbed.devices.DeviceManager;
+import robo2d.testbed.devices.DisplayFrame;
 import robo2d.testbed.jme.LiveFrame;
 
 import javax.swing.*;
@@ -22,6 +24,8 @@ public abstract class RobotTest extends TestbedTest {
         game = createGame();
         game.start();
         Boot.start(null);
+        DeviceManager.start();
+        DisplayFrame.start();
         LiveFrame.create(game).getCanvas();
     }
 

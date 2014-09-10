@@ -29,7 +29,6 @@
 package net.sf.jauvm.vm;
 
 import net.sf.jauvm.vm.insn.Insn;
-import th.Runner;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -95,10 +94,14 @@ public final class VirtualMachine implements Serializable {
 
                     insn.execute(this);
 
-                    ByteArrayOutputStream s = new ByteArrayOutputStream();
-                    save(s);
-                    s.close();
-                    fullState = s.toString();
+                    try {
+                        ByteArrayOutputStream s = new ByteArrayOutputStream();
+                        save(s);
+                        s.close();
+                        fullState = s.toString();
+                    } catch (Exception e) {
+                        // ?
+                    }
                 }
                 if (cycles > 0) {
                     cycles--;

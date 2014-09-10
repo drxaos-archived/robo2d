@@ -1,8 +1,9 @@
 package com.robotech.military.api;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
-public class Host {
+public class Host implements Serializable {
 
     IO io;
 
@@ -12,7 +13,7 @@ public class Host {
 
     public void debug(String msg) {
         io.set("debug", msg);
-        System.out.println(msg);
+        com.robotech.military.internal.System.println(msg);
     }
 
     public <T> T getDevice(Class<T> type) {

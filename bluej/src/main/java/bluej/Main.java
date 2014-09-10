@@ -332,7 +332,7 @@ public class Main {
     private static void openEmptyFrame() {
         PkgMgrFrame frame = PkgMgrFrame.createFrame();
         frame.setLocation(FIRST_X_LOCATION, FIRST_Y_LOCATION);
-        frame.setVisible(true);
+        frame.setVisible(false);
     }
 
     /**
@@ -441,8 +441,6 @@ public class Main {
         void connect();
 
         void disconnect();
-
-        void display(NoProjectMessagePanel panel);
     }
 
     public static void registerBluejListener(BluejListener bluejListener) {

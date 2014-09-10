@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Computer {
+import java.io.Serializable;
+
+public class Computer implements Serializable {
 
     IO io;
 

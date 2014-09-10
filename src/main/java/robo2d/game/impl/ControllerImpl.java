@@ -4,15 +4,21 @@ import com.robotech.military.api.Point;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.StaticBox;
+import robo2d.testbed.devices.DeviceManager;
+import robo2d.testbed.devices.DisplayFrame;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
+public class ControllerImpl implements Physical, Enterable, Host, Dynamic, HasDevices {
 
     public static final float SIZE = 6;
+
+    public static final String DM_CPU = "Connect to CPU";
+    public static final String DM_CPU_RESTART = "Restart CPU";
+    public static final String DM_DISPLAY = "View display";
 
     String name;
     StaticBox box;
@@ -20,6 +26,7 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
     float angle;
     CpuImpl cpu;
     PlayerImpl owner;
+    boolean hasDisplay = true;
 
     PlayerImpl enteredPlayer;
 
@@ -54,6 +61,10 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
         box = new StaticBox(polygon, pos, angle);
     }
 
+    public void setHasDisplay(boolean hasDisplay) {
+        this.hasDisplay = hasDisplay;
+    }
+
     public void addCpu(CpuImpl cpu) {
         this.cpu = cpu;
         cpu.setup(this);
@@ -74,18 +85,15 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
         if (enteredPlayer == null) {
             enteredPlayer = player;
             Terminal.open(cpu);
+            DeviceManager.setDevicesHost(this);
         }
-    }
-
-    @Override
-    public boolean canConnect() {
-        return owner == enteredPlayer;
     }
 
     @Override
     public Point2D exit() {
         if (enteredPlayer != null) {
             Terminal.close(cpu);
+            DeviceManager.setDevicesHost(null);
             enteredPlayer = null;
             return getBox().getPosition();
         } else {
@@ -120,5 +128,40 @@ public class ControllerImpl implements Physical, Enterable, Host, Dynamic {
 
     public void update() {
         cpu.update();
+    }
+
+    @Override
+    public String[] getDevices() {
+        ArrayList<String> dev = new ArrayList<String>();
+        if (cpu.canDebug()) {
+            dev.add(DM_CPU);
+            dev.add(DM_CPU_RESTART);
+        }
+        if (hasDisplay) {
+            dev.add(DM_DISPLAY);
+        }
+        return dev.toArray(new String[dev.size()]);
+    }
+
+    @Override
+    public void activate(String device) {
+        if (device.equals(DM_CPU)) {
+            Terminal.connect();
+        } else if (device.equals(DM_CPU_RESTART)) {
+            Terminal.disconnect();
+            cpu.stopProgram();
+            cpu.startProgram();
+        } else if (device.equals(DM_DISPLAY)) {
+            DisplayFrame.showDisplay();
+        }
+    }
+
+    @Override
+    public void deactivate(String device) {
+    }
+
+    @Override
+    public void close() {
+        DisplayFrame.hideDisplay();
     }
 }

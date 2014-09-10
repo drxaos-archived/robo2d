@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Direct {
+import java.io.Serializable;
+
+public class Direct implements Serializable {
     IO io;
 
     public Direct(IO io) {

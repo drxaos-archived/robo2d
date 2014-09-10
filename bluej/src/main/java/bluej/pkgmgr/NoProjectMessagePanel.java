@@ -21,16 +21,16 @@
  */
 package bluej.pkgmgr;
 
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import bluej.Config;
 import bluej.utility.CenterLayout;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-
 /**
- * This class is a container to show a message for the user
+ * This class is a container to show a message for the user 
  * when no project is opened
  *
  * @author amjad
@@ -39,32 +39,12 @@ public class NoProjectMessagePanel extends JPanel {
 
     private JLabel noProjectMessageLabel;
     private static final Color TRANSPARANT = new Color(0f, 0f, 0f, 0.0f);
-    public BufferedImage img;
-    public boolean display = false;
 
     public NoProjectMessagePanel() {
         super(new CenterLayout());
         setBackground(TRANSPARANT);
-        noProjectMessageLabel = new JLabel(" ");
+        noProjectMessageLabel = new JLabel(Config.getString("pkgmgr.noProjectOpened.message"));
         noProjectMessageLabel.setEnabled(false);
         add(noProjectMessageLabel);
-        setFocusable(true);
-    }
-
-    public void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        if (display && img != null) {
-            int w = img.getWidth(), h = img.getHeight();
-            h = (int) (1.0f * this.getWidth() * h / w);
-            w = this.getWidth();
-            if (h > this.getHeight()) {
-                w = (int) (1.0f * this.getHeight() * w / h);
-                h = this.getHeight();
-            }
-            g.drawImage(img,
-                    (this.getWidth() - w) / 2, (this.getHeight() - h) / 2,
-                    w, h, null);
-        }
     }
 }

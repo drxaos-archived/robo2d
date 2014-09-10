@@ -1,9 +1,10 @@
 package com.robotech.military.api;
 
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Console {
+public class Console implements Serializable {
     IO io;
 
     public Console(IO io) {

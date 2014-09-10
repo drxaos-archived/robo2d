@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Gps {
+import java.io.Serializable;
+
+public class Gps implements Serializable {
     IO io;
 
     public Gps(IO io) {

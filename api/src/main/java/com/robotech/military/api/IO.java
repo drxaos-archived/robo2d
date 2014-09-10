@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public interface IO {
+import java.io.Serializable;
+
+public interface IO extends Serializable {
     void set(String key, String value);
 
     String get(String key);

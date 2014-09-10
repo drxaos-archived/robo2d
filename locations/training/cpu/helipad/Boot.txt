@@ -7,12 +7,23 @@ public class Boot implements Program {
         Console console = host.getDevice(Console.class);
         Door door = host.getDevice(Door.class);
 
+        door.select("helipadDoor"); // door should be selected by secret key
+
         console.println("Initialization...");
         console.println("Available commands: (\"open\", \"close\")");
 
         while (true) {
             String in = console.read("cmd> ");
-            console.println("Command: " + in);
+
+            if (in.equals("open")) { // Open selected door
+                door.open();
+
+            } else if (in.equals("close")) { // Close selected door
+                door.close();
+
+            } else {
+                console.println("Unknown command: " + in);
+            }
         }
     }
 }

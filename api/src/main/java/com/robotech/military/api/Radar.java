@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Radar {
+import java.io.Serializable;
+
+public class Radar implements Serializable {
 
     public static final String UNKNOWN = "unknown";
     public static final String EMPTY = "empty";

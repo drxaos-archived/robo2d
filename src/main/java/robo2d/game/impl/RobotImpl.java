@@ -6,13 +6,15 @@ import robo2d.game.Game;
 import robo2d.game.box2d.Box;
 import robo2d.game.box2d.Physical;
 import robo2d.game.box2d.RobotBox;
+import robo2d.testbed.devices.DeviceManager;
 import straightedge.geom.KPoint;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RobotImpl implements Physical, Enterable, Host, Dynamic {
+public class RobotImpl implements Physical, Enterable, Host, Dynamic, HasDevices {
 
     Set<EquipmentImpl> equipment = new HashSet<EquipmentImpl>();
     Set<HasEffects> hasEffects = new HashSet<HasEffects>();
@@ -160,18 +162,15 @@ public class RobotImpl implements Physical, Enterable, Host, Dynamic {
         if (enteredPlayer == null) {
             enteredPlayer = player;
             Terminal.open(getComputer());
+            DeviceManager.setDevicesHost(this);
         }
-    }
-
-    @Override
-    public boolean canConnect() {
-        return owner == enteredPlayer;
     }
 
     @Override
     public Point2D exit() {
         if (enteredPlayer != null) {
             Terminal.close(getComputer());
+            DeviceManager.setDevicesHost(null);
             enteredPlayer = null;
             return getBox().getPosition();
         } else {
@@ -204,5 +203,29 @@ public class RobotImpl implements Physical, Enterable, Host, Dynamic {
     @Override
     public boolean hasAccessToComputer() {
         return owner == enteredPlayer;
+    }
+
+    @Override
+    public String[] getDevices() {
+        ArrayList<String> dev = new ArrayList<String>();
+        if (computer.canDebug()) {
+            dev.add("CPU");
+        }
+        return dev.toArray(new String[dev.size()]);
+    }
+
+    @Override
+    public void activate(String device) {
+        if (device.equals("CPU")) {
+            Terminal.connect();
+        }
+    }
+
+    @Override
+    public void deactivate(String device) {
+    }
+
+    @Override
+    public void close() {
     }
 }

@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,9 +45,19 @@ public class AbstractComputer implements Dynamic {
             // Try this if reloading fails
             //  http://tutorials.jenkov.com/java-reflection/dynamic-class-loading-reloading.html
             URL classUrl = file.toURI().toURL();
-            URL[] urls = new URL[]{classUrl};
-            ClassLoader ucl = new URLClassLoader(urls, getClass().getClassLoader());
-            return ucl.loadClass("Boot");
+
+            URL[] apiUrls = ((URLClassLoader) Program.class.getClassLoader()).getURLs();
+            URL[] urls = Arrays.copyOf(apiUrls, apiUrls.length + 1);
+            urls[urls.length - 1] = classUrl;
+
+            ClassLoader ucl = new URLClassLoader(urls, null/*getClass().getClassLoader()*/);
+            Class<?> boot = ucl.loadClass("Boot");
+            Class<?> program = ucl.loadClass("com.robotech.military.api.Program");
+            if (boot == null || !program.isAssignableFrom(boot)) {
+                return null;
+            }
+            Class<?> wrapper = ucl.loadClass("robo2d.game.impl.ProgramWrapper");
+            return wrapper;
         } catch (ClassNotFoundException e) {
             return null;
         } catch (Exception e) {
@@ -59,20 +70,17 @@ public class AbstractComputer implements Dynamic {
         try {
             if (program == null) {
                 final Class code = compile();
-                if (code == null || !Program.class.isAssignableFrom(code)) {
-                    return;
-                }
                 program = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            Program robotProgram = (Program) code.getConstructor().newInstance();
                             setStateString("console/text", getStateString("console/text") + "\nBOOT...");
-                            robotProgram.run(new Host(new LocalConnection(getUid())));
+                            code.getField("uid").set(null, getUid());
+                            code.newInstance();
                         } catch (Throwable e) {
                             e.printStackTrace();
+                            setStateString("console/text", getStateString("console/text") + "\nSOFTWARE ABORT");
                         }
-                        setStateString("console/text", getStateString("console/text") + "\nSYSTEM HALTED");
                     }
                 });
                 program.setDaemon(true);

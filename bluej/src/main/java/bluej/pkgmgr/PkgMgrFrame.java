@@ -818,9 +818,11 @@ public class PkgMgrFrame extends JFrame
     private void updateWindow() {
 
         if (isEmptyFrame()) {
+            setVisible(false);
             classScroller.setViewportView(noProjectMessagePanel);
-            Main.bluejListener.display(noProjectMessagePanel);
             repaint();
+        } else {
+            setVisible(true);
         }
         updateWindowTitle();
     }

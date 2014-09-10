@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Radio {
+import java.io.Serializable;
+
+public class Radio implements Serializable {
 
     IO io;
 

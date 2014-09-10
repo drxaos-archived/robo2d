@@ -2,18 +2,15 @@ package com.robotech.military.internal;
 
 import com.robotech.military.api.IO;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class LocalConnection implements IO {
+public class LocalConnection implements IO, Serializable {
     String id;
-    Socket socket;
-    PrintWriter writer;
-    BufferedReader reader;
+    transient Socket socket;
+    transient PrintWriter writer;
+    transient BufferedReader reader;
 
     public LocalConnection(String id) {
         this.id = id;

@@ -1,6 +1,8 @@
 package com.robotech.military.api;
 
-public class Door {
+import java.io.Serializable;
+
+public class Door implements Serializable {
     IO io;
     String key = "main";
 

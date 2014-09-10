@@ -1,5 +1,7 @@
 package com.robotech.military.api;
 
-public interface Program {
+import java.io.Serializable;
+
+public interface Program extends Serializable {
     void run(Host robot);
 }

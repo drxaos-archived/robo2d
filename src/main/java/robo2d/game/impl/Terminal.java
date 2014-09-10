@@ -3,8 +3,9 @@ package robo2d.game.impl;
 import bluej.Boot;
 import bluej.Main;
 import bluej.debugger.Debugger;
-import bluej.pkgmgr.NoProjectMessagePanel;
 import bluej.pkgmgr.PkgMgrFrame;
+import robo2d.testbed.devices.DeviceManager;
+import robo2d.testbed.devices.DisplayPanel;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class Terminal {
 
-    static NoProjectMessagePanel display;
+    static DisplayPanel display;
     static boolean connected = false;
     static AbstractComputer computer;
 
@@ -30,7 +31,12 @@ public class Terminal {
     private static int fontHeight;
     public static Map<String, BufferedImage> images = new HashMap<String, BufferedImage>();
 
-    static KeyListener keyListener = new KeyAdapter() {
+    public static void setDisplay(DisplayPanel display) {
+        Terminal.display = display;
+        display.addKeyListener(keyListener);
+    }
+
+    public static final KeyListener keyListener = new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent e) {
             AbstractComputer c = computer;
@@ -54,7 +60,7 @@ public class Terminal {
             @Override
             public void run() {
                 while (true) {
-                    NoProjectMessagePanel d = display;
+                    DisplayPanel d = display;
                     AbstractComputer c = computer;
                     if (d != null && c != null) {
                         if (d.img == null) {
@@ -117,6 +123,7 @@ public class Terminal {
             disconnect();
         }
         if (computer != null && computer.canDebug()) {
+            computer.stopProgram();
             final File dir = new File("computer");
             ComputerHelper.saveToDisk(computer, dir);
             Main.registerBluejListener(new Main.BluejListener() {
@@ -150,13 +157,6 @@ public class Terminal {
                 @Override
                 public void disconnect() {
                     Terminal.disconnect();
-                }
-
-                @Override
-                public void display(NoProjectMessagePanel panel) {
-                    display = panel;
-                    display.removeKeyListener(keyListener);
-                    display.addKeyListener(keyListener);
                 }
             });
 
@@ -207,13 +207,6 @@ public class Terminal {
         @Override
         public void disconnect() {
             Terminal.disconnect();
-        }
-
-        @Override
-        public void display(NoProjectMessagePanel panel) {
-            display = panel;
-            display.removeKeyListener(keyListener);
-            display.addKeyListener(keyListener);
         }
     };
 
