@@ -29,6 +29,7 @@
 package net.sf.jauvm.vm;
 
 import net.sf.jauvm.vm.insn.Insn;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -48,7 +49,7 @@ public final class VirtualMachine implements Serializable {
     VirtualMachine() {
     }
 
-    public static VirtualMachine create(Class<? extends Runnable> cls) throws Throwable {
+    public static VirtualMachine create(Class<?> cls) throws Throwable {
         if (cls == null) throw new NullPointerException();
         Method method = cls.getMethod("run");
         MethodCode code = GlobalCodeCache.get(cls, "run()V");
@@ -98,7 +99,7 @@ public final class VirtualMachine implements Serializable {
                         ByteArrayOutputStream s = new ByteArrayOutputStream();
                         save(s);
                         s.close();
-                        fullState = s.toString();
+                        fullState = Base64.encodeBase64String(s.toByteArray());
                     } catch (Exception e) {
                         // ?
                     }

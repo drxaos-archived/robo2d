@@ -1,7 +1,8 @@
 package robo2d.locations;
 
-import robo2d.game.Game;
+import com.robotech.game.Game;
 import robo2d.game.impl.*;
+import robo2d.game.impl.statics.WallImpl;
 import robo2d.testbed.RobotTest;
 import straightedge.geom.KPoint;
 

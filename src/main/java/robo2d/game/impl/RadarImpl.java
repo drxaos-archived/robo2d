@@ -1,6 +1,6 @@
 package robo2d.game.impl;
 
-import robo2d.game.Game;
+import com.robotech.game.Game;
 
 public class RadarImpl implements EquipmentImpl {
 

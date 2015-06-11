@@ -1,10 +1,9 @@
 package robo2d.testbed;
 
-import bluej.Boot;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.testbed.framework.*;
 import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
-import robo2d.game.Game;
+import com.robotech.game.Game;
 import robo2d.testbed.devices.DeviceManager;
 import robo2d.testbed.devices.DisplayFrame;
 import robo2d.testbed.jme.LiveFrame;
@@ -23,7 +22,6 @@ public abstract class RobotTest extends TestbedTest {
         getWorld().setGravity(new Vec2());
         game = createGame();
         game.start();
-        Boot.start(null);
         DeviceManager.start();
         DisplayFrame.start();
         LiveFrame.create(game).getCanvas();
@@ -34,12 +32,11 @@ public abstract class RobotTest extends TestbedTest {
 
     @Override
     public synchronized void step(TestbedSettings settings) {
-        game.beforeStep();
-        synchronized (game.stepSync()) {
+        synchronized (game.stepSync) {
+            game.beforeStep();
             super.step(settings);
+            game.afterStep();
         }
-        game.afterStep();
-
     }
 
     @Override

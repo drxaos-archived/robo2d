@@ -1,5 +1,7 @@
 package robo2d.game.impl;
 
-public interface EquipmentImpl extends Dynamic{
+import robo2d.game.impl.dynamics.Dynamic;
+
+public interface EquipmentImpl extends Dynamic {
     void setup(Host host);
 }

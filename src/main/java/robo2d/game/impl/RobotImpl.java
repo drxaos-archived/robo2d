@@ -2,10 +2,11 @@ package robo2d.game.impl;
 
 import com.jme3.math.FastMath;
 import com.robotech.military.api.Point;
-import robo2d.game.Game;
-import robo2d.game.box2d.Box;
-import robo2d.game.box2d.Physical;
+import com.robotech.game.Game;
+import com.robotech.game.box.Box;
+import com.robotech.game.Physical;
 import robo2d.game.box2d.RobotBox;
+import robo2d.game.impl.dynamics.Dynamic;
 import robo2d.testbed.devices.DeviceManager;
 import straightedge.geom.KPoint;
 

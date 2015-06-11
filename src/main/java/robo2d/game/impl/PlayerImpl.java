@@ -1,7 +1,7 @@
 package robo2d.game.impl;
 
-import robo2d.game.box2d.Box;
-import robo2d.game.box2d.Physical;
+import com.robotech.game.box.Box;
+import com.robotech.game.Physical;
 import robo2d.game.box2d.PlayerBox;
 import straightedge.geom.KPoint;
 

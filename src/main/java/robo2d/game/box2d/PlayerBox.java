@@ -1,5 +1,6 @@
 package robo2d.game.box2d;
 
+import com.robotech.game.box.Box;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;

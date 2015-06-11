@@ -16,7 +16,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import robo2d.game.Game;
+import com.robotech.game.Game;
 
 import java.io.IOException;
 import java.util.logging.Level;

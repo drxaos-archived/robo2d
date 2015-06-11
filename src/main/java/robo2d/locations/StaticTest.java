@@ -1,6 +1,6 @@
 package robo2d.locations;
 
-import robo2d.game.Game;
+import com.robotech.game.Game;
 import robo2d.game.impl.PlayerImpl;
 import robo2d.game.impl.RobotImpl;
 import robo2d.testbed.RobotTest;

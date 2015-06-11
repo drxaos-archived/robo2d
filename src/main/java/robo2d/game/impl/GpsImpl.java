@@ -1,7 +1,7 @@
 package robo2d.game.impl;
 
 import com.robotech.military.api.Point;
-import robo2d.game.Game;
+import com.robotech.game.Game;
 
 public class GpsImpl implements EquipmentImpl {
 

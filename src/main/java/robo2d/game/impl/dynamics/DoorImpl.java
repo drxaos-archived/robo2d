@@ -1,11 +1,10 @@
 package robo2d.game.impl.dynamics;
 
-import robo2d.game.box2d.Box;
-import robo2d.game.box2d.Physical;
+import com.robotech.game.box.Box;
+import com.robotech.game.Physical;
 import robo2d.game.box2d.PolygonUtil;
-import robo2d.game.box2d.StaticBox;
+import com.robotech.game.box.StaticBox;
 import robo2d.game.impl.ControllerImpl;
-import robo2d.game.impl.Dynamic;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 

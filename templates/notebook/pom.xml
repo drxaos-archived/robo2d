@@ -33,7 +33,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.1</version>
                 <configuration>
-                    <mainClass>com.robotech.military.remote.Loader</mainClass>
+                    <mainClass>com.robotech.com.robotech.api.military.remote.Loader</mainClass>
                 </configuration>
             </plugin>
         </plugins>

@@ -16,10 +16,11 @@ dependencies {
 //    compile localGroovy()
     compile 'asm:asm-all:2.1'
     compile 'javassist:javassist:3.12.1.GA'
+    compile 'net.sf.cssbox:cssbox:4.5'
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'commons-codec:commons-codec:1.4'
     compile 'com.robotech.military:api:1.0'
-    compile 'com.robotech.military:terminal:1.0'
     // game
     compile 'org.jbox2d:jbox2d:2.2.1.1'
     compile 'org.jbox2d:jbox2d-testbed:2.2.1.1'

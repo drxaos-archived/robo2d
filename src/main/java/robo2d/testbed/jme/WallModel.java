@@ -9,7 +9,7 @@ import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
 import org.jbox2d.common.Vec2;
-import robo2d.game.impl.WallImpl;
+import robo2d.game.impl.statics.WallImpl;
 import straightedge.geom.KPoint;
 import straightedge.geom.KPolygon;
 

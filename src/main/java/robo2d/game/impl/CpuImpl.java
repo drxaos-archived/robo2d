@@ -16,7 +16,6 @@ public class CpuImpl extends AbstractComputer {
 
     public void setup(ControllerImpl controller) {
         this.controller = controller;
-        Terminal.registerComputer(this);
     }
 
     public boolean bootOnStartup() {

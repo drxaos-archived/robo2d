@@ -16,7 +16,6 @@ public class ComputerImpl extends AbstractComputer implements EquipmentImpl {
     @Override
     public void setup(Host robot) {
         this.robot = robot;
-        Terminal.registerComputer(this);
     }
 
     public boolean bootOnStartup() {

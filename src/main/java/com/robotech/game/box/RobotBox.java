@@ -1,6 +1,5 @@
-package robo2d.game.box2d;
+package com.robotech.game.box;
 
-import com.robotech.game.box.Box;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
@@ -8,24 +7,17 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import straightedge.geom.KPoint;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class RobotBox extends Box {
 
-    public static float SIZE = 1;
-    public static float AGR_SIZE = 1.4f;
+    BodyDef bodyDef;
+    List<FixtureDef> fixtureDefs = new ArrayList<FixtureDef>();
 
-    public static float getSize(String uid) {
-        if (uid.startsWith("AGR")) {
-            return AGR_SIZE;
-        } else {
-            return SIZE;
-        }
-    }
-
-    public RobotBox(String uid, KPoint position, double angle) {
-        float size = getSize(uid);
-
+    public RobotBox(String uid, float x, float y, float angle) {
+        float size = 1;
         {
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(size, size);
@@ -56,11 +48,12 @@ public class RobotBox extends Box {
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
-        bodyDef.position.set((float) position.getX(), (float) position.getY());
-        bodyDef.angle = (float) angle;
+        bodyDef.position.set(x, y);
+        bodyDef.angle = angle;
         bodyDef.allowSleep = false;
         bodyDef.linearDamping = 10f;
         bodyDef.angularDamping = 30f;
+        bodyDef.userData = uid;
     }
 
     public double getAngle() {

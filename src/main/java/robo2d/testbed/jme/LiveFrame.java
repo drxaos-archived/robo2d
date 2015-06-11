@@ -4,7 +4,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -30,11 +29,14 @@ import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
-import robo2d.game.Game;
-import robo2d.game.box2d.Physical;
+import com.robotech.game.Game;
+import com.robotech.game.Physical;
 import robo2d.game.box2d.RobotBox;
 import robo2d.game.impl.*;
 import robo2d.game.impl.dynamics.DoorImpl;
+import robo2d.game.impl.statics.CampImpl;
+import robo2d.game.impl.statics.HelicopterImpl;
+import robo2d.game.impl.statics.WallImpl;
 import robo2d.testbed.jme.dynamics.DoorModel;
 import slick2d.NativeLoader;
 
@@ -347,12 +349,14 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
     @Override
     public void simpleUpdate(float tpf) {
-        if (!isSceneRendered()) {
-            return;
+        synchronized (game.stepSync) {
+            if (!isSceneRendered()) {
+                return;
+            }
+            updateRobots();
+            updatePlayer();
+            updateDoors();
         }
-        updateRobots();
-        updatePlayer();
-        updateDoors();
     }
 
     private void updateStatics() {
@@ -409,7 +413,6 @@ public class LiveFrame extends SimpleApplication implements GroundObjectsControl
 
         if (entered == null) {
             game.getPlayer().getBox().setPosition(cam.z, cam.x);
-            game.stepSync();
             Point2D newPos = game.getPlayer().getBox().getPosition();
             cam.setY(getTerrainPoint((float) newPos.getY(), (float) newPos.getX()).y + 1.3f);
             cam.setZ((float) newPos.getX());

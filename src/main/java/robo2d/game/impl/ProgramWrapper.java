@@ -1,76 +1,86 @@
 package robo2d.game.impl;
 
-import javassist.*;
+import com.robotech.military.api.Executable;
 import net.sf.jauvm.vm.GlobalCodeCache;
 import net.sf.jauvm.vm.VirtualMachine;
+import org.apache.commons.codec.binary.Base64;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.Serializable;
 
 public class ProgramWrapper {
 
-    public static String uid = "debug";
+    public static VirtualMachine vm;
 
-    public ProgramWrapper() {
-        run();
+    static {
+        GlobalCodeCache.setCodeLoader(new GlobalCodeCache.CodeLoader() {
+            @Override
+            public InputStream getBytecodeStream(Class<?> cls) {
+                if (cls.getCanonicalName().startsWith("java.")) {
+                    return null;
+                }
+                if (cls.getCanonicalName().startsWith("javax.")) {
+                    return null;
+                }
+                if (cls.getCanonicalName().startsWith("com.robotech.military.internal.")) {
+                    return null;
+                }
+                return super.getBytecodeStream(cls);
+            }
+
+            @Override
+            public boolean checkAccess(Class cls) {
+                System.out.println("Using class: " + cls.getCanonicalName());
+                if (Executable.class.isAssignableFrom(cls)) {
+                    return false;
+                }
+                return true;
+            }
+        });
     }
 
-    public void run() {
+    public static boolean isWorking() {
+        return vm != null;
+    }
+
+    public static void start(Class cls) {
         try {
-            GlobalCodeCache.setCodeLoader(new GlobalCodeCache.CodeLoader() {
-                @Override
-                public InputStream getBytecodeStream(Class<?> cls) {
-                    if (cls.getCanonicalName().startsWith("java.")) {
-                        return null;
-                    }
-                    if (cls.getCanonicalName().startsWith("javax.")) {
-                        return null;
-                    }
-                    if (cls.getCanonicalName().startsWith("com.robotech.military.internal.")) {
-                        return null;
-                    }
-                    return super.getBytecodeStream(cls);
-                }
-
-                @Override
-                public boolean checkAccess(Class cls) {
-                    System.out.println("Using class: " + cls.getCanonicalName());
-                    if (cls.equals(System.class)) {
-                        return false;
-                    }
-                    return true;
-                }
-            });
-            Translator translator = new Translator() {
-                public void start(ClassPool pool) throws NotFoundException, CannotCompileException {
-                }
-
-                public void onLoad(ClassPool pool, String classname) throws NotFoundException, CannotCompileException {
-                    System.out.println("Loading class: " + classname);
-                    CtClass cc = pool.get(classname);
-                    if (cc.isFrozen()) {
-                        return;
-                    }
-                    for (CtClass ic : cc.getInterfaces()) {
-                        if (ic.getName().equals(Serializable.class.getCanonicalName())) {
-                            return;
-                        }
-                    }
-                    cc.addInterface(pool.get(Serializable.class.getCanonicalName()));
-                }
-            };
-
-            ClassPool pool = new ClassPool(null);
-            pool.appendClassPath(new LoaderClassPath(this.getClass().getClassLoader()));
-
-            Loader cl = new Loader(this.getClass().getClassLoader(), pool);
-            cl.addTranslator(pool, translator);
-            final Class cls = cl.loadClass(ProgramWrapperHelper.class.getCanonicalName());
-            VirtualMachine vm = VirtualMachine.create((Runnable) cls.getDeclaredConstructors()[0].newInstance(uid, cl));
-            vm.run();
-
+            vm = VirtualMachine.create(cls);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
     }
+
+    public static void step() {
+        try {
+            if (vm.run(1)) {
+                stop();
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    public static void stop() {
+        vm = null;
+    }
+
+    public static String save() {
+        try {
+            return vm.getFullState();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void load(String state) {
+        try {
+            vm = VirtualMachine.create(new ByteArrayInputStream(Base64.decodeBase64(state)));
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+
 }

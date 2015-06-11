@@ -1,4 +1,4 @@
-package robo2d.game.impl;
+package robo2d.game.impl.statics;
 
 import com.robotech.game.box.Box;
 import com.robotech.game.Physical;
@@ -12,12 +12,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlatformImpl implements Physical {
+public class WallImpl implements Physical {
 
     StaticBox box;
     List<Point2D> vertices;
+    String type;
 
-    public PlatformImpl(List<Point2D> vertices) {
+    public WallImpl(List<Point2D> vertices) {
+        this(vertices, null);
+    }
+
+    public WallImpl(List<Point2D> vertices, String type) {
+        this.type = type == null ? "rock" : type;
         PolygonUtil.clockwise(vertices);
         this.vertices = Collections.unmodifiableList(new ArrayList<Point2D>(vertices));
 
@@ -27,6 +33,10 @@ public class PlatformImpl implements Physical {
         }
 
         box = new StaticBox(new KPolygon(kPoints), new KPoint(0, 0), 0);
+    }
+
+    public String getType() {
+        return type;
     }
 
     public List<Point2D> getVertices() {
